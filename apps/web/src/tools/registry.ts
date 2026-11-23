@@ -1,3 +1,4 @@
+import { upsideDown } from './text/upside-down.ts'
 import { fancyText } from './text/fancy-text.ts'
 import { removeAccents } from './text/remove-accents.ts'
 import { extractData } from './text/extract-data.ts'
@@ -56,6 +57,7 @@ export const tools: ReadonlyArray<Tool> = [
   extractData,
   removeAccents,
   fancyText,
+  upsideDown,
 ]
 
 export const toolOf = (category: string, id: string): Tool | undefined =>
