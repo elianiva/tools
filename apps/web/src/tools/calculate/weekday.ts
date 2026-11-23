@@ -24,5 +24,6 @@ export const weekday = defineTransform({
   modes: [{ id: 'run', label: 'Run' }],
   placeholder: '2024-02-29',
   example: '2024-02-29',
+  fields: [{ label: 'Date', kind: 'date' }],
   run,
 })
