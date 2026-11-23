@@ -1,3 +1,4 @@
+import { sphere } from './calculate/sphere.ts'
 import { triangle } from './calculate/triangle.ts'
 import { slope } from './calculate/slope.ts'
 import { squareRoot } from './calculate/square-root.ts'
@@ -252,6 +253,7 @@ export const tools: ReadonlyArray<Tool> = [
   squareRoot,
   slope,
   triangle,
+  sphere,
 ]
 
 export const toolOf = (category: string, id: string): Tool | undefined =>
