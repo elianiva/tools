@@ -1,3 +1,4 @@
+import { csvJson } from './developer/csv-json.ts'
 import { htmlToText } from './text/html-to-text.ts'
 import { markdownToHtml } from './developer/markdown-to-html.ts'
 import { htmlEntities } from './developer/html-entities.ts'
@@ -76,6 +77,7 @@ export const tools: ReadonlyArray<Tool> = [
   htmlEntities,
   markdownToHtml,
   htmlToText,
+  csvJson,
 ]
 
 export const toolOf = (category: string, id: string): Tool | undefined =>
