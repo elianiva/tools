@@ -1,3 +1,4 @@
+import { smartQuotes } from './text/smart-quotes.ts'
 import { sentenceSplitter } from './text/sentence-splitter.ts'
 import { unicodeInspector } from './developer/unicode-inspector.ts'
 import { leetspeak } from './text/leetspeak.ts'
@@ -98,6 +99,7 @@ export const tools: ReadonlyArray<Tool> = [
   leetspeak,
   unicodeInspector,
   sentenceSplitter,
+  smartQuotes,
 ]
 
 export const toolOf = (category: string, id: string): Tool | undefined =>
