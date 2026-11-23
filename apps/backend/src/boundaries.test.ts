@@ -18,11 +18,11 @@ const importsPlatform = /(?:\bfrom\s+|\bimport\s*\(?\s*)['"](?:\.{1,2}\/)+platfo
 
 /** The browser talks to the RPC contract, never to the API Worker's code. */
 const importsBackend =
-  /(?:\bfrom\s+|\bimport\s*\(?\s*)['"](?:@template\/backend|(?:\.{1,2}\/)+backend|apps\/backend)/
+  /(?:\bfrom\s+|\bimport\s*\(?\s*)['"](?:@tools\/backend|(?:\.{1,2}\/)+backend|apps\/backend)/
 
 /** The contract is shared by both apps, so it must not depend on either. */
 const importsApp =
-  /(?:\bfrom\s+|\bimport\s*\(?\s*)['"](?:@template\/(?:web|backend|reference)|(?:\.{1,2}\/)+apps\/)/
+  /(?:\bfrom\s+|\bimport\s*\(?\s*)['"](?:@tools\/(?:web|backend|reference)|(?:\.{1,2}\/)+apps\/)/
 
 /** The browser must not import a host adapter. Sentry is a browser SDK, so it is allowed. */
 const importsAdapter =

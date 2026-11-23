@@ -54,7 +54,7 @@ export class NoteStoreError extends Schema.TaggedError<
 export class NoteStore extends Context.Service<
   NoteStore,
   Readonly<{ list: Effect.Effect<ReadonlyArray<Note>, NoteStoreError> }>
->()('template/backend/NoteStore') {}
+>()('tools/backend/NoteStore') {}
 ```
 
 The context imports `effect` and its own files. It does not import D1.
@@ -115,7 +115,7 @@ const ApiWorker = Cloudflare.Worker('Api', {
 ```ts
 // apps/backend/src/contexts/notes/handlers.ts
 import * as Effect from 'effect/Effect'
-import { NotesRpc } from '@template/rpc'
+import { NotesRpc } from '@tools/rpc'
 import { NoteStore } from './store.ts'
 
 export const NotesHandlers = NotesRpc.toLayer(

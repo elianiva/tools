@@ -3,7 +3,7 @@ import { sentryRollupPlugin } from '@sentry/rollup-plugin'
 import * as Alchemy from 'alchemy'
 import * as Effect from 'effect/Effect'
 import * as Layer from 'effect/Layer'
-import { API_PREFIX } from '@template/rpc'
+import { API_PREFIX } from '@tools/rpc'
 
 const compatibility = { date: '2026-10-08' }
 // The Sentry SDK in the API and website Workers needs AsyncLocalStorage, which
@@ -81,7 +81,7 @@ const state = Layer.unwrap(
 )
 
 export default Alchemy.Stack(
-  'effect-foldkit-template',
+  'tools',
   { providers: Cloudflare.providers(), state },
   Effect.gen(function* () {
     const stage = yield* Alchemy.Stack.use((stack) => Effect.succeed(stack.stage))

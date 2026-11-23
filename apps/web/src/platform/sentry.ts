@@ -2,7 +2,7 @@ import * as Sentry from '@sentry/browser'
 import { SentryEffectTracer } from '@sentry/effect/client'
 import { Layer, Option, Tracer } from 'effect'
 import { Runtime } from 'foldkit'
-import { API_PREFIX } from '@template/rpc'
+import { API_PREFIX } from '@tools/rpc'
 import type { Message, Model } from '../app/main.ts'
 
 /**

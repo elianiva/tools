@@ -1,7 +1,7 @@
 import { expect, test } from 'vitest'
 import worker from './worker.ts'
 
-const request = new Request('https://template.test/api/rpc', {
+const request = new Request('https://tools.test/api/rpc', {
   method: 'POST',
   body: '{"method":"ping"}',
 })
@@ -19,7 +19,7 @@ test('the website Worker forwards API requests through the service binding', asy
   })
 
   expect(forwarded).toHaveLength(1)
-  expect(forwarded[0]?.url).toBe('https://template.test/api/rpc')
+  expect(forwarded[0]?.url).toBe('https://tools.test/api/rpc')
   expect(response.status).toBe(202)
   expect(await response.text()).toBe('from the API Worker')
 })

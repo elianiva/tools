@@ -6,7 +6,7 @@ import { FetchHttpClient } from 'effect/http'
 import * as HttpRouter from 'effect/http/HttpRouter'
 import { Rpc, RpcClient, RpcGroup, RpcSerialization, RpcServer } from 'effect/rpc'
 import { expect, test } from 'vitest'
-import { Api, ApiError, RPC_PATH, SystemRpc } from '@template/rpc'
+import { Api, ApiError, RPC_PATH, SystemRpc } from '@tools/rpc'
 import { handler, handlerFor } from './handler.ts'
 
 const url = `http://api.test${RPC_PATH}`

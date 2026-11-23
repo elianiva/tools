@@ -24,7 +24,7 @@ export const update = (model: Model, message: Message) =>
   })
 
 export const view = (model: Model, h: HtmlBuilder<Message>): Document => ({
-  title: 'Effect + Foldkit template',
+  title: 'Tools',
   body: h.main(
     [h.Class('page')],
     [
