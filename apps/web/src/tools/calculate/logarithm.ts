@@ -23,5 +23,6 @@ export const logarithm = defineTransform({
   modes: [{ id: 'run', label: 'Run' }],
   placeholder: '1000',
   example: '1000',
+  fields: [{ label: 'Number' }],
   run,
 })
