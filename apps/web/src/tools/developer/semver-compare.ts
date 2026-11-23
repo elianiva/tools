@@ -59,5 +59,6 @@ export const semverCompare = defineTransform({
     { label: 'Version A', kind: 'text' },
     { label: 'Version B', kind: 'text' },
   ],
+  present: 'display',
   run,
 })
