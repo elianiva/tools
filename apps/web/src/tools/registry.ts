@@ -1,3 +1,4 @@
+import { cmyk } from './convert/cmyk.ts'
 import { hoursDecimal } from './convert/hours-decimal.ts'
 import { sphere } from './calculate/sphere.ts'
 import { triangle } from './calculate/triangle.ts'
@@ -256,6 +257,7 @@ export const tools: ReadonlyArray<Tool> = [
   triangle,
   sphere,
   hoursDecimal,
+  cmyk,
 ]
 
 export const toolOf = (category: string, id: string): Tool | undefined =>
