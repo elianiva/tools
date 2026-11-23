@@ -1,3 +1,4 @@
+import { semverCompare } from './developer/semver-compare.ts'
 import { base32 } from './developer/base32.ts'
 import { envJson } from './developer/env-json.ts'
 import { jsonl } from './developer/jsonl.ts'
@@ -186,6 +187,7 @@ export const tools: ReadonlyArray<Tool> = [
   jsonl,
   envJson,
   base32,
+  semverCompare,
 ]
 
 export const toolOf = (category: string, id: string): Tool | undefined =>
