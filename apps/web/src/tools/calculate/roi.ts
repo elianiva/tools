@@ -19,5 +19,6 @@ export const roi = defineTransform({
   modes: [{ id: 'run', label: 'Run' }],
   placeholder: 'invested and final value: 1000 1250',
   example: '1000 1250',
+  fields: [{ label: 'Invested' }, { label: 'Final value' }],
   run,
 })
