@@ -1,3 +1,4 @@
+import { removeLineBreaks } from './text/remove-line-breaks.ts'
 import { smartQuotes } from './text/smart-quotes.ts'
 import { sentenceSplitter } from './text/sentence-splitter.ts'
 import { unicodeInspector } from './developer/unicode-inspector.ts'
@@ -100,6 +101,7 @@ export const tools: ReadonlyArray<Tool> = [
   unicodeInspector,
   sentenceSplitter,
   smartQuotes,
+  removeLineBreaks,
 ]
 
 export const toolOf = (category: string, id: string): Tool | undefined =>
