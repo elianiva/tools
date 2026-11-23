@@ -1,3 +1,4 @@
+import { roi } from './calculate/roi.ts'
 import { breakEven } from './calculate/break-even.ts'
 import { simpleInterest } from './calculate/simple-interest.ts'
 import { pph21 } from './calculate/pph21.ts'
@@ -230,6 +231,7 @@ export const tools: ReadonlyArray<Tool> = [
   pph21,
   simpleInterest,
   breakEven,
+  roi,
 ]
 
 export const toolOf = (category: string, id: string): Tool | undefined =>
