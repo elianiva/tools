@@ -22,5 +22,6 @@ export const sphere = defineTransform({
   modes: [{ id: 'run', label: 'Run' }],
   placeholder: 'radius: 3',
   example: '3',
+  fields: [{ label: 'Radius' }],
   run,
 })
