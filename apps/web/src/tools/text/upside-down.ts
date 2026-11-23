@@ -70,5 +70,6 @@ export const upsideDown = defineTransform({
   modes: [{ id: 'run', label: 'Run' }],
   placeholder: 'Type or paste text',
   example: 'hello',
+  present: 'display',
   run,
 })
