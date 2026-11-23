@@ -21,6 +21,7 @@
     "@tools/adapter": "workspace:*",
     "@tools/rpc": "workspace:*",
     "@tools/ui": "workspace:*",
+    "cronstrue": "3.43.0",
     "culori": "4.0.2",
     "effect": "4.1.4",
     "fflate": "0.8.3",

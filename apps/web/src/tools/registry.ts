@@ -1,3 +1,4 @@
+import { cron } from './developer/cron.ts'
 import { timestamp } from './convert/timestamp.ts'
 import { color } from './convert/color.ts'
 import { yamlJson } from './developer/yaml-json.ts'
@@ -26,6 +27,7 @@ export const tools: ReadonlyArray<Tool> = [
   yamlJson,
   color,
   timestamp,
+  cron,
 ]
 
 export const toolOf = (category: string, id: string): Tool | undefined =>

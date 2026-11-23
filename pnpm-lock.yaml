@@ -206,6 +206,9 @@ importers:
       '@tools/ui':
         specifier: workspace:*
         version: link:../../packages/ui
+      cronstrue:
+        specifier: 3.43.0
+        version: 3.43.0
       culori:
         specifier: 4.0.2
         version: 4.0.2
@@ -2232,6 +2235,10 @@ packages:
 
   convert-source-map@2.0.0:
     resolution: {integrity: sha512-Kvp459HrV2FEJ1CAsi1Ku+MY3kasH19TFykTz2xWmMeq6bk2NU3XXvfJ+Q61m0xktWwt+1HSYf3JZsTms3aRJg==}
+
+  cronstrue@3.43.0:
+    resolution: {integrity: sha512-VLCgQYlnbRJv76ZJesXhlqNvUU58rPxscLqWf1OavLJXwkir3ouJ4GTSHLtZ+MHXv8d5TxxLppzrThtz2Np63w==}
+    hasBin: true
 
   culori@4.0.2:
     resolution: {integrity: sha512-1+BhOB8ahCn4O0cep0Sh2l9KCOfOdY+BXJnKMHFFzDEouSr/el18QwXEMRlOj9UY5nCeA8UN3a/82rUWRBeyBw==}
@@ -4336,6 +4343,8 @@ snapshots:
       wrap-ansi: 9.0.2
 
   convert-source-map@2.0.0: {}
+
+  cronstrue@3.43.0: {}
 
   culori@4.0.2: {}
 
