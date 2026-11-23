@@ -37,5 +37,6 @@ export const salary = defineTransform({
   ],
   placeholder: '50000',
   example: '50000',
+  fields: [{ label: 'Amount' }],
   run,
 })
