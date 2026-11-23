@@ -1,3 +1,4 @@
+import { timezones } from './convert/timezones.ts'
 import { contrastChecker } from './developer/contrast-checker.ts'
 import { cssMinifier } from './developer/css-minifier.ts'
 import { subnet } from './developer/subnet.ts'
@@ -150,6 +151,7 @@ export const tools: ReadonlyArray<Tool> = [
   subnet,
   cssMinifier,
   contrastChecker,
+  timezones,
 ]
 
 export const toolOf = (category: string, id: string): Tool | undefined =>
