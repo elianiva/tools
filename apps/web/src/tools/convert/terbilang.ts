@@ -61,5 +61,6 @@ export const terbilang = defineTransform({
   ],
   placeholder: '1.234.567',
   example: '1.234.567',
+  fields: [{ label: 'Number', kind: 'text' }],
   run,
 })
