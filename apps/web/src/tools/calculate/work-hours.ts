@@ -33,5 +33,10 @@ export const workHours = defineTransform({
   modes: [{ id: 'run', label: 'Run' }],
   placeholder: 'start, end, break minutes: 9:00 17:30 30',
   example: '9:00 17:30 30',
+  fields: [
+    { label: 'Start', kind: 'time' },
+    { label: 'End', kind: 'time' },
+    { label: 'Break', suffix: 'min' },
+  ],
   run,
 })
