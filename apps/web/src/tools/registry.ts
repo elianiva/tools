@@ -1,3 +1,4 @@
+import { hexText } from './text/hex-text.ts'
 import { binaryText } from './text/binary-text.ts'
 import { morseCode } from './text/morse-code.ts'
 import { upsideDown } from './text/upside-down.ts'
@@ -62,6 +63,7 @@ export const tools: ReadonlyArray<Tool> = [
   upsideDown,
   morseCode,
   binaryText,
+  hexText,
 ]
 
 export const toolOf = (category: string, id: string): Tool | undefined =>
