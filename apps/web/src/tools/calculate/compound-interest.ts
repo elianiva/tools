@@ -28,5 +28,10 @@ export const compoundInterest = defineTransform({
   ],
   placeholder: 'principal, yearly rate %, years: 1000 5 10',
   example: '1000 5 10',
+  fields: [
+    { label: 'Principal' },
+    { label: 'Yearly rate', suffix: '%' },
+    { label: 'Years', suffix: 'yrs' },
+  ],
   run,
 })
