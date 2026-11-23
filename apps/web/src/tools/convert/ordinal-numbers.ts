@@ -30,5 +30,6 @@ export const ordinalNumbers = defineTransform({
   placeholder: 'Type or paste text',
   acceptsFiles: true,
   example: '1 2 3 4 11 12 13 21 22 101 111 112',
+  present: 'tokens',
   run,
 })
