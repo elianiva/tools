@@ -1,3 +1,4 @@
+import { baseConverter } from './convert/base-converter.ts'
 import { primeFactors } from './calculate/prime-factors.ts'
 import { gcdLcm } from './calculate/gcd-lcm.ts'
 import { weekday } from './calculate/weekday.ts'
@@ -122,6 +123,7 @@ export const tools: ReadonlyArray<Tool> = [
   weekday,
   gcdLcm,
   primeFactors,
+  baseConverter,
 ]
 
 export const toolOf = (category: string, id: string): Tool | undefined =>
