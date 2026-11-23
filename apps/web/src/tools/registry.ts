@@ -1,3 +1,4 @@
+import { whitespaceCleaner } from './text/whitespace-cleaner.ts'
 import { reverseText } from './text/reverse-text.ts'
 import { passwordGenerator } from './generate/password.ts'
 import { qrCode } from './generate/qr.ts'
@@ -44,6 +45,7 @@ export const tools: ReadonlyArray<Tool> = [
   qrCode,
   passwordGenerator,
   reverseText,
+  whitespaceCleaner,
 ]
 
 export const toolOf = (category: string, id: string): Tool | undefined =>
