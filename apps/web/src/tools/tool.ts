@@ -3,18 +3,45 @@ import type { Html, HtmlBuilder } from 'foldkit/html'
 
 /** The groups the site is organised by. Order here is the order everywhere. */
 export const CATEGORIES = [
-  { id: 'images', name: 'Images' },
-  { id: 'text', name: 'Text' },
-  { id: 'developer', name: 'Developer' },
-  { id: 'convert', name: 'Convert' },
-  { id: 'calculate', name: 'Calculate' },
-  { id: 'generate', name: 'Generate' },
+  {
+    id: 'images',
+    name: 'Images',
+    description: 'Convert, shrink, and inspect pictures.',
+  },
+  {
+    id: 'text',
+    name: 'Text',
+    description: 'Count, clean, transform, and compare writing.',
+  },
+  {
+    id: 'developer',
+    name: 'Developer',
+    description: 'Encode, decode, format, and check code.',
+  },
+  {
+    id: 'convert',
+    name: 'Convert',
+    description: 'Units, numbers, dates, and time zones.',
+  },
+  {
+    id: 'calculate',
+    name: 'Calculate',
+    description: 'Money, maths, health, and dates.',
+  },
+  {
+    id: 'generate',
+    name: 'Generate',
+    description: 'Random values and made-up text.',
+  },
 ] as const
 
 export type CategoryId = (typeof CATEGORIES)[number]['id']
 
 export const categoryName = (id: CategoryId): string =>
   CATEGORIES.find((category) => category.id === id)?.name ?? id
+
+export const categoryDescription = (id: CategoryId): string =>
+  CATEGORIES.find((category) => category.id === id)?.description ?? ''
 
 export type ToolMeta = Readonly<{
   /** The last path segment: `/text/word-counter`. Unique across the site. */

@@ -1,12 +1,12 @@
 import { Dialog as FkDialog } from '@foldkit/ui'
 import { Message as UiMessage, Toast, Ui, type UiRegistry } from '@tools/adapter'
 import { Effect, Option, Queue, Schema, Stream } from 'effect'
-import { Command, File, Navigation, Subscription, Update, Url } from 'foldkit'
+import { Command, Dom, File, Navigation, Subscription, Update, Url } from 'foldkit'
 import type { Document, HtmlBuilder } from 'foldkit/html'
 import { defineMessageUnion } from 'foldkit/message'
 import { acceptsFile } from '../tools/files.ts'
 import { pathOfTool, toolOf, tools } from '../tools/registry.ts'
-import { searchTools } from '../tools/search.ts'
+import { groupByBestMatch, groupTools, searchTools } from '../tools/search.ts'
 import type { Tool } from '../tools/tool.ts'
 import { shellView } from '../shell/view.ts'
 import { AppRoute, pathOf, urlToRoute } from './route.ts'
@@ -57,6 +57,7 @@ export const Message = defineMessageUnion({
   ChangedPaletteQuery: { query: Schema.String },
   MovedPaletteIndex: { delta: Schema.Finite },
   ChosePaletteResult: { id: Schema.String },
+  CompletedPaletteScroll: {},
   ToggledFavorite: { id: Schema.String },
   CompletedSave: {},
   ClickedCopy: { text: Schema.String },
@@ -126,6 +127,17 @@ export const CopyText = Command.define('CopyText', {
           }),
         }),
       ),
+    ),
+})
+
+/** Keeps the arrow-keyed result inside the palette's scroll box. */
+export const ScrollPaletteToResult = Command.define('ScrollPaletteToResult', {
+  args: { index: Schema.Finite },
+  messages: [Message.CompletedPaletteScroll],
+  execute: ({ index }) =>
+    Dom.scrollIntoView(`#palette-result-${index}`).pipe(
+      Effect.ignore,
+      Effect.as(Message.CompletedPaletteScroll()),
     ),
 })
 
@@ -227,7 +239,46 @@ const deliver = (model: Model, tool: Tool, files: ReadonlyArray<globalThis.File>
 }
 
 export const paletteResults = (model: Model): ReadonlyArray<Tool> =>
-  model.paletteQuery.trim() === '' ? tools : searchTools(tools, model.paletteQuery)
+  paletteGroups(model).flatMap((group) => group.tools)
+
+export type PaletteGroup = Readonly<{
+  name: string
+  tools: ReadonlyArray<Tool>
+  /** Recent and Favorites mix categories, so their rows name the category. */
+  showCategory: boolean
+}>
+
+/** Tools picked by id, in the order the ids appear. */
+const pickTools = (ids: ReadonlyArray<string>): ReadonlyArray<Tool> =>
+  ids.flatMap((id) => tools.filter((tool) => tool.meta.id === id))
+
+/**
+ * What the palette lists, in the order it lists it. With no query the list
+ * answers "what next" from what the browser remembered, then falls back to the
+ * catalogue. With a query it is the ranked matches, grouped for scanning.
+ */
+export const paletteGroups = (model: Model): ReadonlyArray<PaletteGroup> => {
+  const ofCategory = (matches: ReadonlyArray<Tool>): ReadonlyArray<PaletteGroup> =>
+    groupTools(matches).map((group) => ({ ...group, showCategory: false }))
+  if (model.paletteQuery.trim() !== '')
+    return groupByBestMatch(searchTools(tools, model.paletteQuery)).map((group) => ({
+      ...group,
+      showCategory: false,
+    }))
+  const recent = pickTools(model.recents).slice(0, 4)
+  const recentIds = new Set(recent.map((tool) => tool.meta.id))
+  const favorites = pickTools(model.favorites).filter((tool) => !recentIds.has(tool.meta.id))
+  const favoriteIds = new Set(favorites.map((tool) => tool.meta.id))
+  return [
+    ...(recent.length === 0 ? [] : [{ name: 'Recent', tools: recent, showCategory: true }]),
+    ...(favorites.length === 0
+      ? []
+      : [{ name: 'Favorites', tools: favorites, showCategory: true }]),
+    ...ofCategory(
+      tools.filter((tool) => !recentIds.has(tool.meta.id) && !favoriteIds.has(tool.meta.id)),
+    ),
+  ]
+}
 
 const saveCommand = (model: Model) =>
   SaveSettings({ favorites: model.favorites, recents: model.recents })
@@ -275,13 +326,13 @@ export const update = (model: Model, message: Message): Return =>
     ChangedPaletteQuery: ({ query }) => ({
       model: { ...model, paletteQuery: query, paletteIndex: 0 },
     }),
+    CompletedPaletteScroll: () => ({ model }),
     MovedPaletteIndex: ({ delta }) => {
       const count = paletteResults(model).length
+      const index = count === 0 ? 0 : (model.paletteIndex + delta + count) % count
       return {
-        model: {
-          ...model,
-          paletteIndex: count === 0 ? 0 : (model.paletteIndex + delta + count) % count,
-        },
+        model: { ...model, paletteIndex: index },
+        commands: [ScrollPaletteToResult({ index })],
       }
     },
     ChosePaletteResult: ({ id }) => {

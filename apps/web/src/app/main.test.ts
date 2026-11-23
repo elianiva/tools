@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { init, Message, toolsFor, update } from './main.ts'
+import { init, Message, paletteGroups, toolsFor, update } from './main.ts'
 import { AppRoute, urlOf } from './route.ts'
 
 const flags = { anchorId: 'anchor', favorites: [], recents: [] }
@@ -40,6 +40,29 @@ describe('favorites', () => {
     expect(
       update(on.model, Message.ToggledFavorite({ id: 'word-counter' })).model.favorites,
     ).toEqual([])
+  })
+})
+
+describe('palette', () => {
+  it('lists recents and favorites once, before the catalogue', () => {
+    const opened = update(
+      update(start('/text/word-counter'), Message.ToggledFavorite({ id: 'word-counter' })).model,
+      Message.ChangedUrl({ url: urlOf('/developer/json-formatter') }),
+    ).model
+    const groups = paletteGroups(opened)
+    expect(groups[0]).toMatchObject({ name: 'Recent', showCategory: true })
+    expect(groups[0]?.tools.map((tool) => tool.meta.id)).toEqual(['json-formatter', 'word-counter'])
+    const rest = groups.slice(1).flatMap((group) => group.tools.map((tool) => tool.meta.id))
+    expect(rest).not.toContain('word-counter')
+    expect(rest).not.toContain('json-formatter')
+    expect(groups.slice(1)[0]).toMatchObject({ name: 'Images', showCategory: false })
+  })
+
+  it('puts the category of the strongest match first', () => {
+    const searched = update(start(), Message.ChangedPaletteQuery({ query: 'time' })).model
+    const groups = paletteGroups(searched)
+    expect(groups[0]?.name).toBe('Convert')
+    expect(groups[0]?.tools[0]?.meta.name.toLowerCase().startsWith('time')).toBe(true)
   })
 })
 
