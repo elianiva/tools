@@ -1,3 +1,4 @@
+import { caesarCipher } from './text/caesar-cipher.ts'
 import { salary } from './calculate/salary.ts'
 import { duration } from './convert/duration.ts'
 import { timezones } from './convert/timezones.ts'
@@ -156,6 +157,7 @@ export const tools: ReadonlyArray<Tool> = [
   timezones,
   duration,
   salary,
+  caesarCipher,
 ]
 
 export const toolOf = (category: string, id: string): Tool | undefined =>
