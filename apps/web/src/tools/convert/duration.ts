@@ -45,5 +45,6 @@ export const duration = defineTransform({
   ],
   placeholder: '3661',
   example: '3661',
+  fields: [{ label: 'Value', kind: 'text' }],
   run,
 })
