@@ -23,5 +23,10 @@ export const electricityCost = defineTransform({
   modes: [{ id: 'run', label: 'Run' }],
   placeholder: 'watts, hours per day, price per kWh: 1000 5 1500',
   example: '1000 5 1500',
+  fields: [
+    { label: 'Power', suffix: 'W' },
+    { label: 'Hours per day', suffix: 'h' },
+    { label: 'Price per kWh' },
+  ],
   run,
 })
