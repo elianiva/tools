@@ -58,5 +58,6 @@ export const htmlEntities = defineTransform({
   ],
   placeholder: 'Type or paste text',
   example: '<a href="x">&</a>',
+  present: 'code',
   run,
 })
