@@ -28,5 +28,6 @@ export const hoursDecimal = defineTransform({
   ],
   placeholder: '1:45',
   example: '1:45',
+  fields: [{ label: 'Time or hours', kind: 'text' }],
   run,
 })
