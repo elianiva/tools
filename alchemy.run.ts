@@ -5,6 +5,9 @@ import * as Effect from 'effect/Effect'
 import * as Layer from 'effect/Layer'
 import { API_PREFIX } from '@tools/rpc'
 
+/** Production serves from this host. Other stages keep their workers.dev URL. */
+const PRODUCTION_DOMAIN = 'tools.elianiva.com'
+
 const compatibility = { date: '2026-10-08' }
 // The Sentry SDK in the API and website Workers needs AsyncLocalStorage, which
 // `nodejs_compat` gives.
@@ -103,6 +106,7 @@ export default Alchemy.Stack(
       dev: { port: 5173 },
       env: { API: ApiWorker, ...sentryEnv, ...rateLimits },
       assets: { runWorkerFirst: [`${API_PREFIX}/*`] },
+      ...(stage === 'prod' && { domain: PRODUCTION_DOMAIN }),
       compatibility: sentryCompatibility,
       observability,
     })
