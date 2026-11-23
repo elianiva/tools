@@ -32,5 +32,6 @@ export const numberFormat = defineTransform({
   ],
   placeholder: '1234567.891',
   example: '1234567.891',
+  fields: [{ label: 'Number' }],
   run,
 })
