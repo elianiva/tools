@@ -1,3 +1,4 @@
+import { natoAlphabet } from './text/nato-alphabet.ts'
 import { escapeString } from './developer/escape-string.ts'
 import { readability } from './text/readability.ts'
 import { wordFrequency } from './text/word-frequency.ts'
@@ -90,6 +91,7 @@ export const tools: ReadonlyArray<Tool> = [
   wordFrequency,
   readability,
   escapeString,
+  natoAlphabet,
 ]
 
 export const toolOf = (category: string, id: string): Tool | undefined =>
