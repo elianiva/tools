@@ -25,5 +25,6 @@ export const smartQuotes = defineTransform({
   placeholder: 'Type or paste text',
   acceptsFiles: true,
   example: 'He said "it\'s fine"',
+  present: 'display',
   run,
 })
