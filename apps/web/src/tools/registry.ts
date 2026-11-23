@@ -1,3 +1,4 @@
+import { urlParser } from './developer/url-parser.ts'
 import { jsonToTypescript } from './developer/json-to-typescript.ts'
 import { diceRoller } from './generate/dice-roller.ts'
 import { randomPicker } from './generate/random-picker.ts'
@@ -138,6 +139,7 @@ export const tools: ReadonlyArray<Tool> = [
   randomPicker,
   diceRoller,
   jsonToTypescript,
+  urlParser,
 ]
 
 export const toolOf = (category: string, id: string): Tool | undefined =>
