@@ -1,3 +1,4 @@
+import { numberToWords } from './convert/number-to-words.ts'
 import { cipher } from './text/cipher.ts'
 import { hexText } from './text/hex-text.ts'
 import { binaryText } from './text/binary-text.ts'
@@ -66,6 +67,7 @@ export const tools: ReadonlyArray<Tool> = [
   binaryText,
   hexText,
   cipher,
+  numberToWords,
 ]
 
 export const toolOf = (category: string, id: string): Tool | undefined =>
