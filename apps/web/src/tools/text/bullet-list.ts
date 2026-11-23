@@ -35,5 +35,6 @@ export const bulletList = defineTransform({
   placeholder: 'Type or paste text',
   acceptsFiles: true,
   example: 'a\n b\n\nc',
+  present: 'list',
   run,
 })
