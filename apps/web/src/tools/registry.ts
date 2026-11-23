@@ -1,3 +1,4 @@
+import { chmod } from './developer/chmod.ts'
 import { httpStatus } from './developer/http-status.ts'
 import { urlParser } from './developer/url-parser.ts'
 import { jsonToTypescript } from './developer/json-to-typescript.ts'
@@ -142,6 +143,7 @@ export const tools: ReadonlyArray<Tool> = [
   jsonToTypescript,
   urlParser,
   httpStatus,
+  chmod,
 ]
 
 export const toolOf = (category: string, id: string): Tool | undefined =>
