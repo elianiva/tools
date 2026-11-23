@@ -27,5 +27,6 @@ export const urlParser = defineTransform({
   modes: [{ id: 'run', label: 'Run' }],
   placeholder: 'Type or paste text',
   example: 'https://x.com/a?b=1&c=hello%20w#top',
+  present: 'facts',
   run,
 })
