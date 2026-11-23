@@ -23,5 +23,6 @@ export const weightedAverage = defineTransform({
   placeholder: 'value*weight, such as 90*40 and 80*60',
   example: '90*40 80*60',
   acceptsFiles: true,
+  present: 'facts',
   run,
 })
