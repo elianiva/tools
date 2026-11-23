@@ -1,3 +1,4 @@
+import { primeFactors } from './calculate/prime-factors.ts'
 import { gcdLcm } from './calculate/gcd-lcm.ts'
 import { weekday } from './calculate/weekday.ts'
 import { dateDifference } from './calculate/date-difference.ts'
@@ -120,6 +121,7 @@ export const tools: ReadonlyArray<Tool> = [
   dateDifference,
   weekday,
   gcdLcm,
+  primeFactors,
 ]
 
 export const toolOf = (category: string, id: string): Tool | undefined =>
