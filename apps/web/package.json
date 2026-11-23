@@ -3,9 +3,11 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "build": "vite build",
-    "typecheck": "tsrs --noEmit -p tsconfig.json && effect-tsrs diagnostics --strict --project tsconfig.json",
-    "test": "vitest run"
+    "codegen": "panda codegen --silent",
+    "dev": "pnpm codegen && vite",
+    "build": "pnpm codegen && vite build",
+    "typecheck": "pnpm codegen && tsrs --noEmit -p tsconfig.json && effect-tsrs diagnostics --strict --project tsconfig.json",
+    "test": "pnpm codegen && vitest run"
   },
   "dependencies": {
     "@effect/platform-browser": "4.1.4",
@@ -13,12 +15,17 @@
     "@sentry/browser": "11.11.0",
     "@sentry/cloudflare": "11.11.0",
     "@sentry/effect": "11.11.0",
+    "@tools/adapter": "workspace:*",
     "@tools/rpc": "workspace:*",
+    "@tools/ui": "workspace:*",
     "effect": "4.1.4",
     "foldkit": "0.170.0",
     "vite": "8.3.8"
   },
   "devDependencies": {
-    "@sentry/vite-plugin": "11.11.0"
+    "@foldkit/ui": "0.170.0",
+    "@pandacss/dev": "2.5.0",
+    "@sentry/vite-plugin": "11.11.0",
+    "postcss": "8.5.33"
   }
 }

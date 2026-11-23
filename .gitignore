@@ -9,3 +9,6 @@ coverage/
 !.env.example
 .amp/portals/*
 .DS_Store
+styled-system
+test-results/
+playwright-report/
