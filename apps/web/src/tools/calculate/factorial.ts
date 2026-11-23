@@ -21,5 +21,6 @@ export const factorial = defineTransform({
   modes: [{ id: 'run', label: 'Run' }],
   placeholder: '20',
   example: '20',
+  fields: [{ label: 'Number' }],
   run,
 })
