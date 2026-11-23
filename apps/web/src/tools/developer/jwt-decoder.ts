@@ -11,5 +11,8 @@ export const jwtDecoder = defineTransform({
   },
   modes: [{ id: 'decode', label: 'Decode' }],
   placeholder: 'eyJhbGciOi…',
+  example:
+    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkFkYSIsImlhdCI6MTUxNjIzOTAyMiwiZXhwIjoxNzUwMDAwMDAwfQ.sig',
+  present: 'code',
   run: (text) => decodeJwt(text),
 })
