@@ -23,5 +23,10 @@ export const breakEven = defineTransform({
   modes: [{ id: 'run', label: 'Run' }],
   placeholder: 'fixed costs, price per unit, variable cost per unit: 1000 25 15',
   example: '1000 25 15',
+  fields: [
+    { label: 'Fixed costs' },
+    { label: 'Price per unit' },
+    { label: 'Variable cost per unit' },
+  ],
   run,
 })
