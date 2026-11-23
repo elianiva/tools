@@ -23,5 +23,9 @@ export const dateDifference = defineTransform({
   modes: [{ id: 'run', label: 'Run' }],
   placeholder: '2024-01-01 2024-03-01',
   example: '2024-01-01 2024-03-01',
+  fields: [
+    { label: 'From', kind: 'date' },
+    { label: 'To', kind: 'date' },
+  ],
   run,
 })
