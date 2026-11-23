@@ -1,3 +1,4 @@
+import { leetspeak } from './text/leetspeak.ts'
 import { natoAlphabet } from './text/nato-alphabet.ts'
 import { escapeString } from './developer/escape-string.ts'
 import { readability } from './text/readability.ts'
@@ -92,6 +93,7 @@ export const tools: ReadonlyArray<Tool> = [
   readability,
   escapeString,
   natoAlphabet,
+  leetspeak,
 ]
 
 export const toolOf = (category: string, id: string): Tool | undefined =>
