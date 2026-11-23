@@ -29,5 +29,6 @@ export const triangle = defineTransform({
   modes: [{ id: 'run', label: 'Run' }],
   placeholder: 'three sides: 3 4 5',
   example: '3 4 5',
+  fields: [{ label: 'Side a' }, { label: 'Side b' }, { label: 'Side c' }],
   run,
 })
