@@ -16,6 +16,7 @@ export const jsonFormatter = defineTransform({
     { id: 'minify', label: 'Minify' },
   ],
   placeholder: '{"paste":"json here"}',
+  present: 'code',
   run: formatJson,
   acceptsFiles: true,
 })
