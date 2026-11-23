@@ -1,3 +1,4 @@
+import { combinatorics } from './calculate/combinatorics.ts'
 import { fibonacci } from './calculate/fibonacci.ts'
 import { factorial } from './calculate/factorial.ts'
 import { quadratic } from './calculate/quadratic.ts'
@@ -220,6 +221,7 @@ export const tools: ReadonlyArray<Tool> = [
   quadratic,
   factorial,
   fibonacci,
+  combinatorics,
 ]
 
 export const toolOf = (category: string, id: string): Tool | undefined =>
