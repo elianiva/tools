@@ -33,5 +33,6 @@ export const extractData = defineTransform({
   ],
   placeholder: 'Type or paste text',
   acceptsFiles: true,
+  example: 'mail a.b@x.co and c@y.org',
   run,
 })

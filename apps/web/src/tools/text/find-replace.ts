@@ -34,5 +34,6 @@ export const findReplace = defineTransform({
   ],
   placeholder: 'cat => dog (then the text on the next lines)',
   acceptsFiles: true,
+  example: 'cat => dog\nthe cat sat on a cat',
   run,
 })

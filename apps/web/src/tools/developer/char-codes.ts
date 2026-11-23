@@ -35,5 +35,6 @@ export const charCodes = defineTransform({
     { id: 'from-codes', label: 'Codes to text' },
   ],
   placeholder: 'Type or paste text',
+  example: 'Hi€',
   run,
 })

@@ -28,5 +28,6 @@ export const reverseText = defineTransform({
     { id: 'lines', label: 'Line order' },
   ],
   placeholder: 'Type or paste text',
+  example: 'abc',
   run,
 })

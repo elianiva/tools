@@ -28,5 +28,6 @@ export const cipher = defineTransform({
     { id: 'atbash', label: 'Atbash' },
   ],
   placeholder: 'Type or paste text',
+  example: 'Hello',
   run,
 })

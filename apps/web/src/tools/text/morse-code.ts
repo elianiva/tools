@@ -85,5 +85,6 @@ export const morseCode = defineTransform({
     { id: 'decode', label: 'Morse to text' },
   ],
   placeholder: 'Type or paste text',
+  example: 'SOS',
   run,
 })

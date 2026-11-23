@@ -36,5 +36,6 @@ export const editDistance = defineTransform({
   },
   modes: [{ id: 'run', label: 'Run' }],
   placeholder: 'Two lines: kitten and sitting',
+  example: 'kitten\nsitting',
   run,
 })

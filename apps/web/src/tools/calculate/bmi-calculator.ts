@@ -25,5 +25,6 @@ export const bmiCalculator = defineTransform({
     { id: 'imperial', label: 'Imperial lb and in' },
   ],
   placeholder: '70 175',
+  example: '70 175',
   run,
 })

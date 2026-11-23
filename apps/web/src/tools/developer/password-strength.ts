@@ -31,5 +31,6 @@ export const passwordStrength = defineTransform({
   },
   modes: [{ id: 'run', label: 'Run' }],
   placeholder: 'Type a password to test',
+  example: 'password',
   run,
 })

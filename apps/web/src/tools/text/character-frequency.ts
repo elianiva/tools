@@ -31,5 +31,6 @@ export const characterFrequency = defineTransform({
   ],
   placeholder: 'Type or paste text',
   acceptsFiles: true,
+  example: 'aab',
   run,
 })

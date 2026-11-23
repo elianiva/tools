@@ -25,5 +25,6 @@ export const sortWords = defineTransform({
     { id: 'unique', label: 'Unique' },
   ],
   placeholder: 'Type or paste text',
+  example: 'pear apple fig',
   run,
 })

@@ -35,5 +35,6 @@ export const whitespaceCleaner = defineTransform({
   ],
   placeholder: 'Type or paste text',
   acceptsFiles: true,
+  example: 'a   b \t c',
   run,
 })

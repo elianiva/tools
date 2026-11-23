@@ -26,5 +26,6 @@ export const removeLineBreaks = defineTransform({
   ],
   placeholder: 'Type or paste text',
   acceptsFiles: true,
+  example: 'a\n b',
   run,
 })

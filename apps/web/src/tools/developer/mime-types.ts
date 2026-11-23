@@ -67,5 +67,6 @@ export const mimeTypes = defineTransform({
   },
   modes: [{ id: 'run', label: 'Run' }],
   placeholder: 'png or image/png',
+  example: 'png',
   run,
 })

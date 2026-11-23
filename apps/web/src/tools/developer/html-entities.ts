@@ -57,5 +57,6 @@ export const htmlEntities = defineTransform({
     { id: 'decode', label: 'Unescape' },
   ],
   placeholder: 'Type or paste text',
+  example: '<a href="x">&</a>',
   run,
 })

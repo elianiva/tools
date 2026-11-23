@@ -37,5 +37,6 @@ export const jsonl = defineTransform({
   ],
   placeholder: 'Type or paste text',
   acceptsFiles: true,
+  example: '[{"a":1},{"b":[2]}]',
   run,
 })

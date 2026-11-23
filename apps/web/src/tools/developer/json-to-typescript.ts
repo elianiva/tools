@@ -43,5 +43,6 @@ export const jsonToTypescript = defineTransform({
   modes: [{ id: 'run', label: 'Run' }],
   placeholder: 'Type or paste text',
   acceptsFiles: true,
+  example: '{"a":1,"b":[1,2],"c":{"d":true}}',
   run,
 })

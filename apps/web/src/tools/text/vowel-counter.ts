@@ -23,5 +23,6 @@ export const vowelCounter = defineTransform({
   modes: [{ id: 'run', label: 'Run' }],
   placeholder: 'Type or paste text',
   acceptsFiles: true,
+  example: 'Hello World',
   run,
 })

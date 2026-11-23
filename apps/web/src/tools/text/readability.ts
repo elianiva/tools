@@ -47,5 +47,6 @@ export const readability = defineTransform({
   modes: [{ id: 'run', label: 'Run' }],
   placeholder: 'Type or paste text',
   acceptsFiles: true,
+  example: 'The quick brown fox jumps over the lazy dog.',
   run,
 })

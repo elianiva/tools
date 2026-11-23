@@ -27,5 +27,6 @@ export const caesarCipher = defineTransform({
     { id: '25', label: 'Shift 25' },
   ],
   placeholder: 'Type or paste text',
+  example: 'Zz',
   run,
 })

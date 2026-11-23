@@ -24,5 +24,6 @@ export const strikethrough = defineTransform({
     { id: 'slash', label: 'Slash' },
   ],
   placeholder: 'Type or paste text',
+  example: 'ab',
   run,
 })

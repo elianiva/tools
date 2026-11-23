@@ -43,5 +43,6 @@ export const excelColumn = defineTransform({
   ],
   placeholder: 'Type or paste text',
   acceptsFiles: true,
+  example: 'A',
   run,
 })

@@ -83,5 +83,6 @@ export const numberToWords = defineTransform({
   },
   modes: [{ id: 'run', label: 'Run' }],
   placeholder: 'Type or paste text',
+  example: '0',
   run,
 })

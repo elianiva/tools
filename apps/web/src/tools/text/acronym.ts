@@ -22,5 +22,6 @@ export const acronym = defineTransform({
     { id: 'skip', label: 'Skip small words' },
   ],
   placeholder: 'Type or paste text',
+  example: 'portable network graphics',
   run,
 })

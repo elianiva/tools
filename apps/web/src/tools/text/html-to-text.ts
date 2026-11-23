@@ -25,5 +25,6 @@ export const htmlToText = defineTransform({
   modes: [{ id: 'run', label: 'Run' }],
   placeholder: 'Type or paste text',
   acceptsFiles: true,
+  example: '<p>Hi <b>there</b></p><script>x()</script>',
   run,
 })

@@ -37,5 +37,6 @@ export const textWrap = defineTransform({
   ],
   placeholder: 'Type or paste text',
   acceptsFiles: true,
+  example: 'the quick brown fox jumps',
   run,
 })

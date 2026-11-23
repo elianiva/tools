@@ -22,5 +22,6 @@ export const unicodeInspector = defineTransform({
   modes: [{ id: 'run', label: 'Run' }],
   placeholder: 'Type or paste text',
   acceptsFiles: true,
+  example: 'A€',
   run,
 })

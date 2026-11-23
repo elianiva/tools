@@ -20,5 +20,6 @@ export const palindrome = defineTransform({
   },
   modes: [{ id: 'run', label: 'Run' }],
   placeholder: 'Type or paste text',
+  example: 'A man, a plan, a canal: Panama',
   run,
 })

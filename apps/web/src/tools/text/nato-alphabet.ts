@@ -56,5 +56,6 @@ export const natoAlphabet = defineTransform({
   },
   modes: [{ id: 'run', label: 'Run' }],
   placeholder: 'Type or paste text',
+  example: 'Hi 5',
   run,
 })

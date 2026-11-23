@@ -29,5 +29,6 @@ export const ordinalNumbers = defineTransform({
   modes: [{ id: 'run', label: 'Run' }],
   placeholder: 'Type or paste text',
   acceptsFiles: true,
+  example: '1 2 3 4 11 12 13 21 22 101 111 112',
   run,
 })

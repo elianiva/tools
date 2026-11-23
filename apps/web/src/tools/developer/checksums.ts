@@ -32,5 +32,6 @@ export const checksums = defineTransform({
     { id: 'adler32', label: 'Adler-32' },
   ],
   placeholder: 'Type or paste text',
+  example: 'hello',
   run,
 })

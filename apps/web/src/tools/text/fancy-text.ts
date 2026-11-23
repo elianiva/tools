@@ -41,5 +41,6 @@ export const fancyText = defineTransform({
     { id: 'fullwidth', label: 'Full-width' },
   ],
   placeholder: 'Type or paste text',
+  example: 'Ab1',
   run,
 })

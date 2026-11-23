@@ -31,5 +31,6 @@ export const hexText = defineTransform({
     { id: 'from-hex', label: 'Hex to text' },
   ],
   placeholder: 'Type or paste text',
+  example: 'Hi',
   run,
 })

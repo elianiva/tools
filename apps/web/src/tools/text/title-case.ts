@@ -50,5 +50,6 @@ export const titleCase = defineTransform({
   modes: [{ id: 'run', label: 'Run' }],
   placeholder: 'Type or paste text',
   acceptsFiles: true,
+  example: 'the lord of the rings',
   run,
 })

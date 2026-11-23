@@ -41,5 +41,6 @@ export const base32 = defineTransform({
     { id: 'decode', label: 'Decode' },
   ],
   placeholder: 'Type or paste text',
+  example: 'foobar',
   run,
 })

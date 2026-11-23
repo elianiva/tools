@@ -31,5 +31,6 @@ export const binaryText = defineTransform({
     { id: 'from-binary', label: 'Binary to text' },
   ],
   placeholder: 'Type or paste text',
+  example: 'Hi',
   run,
 })

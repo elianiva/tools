@@ -27,5 +27,6 @@ export const escapeString = defineTransform({
     { id: 'regex', label: 'Regex escape' },
   ],
   placeholder: 'Type or paste text',
+  example: 'a"b\nc',
   run,
 })

@@ -20,5 +20,6 @@ export const leetspeak = defineTransform({
     { id: 'heavy', label: 'Heavy' },
   ],
   placeholder: 'Type or paste text',
+  example: 'leet',
   run,
 })

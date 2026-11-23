@@ -49,5 +49,6 @@ export const portNumbers = defineTransform({
   },
   modes: [{ id: 'run', label: 'Run' }],
   placeholder: '443 or redis',
+  example: '443',
   run,
 })
