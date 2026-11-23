@@ -27,5 +27,6 @@ export const pigLatin = defineTransform({
   modes: [{ id: 'run', label: 'Run' }],
   placeholder: 'Type or paste text',
   example: 'hello world',
+  present: 'display',
   run,
 })
