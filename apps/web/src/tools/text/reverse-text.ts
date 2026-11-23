@@ -29,5 +29,6 @@ export const reverseText = defineTransform({
   ],
   placeholder: 'Type or paste text',
   example: 'abc',
+  present: 'display',
   run,
 })
