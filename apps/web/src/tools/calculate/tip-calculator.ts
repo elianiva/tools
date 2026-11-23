@@ -24,5 +24,6 @@ export const tipCalculator = defineTransform({
   modes: [{ id: 'run', label: 'Run' }],
   placeholder: 'bill, tip %, people: 100 20 4',
   example: '100 20 4',
+  fields: [{ label: 'Bill' }, { label: 'Tip', suffix: '%' }, { label: 'People' }],
   run,
 })
