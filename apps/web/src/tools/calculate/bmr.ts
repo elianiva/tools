@@ -22,5 +22,10 @@ export const bmr = defineTransform({
   ],
   placeholder: 'weight kg, height cm, age: 70 175 30',
   example: '70 175 30',
+  fields: [
+    { label: 'Weight', suffix: 'kg' },
+    { label: 'Height', suffix: 'cm' },
+    { label: 'Age', suffix: 'yrs' },
+  ],
   run,
 })
