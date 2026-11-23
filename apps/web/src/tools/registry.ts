@@ -1,3 +1,4 @@
+import { dateDifference } from './calculate/date-difference.ts'
 import { compoundInterest } from './calculate/compound-interest.ts'
 import { loanCalculator } from './calculate/loan-calculator.ts'
 import { discountCalculator } from './calculate/discount-calculator.ts'
@@ -114,6 +115,7 @@ export const tools: ReadonlyArray<Tool> = [
   discountCalculator,
   loanCalculator,
   compoundInterest,
+  dateDifference,
 ]
 
 export const toolOf = (category: string, id: string): Tool | undefined =>
