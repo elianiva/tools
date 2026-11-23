@@ -1,3 +1,4 @@
+import { escapeString } from './developer/escape-string.ts'
 import { readability } from './text/readability.ts'
 import { wordFrequency } from './text/word-frequency.ts'
 import { characterFrequency } from './text/character-frequency.ts'
@@ -88,6 +89,7 @@ export const tools: ReadonlyArray<Tool> = [
   characterFrequency,
   wordFrequency,
   readability,
+  escapeString,
 ]
 
 export const toolOf = (category: string, id: string): Tool | undefined =>
