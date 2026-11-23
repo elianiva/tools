@@ -1,3 +1,4 @@
+import { uuidGenerator } from './generate/uuid-generator.ts'
 import { fractionDecimal } from './convert/fraction-decimal.ts'
 import { pxRem } from './convert/px-rem.ts'
 import { aspectRatio } from './calculate/aspect-ratio.ts'
@@ -130,6 +131,7 @@ export const tools: ReadonlyArray<Tool> = [
   aspectRatio,
   pxRem,
   fractionDecimal,
+  uuidGenerator,
 ]
 
 export const toolOf = (category: string, id: string): Tool | undefined =>
