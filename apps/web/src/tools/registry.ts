@@ -1,3 +1,4 @@
+import { emojiRemover } from './text/emoji-remover.ts'
 import { duplicateWords } from './text/duplicate-words.ts'
 import { editDistance } from './text/edit-distance.ts'
 import { findReplace } from './text/find-replace.ts'
@@ -280,6 +281,7 @@ export const tools: ReadonlyArray<Tool> = [
   findReplace,
   editDistance,
   duplicateWords,
+  emojiRemover,
 ]
 
 export const toolOf = (category: string, id: string): Tool | undefined =>
