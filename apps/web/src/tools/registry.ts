@@ -1,3 +1,4 @@
+import { lineTools } from './text/line-tools.ts'
 import { caseConverter } from './text/case-converter.ts'
 import { urlEncoder } from './developer/url-encoder.ts'
 import { base64 } from './developer/base64.ts'
@@ -14,6 +15,7 @@ export const tools: ReadonlyArray<Tool> = [
   base64,
   urlEncoder,
   caseConverter,
+  lineTools,
 ]
 
 export const toolOf = (category: string, id: string): Tool | undefined =>
