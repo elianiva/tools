@@ -1,3 +1,4 @@
+import { portNumbers } from './developer/port-numbers.ts'
 import { mimeTypes } from './developer/mime-types.ts'
 import { bitwise } from './developer/bitwise.ts'
 import { scientificNotation } from './convert/scientific-notation.ts'
@@ -270,6 +271,7 @@ export const tools: ReadonlyArray<Tool> = [
   scientificNotation,
   bitwise,
   mimeTypes,
+  portNumbers,
 ]
 
 export const toolOf = (category: string, id: string): Tool | undefined =>
