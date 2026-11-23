@@ -1,3 +1,4 @@
+import { cipher } from './text/cipher.ts'
 import { hexText } from './text/hex-text.ts'
 import { binaryText } from './text/binary-text.ts'
 import { morseCode } from './text/morse-code.ts'
@@ -64,6 +65,7 @@ export const tools: ReadonlyArray<Tool> = [
   morseCode,
   binaryText,
   hexText,
+  cipher,
 ]
 
 export const toolOf = (category: string, id: string): Tool | undefined =>
