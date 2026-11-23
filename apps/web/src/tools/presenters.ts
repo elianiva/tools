@@ -15,6 +15,8 @@ export type Present =
   | 'facts'
   | 'list'
   | 'display'
+  | 'code'
+  | 'chmod'
 
 const labelCls = css({
   fontFamily: 'var(--mono)',
@@ -312,6 +314,105 @@ const list = <M>(h: HtmlBuilder<M>, value: string): Html =>
 const display = <M>(h: HtmlBuilder<M>, value: string): Html =>
   h.div([h.Class(wrapCls)], [h.div([h.Class(displayCls)], [value]), copy(h, value)])
 
+const codeCls = css({
+  margin: 0,
+  padding: '1rem 1rem 1rem 0',
+  borderRadius: 'calc(var(--radius) * 1.4)',
+  background: 'oklch(0.2 0.01 260)',
+  color: 'oklch(0.92 0.01 260)',
+  fontFamily: 'var(--mono)',
+  fontSize: '0.82rem',
+  lineHeight: 1.6,
+  maxHeight: '30rem',
+  overflow: 'auto',
+  counterReset: 'ln',
+  '& > span': {
+    display: 'block',
+    paddingLeft: '3.4rem',
+    position: 'relative',
+    whiteSpace: 'pre-wrap',
+    wordBreak: 'break-all',
+    minHeight: '1.3em',
+    counterIncrement: 'ln',
+    '&::before': {
+      content: 'counter(ln)',
+      position: 'absolute',
+      left: 0,
+      width: '2.4rem',
+      textAlign: 'right',
+      color: 'oklch(0.55 0.01 260)',
+    },
+  },
+})
+const chmodCls = css({
+  display: 'grid',
+  gridTemplateColumns: 'auto repeat(3, 1fr)',
+  gap: '0.4rem',
+  alignItems: 'center',
+  padding: '1rem',
+  borderRadius: 'calc(var(--radius) * 1.4)',
+  background: 'var(--card)',
+  boxShadow: 'var(--elev-card)',
+  '& > span': {
+    fontFamily: 'var(--mono)',
+    fontSize: '0.7rem',
+    color: 'var(--muted-foreground)',
+    textTransform: 'uppercase',
+    letterSpacing: '0.1em',
+  },
+  '& > b': {
+    textAlign: 'center',
+    padding: '0.7rem 0',
+    borderRadius: '8px',
+    background: 'var(--muted)',
+    color: 'var(--muted-foreground)',
+    fontFamily: 'var(--mono)',
+    fontWeight: 500,
+    '&[data-on]': { background: 'var(--tone)', color: 'white' },
+  },
+})
+
+const code = <M>(h: HtmlBuilder<M>, value: string): Html =>
+  h.div(
+    [h.Class(wrapCls)],
+    [
+      h.pre(
+        [h.Class(codeCls), h.AriaLabel('Output'), h.Tabindex(0)],
+        value.split('\n').map((line) => h.span([], [line])),
+      ),
+      copy(h, value),
+    ],
+  )
+
+const chmod = <M>(h: HtmlBuilder<M>, value: string): Html => {
+  const text = value.trim()
+  const bits = /^[rwx-]{9}$/u.test(text)
+    ? [...text].map((char) => char !== '-')
+    : /^[0-7]{3,4}$/u.test(text)
+      ? [...text.slice(-3)].flatMap((digit) => [4, 2, 1].map((bit) => (Number(digit) & bit) !== 0))
+      : null
+  if (bits === null) return display(h, value)
+  return h.div(
+    [h.Class(wrapCls)],
+    [
+      h.div(
+        [h.Class(chmodCls)],
+        [
+          h.span([], ['']),
+          ...['Read', 'Write', 'Execute'].map((name) => h.span([], [name])),
+          ...['Owner', 'Group', 'Others'].flatMap((who, row) => [
+            h.span([], [who]),
+            ...['r', 'w', 'x'].map((letter, col) =>
+              h.b(bits[row * 3 + col] === true ? [h.Attribute('data-on', '')] : [], [letter]),
+            ),
+          ]),
+        ],
+      ),
+      display(h, value),
+    ],
+  )
+}
+
 /** The answer of a tool, in its own presenter if it has one, else as facts or plain text. */
 export const presentOutput = <M>(
   h: HtmlBuilder<M>,
@@ -328,6 +429,8 @@ export const presentOutput = <M>(
     if (present === 'verdict') return verdict(h, value)
     if (present === 'list') return list(h, value)
     if (present === 'display') return display(h, value)
+    if (present === 'code') return code(h, value)
+    if (present === 'chmod') return chmod(h, value)
     if (present === 'facts') return factsView(h, value)
     if (
       category !== 'text' &&
