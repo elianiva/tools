@@ -43,5 +43,6 @@ export const bitwise = defineTransform({
   modes: [{ id: 'run', label: 'Run' }],
   placeholder: '12 & 10',
   example: '12 & 10',
+  present: 'facts',
   run,
 })
