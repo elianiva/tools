@@ -5,6 +5,7 @@ import { Command, File, Submodel } from 'foldkit'
 import type { Html, HtmlBuilder } from 'foldkit/html'
 import { defineMessageUnion } from 'foldkit/message'
 import { css } from '../../styled-system/css'
+import { factsView, parseFacts } from './facts.ts'
 import { columns, field, hint, output, panel, segmented, stack, textArea } from './kit.ts'
 import { defineTool, type ToolMeta } from './tool.ts'
 
@@ -71,6 +72,8 @@ const attempt = (spec: TransformSpec, model: Model): Readonly<{ value: string; e
   }
 }
 
+const FACT_START = /^[^:\n]{1,48}: /u
+
 const stackedPanels = <M>(h: HtmlBuilder<M>, children: ReadonlyArray<Html>): Html =>
   h.div([h.Class(stack)], children)
 
@@ -122,7 +125,12 @@ export const defineTransform = (spec: TransformSpec) => {
                 field(
                   h,
                   { label: 'Output', for: `${id}-output` },
-                  output(h, { label: 'Output', value: result.value }),
+                  result.value !== '' &&
+                    spec.meta.category !== 'text' &&
+                    parseFacts(result.value).facts.length > 0 &&
+                    FACT_START.test(result.value)
+                    ? factsView(h, result.value)
+                    : output(h, { label: 'Output', value: result.value }),
                 ),
                 result.error === ''
                   ? null

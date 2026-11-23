@@ -214,6 +214,23 @@ const hiddenCls = css({
   whiteSpace: 'nowrap',
 })
 
+const tones: Readonly<Record<string, string>> = {
+  images: 'var(--info)',
+  text: 'var(--foreground)',
+  developer: 'oklch(0.55 0.15 300)',
+  convert: 'var(--warn)',
+  calculate: 'var(--ok)',
+  generate: 'oklch(0.58 0.17 350)',
+}
+const toneCls = (category: string): string => {
+  const tone = tones[category] ?? 'var(--foreground)'
+  return css({
+    '--tone': tone,
+    '--tone-soft': `color-mix(in oklab, ${tone} 12%, transparent)`,
+    '--tone-ink': `color-mix(in oklab, ${tone} 75%, var(--foreground))`,
+  })
+}
+
 const uiOf = (model: Model): PartsConfig<Message> => ({
   toMessage: (message: UiMessage) => AppMessage.GotUiMessage({ message }),
   anchor: model.anchorId,
@@ -351,7 +368,7 @@ const notFound = (h: H): Html =>
 const toolPage = (h: H, model: Model, tool: Tool): Html => {
   const starred = model.favorites.includes(tool.meta.id)
   return h.div(
-    [h.Class(sectionsCls)],
+    [h.Class(`${sectionsCls} ${toneCls(tool.meta.category)}`)],
     [
       h.div(
         [],
