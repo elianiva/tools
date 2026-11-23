@@ -1,3 +1,4 @@
+import { jsonl } from './developer/jsonl.ts'
 import { titleCase } from './text/title-case.ts'
 import { strikethrough } from './text/strikethrough.ts'
 import { palindrome } from './text/palindrome.ts'
@@ -180,6 +181,7 @@ export const tools: ReadonlyArray<Tool> = [
   palindrome,
   strikethrough,
   titleCase,
+  jsonl,
 ]
 
 export const toolOf = (category: string, id: string): Tool | undefined =>
