@@ -46,5 +46,6 @@ export const speed = defineTransform({
   modes: [{ id: 'run', label: 'Run' }],
   placeholder: '100 kmh',
   example: '100 kmh',
+  fields: [{ label: 'Value' }, { label: 'Unit', kind: 'text' }],
   run,
 })
