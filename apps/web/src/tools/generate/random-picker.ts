@@ -33,5 +33,7 @@ export const randomPicker = defineTransform({
     { id: 'shuffle', label: 'Shuffle' },
   ],
   placeholder: 'One item per line',
+  example: 'pizza\nramen\ntacos\nsushi',
+  present: 'display',
   run,
 })
