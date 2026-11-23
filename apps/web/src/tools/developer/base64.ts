@@ -15,5 +15,6 @@ export const base64 = defineTransform({
     { id: 'encode-url', label: 'Encode URL-safe' },
   ],
   placeholder: 'Text to encode, or Base64 to decode',
+  present: 'code',
   run: runBase64,
 })
