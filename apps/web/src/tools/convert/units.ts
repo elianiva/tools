@@ -22,5 +22,6 @@ export const units = defineTransform({
   modes: [{ id: 'all', label: 'All' }],
   placeholder: '5 km',
   example: '5 km',
+  fields: [{ label: 'Value' }, { label: 'Unit', kind: 'text' }],
   run: (text) => convertUnits(text),
 })
