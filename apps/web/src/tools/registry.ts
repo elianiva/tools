@@ -1,3 +1,4 @@
+import { excelColumn } from './convert/excel-column.ts'
 import { terbilang } from './convert/terbilang.ts'
 import { clockFormat } from './convert/clock-format.ts'
 import { cmyk } from './convert/cmyk.ts'
@@ -262,6 +263,7 @@ export const tools: ReadonlyArray<Tool> = [
   cmyk,
   clockFormat,
   terbilang,
+  excelColumn,
 ]
 
 export const toolOf = (category: string, id: string): Tool | undefined =>
