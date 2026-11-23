@@ -1,3 +1,4 @@
+import { bulletList } from './text/bullet-list.ts'
 import { indent } from './text/indent.ts'
 import { textWrap } from './text/text-wrap.ts'
 import { numberStats } from './calculate/number-stats.ts'
@@ -170,6 +171,7 @@ export const tools: ReadonlyArray<Tool> = [
   numberStats,
   textWrap,
   indent,
+  bulletList,
 ]
 
 export const toolOf = (category: string, id: string): Tool | undefined =>
