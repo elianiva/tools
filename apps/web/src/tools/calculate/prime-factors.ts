@@ -30,5 +30,6 @@ export const primeFactors = defineTransform({
   modes: [{ id: 'run', label: 'Run' }],
   placeholder: '84',
   example: '84',
+  fields: [{ label: 'Number' }],
   run,
 })
