@@ -1,3 +1,4 @@
+import { textWrap } from './text/text-wrap.ts'
 import { numberStats } from './calculate/number-stats.ts'
 import { numberFormat } from './convert/number-format.ts'
 import { passwordStrength } from './developer/password-strength.ts'
@@ -166,6 +167,7 @@ export const tools: ReadonlyArray<Tool> = [
   passwordStrength,
   numberFormat,
   numberStats,
+  textWrap,
 ]
 
 export const toolOf = (category: string, id: string): Tool | undefined =>
