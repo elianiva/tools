@@ -1,3 +1,4 @@
+import { checksums } from './developer/checksums.ts'
 import { charCodes } from './developer/char-codes.ts'
 import { semverCompare } from './developer/semver-compare.ts'
 import { base32 } from './developer/base32.ts'
@@ -190,6 +191,7 @@ export const tools: ReadonlyArray<Tool> = [
   base32,
   semverCompare,
   charCodes,
+  checksums,
 ]
 
 export const toolOf = (category: string, id: string): Tool | undefined =>
