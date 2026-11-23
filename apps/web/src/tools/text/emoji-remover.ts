@@ -22,5 +22,6 @@ export const emojiRemover = defineTransform({
   placeholder: 'Type or paste text',
   acceptsFiles: true,
   example: 'hi 😀 there',
+  present: 'display',
   run,
 })
