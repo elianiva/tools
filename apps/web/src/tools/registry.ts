@@ -1,3 +1,4 @@
+import { ordinalNumbers } from './convert/ordinal-numbers.ts'
 import { speed } from './convert/speed.ts'
 import { angle } from './convert/angle.ts'
 import { checksums } from './developer/checksums.ts'
@@ -196,6 +197,7 @@ export const tools: ReadonlyArray<Tool> = [
   checksums,
   angle,
   speed,
+  ordinalNumbers,
 ]
 
 export const toolOf = (category: string, id: string): Tool | undefined =>
