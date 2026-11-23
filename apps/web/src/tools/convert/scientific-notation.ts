@@ -33,5 +33,6 @@ export const scientificNotation = defineTransform({
   ],
   placeholder: '12345',
   example: '12345',
+  fields: [{ label: 'Number', kind: 'text' }],
   run,
 })
