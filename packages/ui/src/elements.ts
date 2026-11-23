@@ -213,7 +213,7 @@ export const inputArea = <M>(
 export const inputGroup = <M>(h: HtmlBuilder<M>, children: Children): Html =>
   h.div([...data(h, 'input-group'), h.Role('group')], children)
 
-const copyButton = <M>(h: HtmlBuilder<M>, copied: boolean, onCopy: Attribute<M>): Html =>
+export const copyButton = <M>(h: HtmlBuilder<M>, copied: boolean, onCopy: Attribute<M>): Html =>
   h.button(
     [
       ...data(h, 'copy-button', { copied }),
