@@ -17,5 +17,6 @@ export const markdownToHtml = defineTransform({
   placeholder: 'Type or paste text',
   acceptsFiles: true,
   example: '# Hi\n\n*there* **you**',
+  present: 'code',
   run,
 })
