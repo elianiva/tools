@@ -36,5 +36,6 @@ export const subnet = defineTransform({
   modes: [{ id: 'run', label: 'Run' }],
   placeholder: '192.168.1.10/24',
   example: '192.168.1.10/24',
+  fields: [{ label: 'IP address with prefix', kind: 'text' }],
   run,
 })
