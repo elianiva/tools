@@ -10,7 +10,7 @@ describe('navigation', () => {
     const model = start('/text/word-counter')
     expect(model.route).toEqual(AppRoute.Tool({ category: 'text', id: 'word-counter' }))
     expect(model.recents).toEqual(['word-counter'])
-    expect(model.tools['word-counter']).toEqual({ text: '' })
+    expect(model.tools['word-counter']).toHaveProperty('text')
   })
 
   it('keeps a tool state while the user visits another page', () => {

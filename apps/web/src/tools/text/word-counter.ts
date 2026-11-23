@@ -113,7 +113,9 @@ export const wordCounter = defineTool({
     keywords: ['count', 'characters', 'reading time', 'keyword density', 'length'],
     accepts: ['text/plain', '.txt', '.md'],
   },
-  init: () => ({ text: '' }),
+  init: () => ({
+    text: 'Good tools stay out of the way. Paste your draft here and see how long it is, how long it takes to read, and which words you lean on most.\n\nShort sentences help. So do short paragraphs.',
+  }),
   update,
   view,
   receive: (files) => Message.DroppedFiles({ files }),
