@@ -1,3 +1,4 @@
+import { readability } from './text/readability.ts'
 import { wordFrequency } from './text/word-frequency.ts'
 import { characterFrequency } from './text/character-frequency.ts'
 import { loremIpsum } from './generate/lorem-ipsum.ts'
@@ -86,6 +87,7 @@ export const tools: ReadonlyArray<Tool> = [
   loremIpsum,
   characterFrequency,
   wordFrequency,
+  readability,
 ]
 
 export const toolOf = (category: string, id: string): Tool | undefined =>
