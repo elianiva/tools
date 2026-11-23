@@ -19,6 +19,7 @@ export const lineTools = defineTransform({
     { id: 'number', label: 'Number' },
   ],
   placeholder: 'One item per line',
+  present: 'code',
   run: runLines,
   acceptsFiles: true,
 })
