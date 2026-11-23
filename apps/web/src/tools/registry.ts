@@ -1,3 +1,4 @@
+import { pxRem } from './convert/px-rem.ts'
 import { aspectRatio } from './calculate/aspect-ratio.ts'
 import { baseConverter } from './convert/base-converter.ts'
 import { primeFactors } from './calculate/prime-factors.ts'
@@ -126,6 +127,7 @@ export const tools: ReadonlyArray<Tool> = [
   primeFactors,
   baseConverter,
   aspectRatio,
+  pxRem,
 ]
 
 export const toolOf = (category: string, id: string): Tool | undefined =>
