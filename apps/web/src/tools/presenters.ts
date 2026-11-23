@@ -6,7 +6,15 @@ import { css } from '../../styled-system/css'
 import { factsView, parseFacts } from './facts.ts'
 import { output } from './kit.ts'
 
-export type Present = 'swatch' | 'tokens' | 'pairs' | 'bars'
+export type Present =
+  | 'swatch'
+  | 'tokens'
+  | 'pairs'
+  | 'bars'
+  | 'verdict'
+  | 'facts'
+  | 'list'
+  | 'display'
 
 const labelCls = css({
   fontFamily: 'var(--mono)',
@@ -225,6 +233,85 @@ const bars = <M>(h: HtmlBuilder<M>, value: string): Html => {
   )
 }
 
+const verdictCls = css({
+  display: 'flex',
+  alignItems: 'center',
+  gap: '1rem',
+  padding: '1.4rem',
+  borderRadius: 'calc(var(--radius) * 1.4)',
+  background: 'var(--card)',
+  boxShadow: 'var(--elev-card)',
+  borderLeft: '6px solid var(--danger)',
+  '&[data-yes]': { borderLeftColor: 'oklch(0.62 0.17 150)' },
+  '& i': { fontStyle: 'normal', fontSize: '2.4rem', lineHeight: 1 },
+  '& b': { fontSize: '1.3rem' },
+})
+const listCls = css({
+  display: 'flex',
+  flexDirection: 'column',
+  gap: '0.4rem',
+  padding: '1rem',
+  borderRadius: 'calc(var(--radius) * 1.4)',
+  background: 'var(--card)',
+  boxShadow: 'var(--elev-card)',
+  maxHeight: '28rem',
+  overflow: 'auto',
+  counterReset: 'row',
+  '& > div': {
+    display: 'flex',
+    gap: '0.75rem',
+    padding: '0.45rem 0.6rem',
+    borderRadius: '8px',
+    background: 'var(--muted)',
+    counterIncrement: 'row',
+    '&::before': {
+      content: 'counter(row)',
+      fontFamily: 'var(--mono)',
+      fontSize: '0.7rem',
+      color: 'var(--muted-foreground)',
+      minWidth: '1.6rem',
+    },
+  },
+})
+const displayCls = css({
+  padding: '1.6rem',
+  borderRadius: 'calc(var(--radius) * 1.4)',
+  background: 'var(--card)',
+  boxShadow: 'var(--elev-card)',
+  fontSize: 'clamp(1.4rem, 3vw, 2.2rem)',
+  lineHeight: 1.35,
+  wordBreak: 'break-word',
+  whiteSpace: 'pre-wrap',
+})
+
+const verdict = <M>(h: HtmlBuilder<M>, value: string): Html => {
+  const yes = /^yes/iu.test(value)
+  return h.div(
+    [h.Class(wrapCls)],
+    [
+      h.div(
+        [h.Class(verdictCls), ...(yes ? [h.Attribute('data-yes', '')] : [])],
+        [h.i([], [yes ? '✓' : '✗']), h.b([], [value])],
+      ),
+    ],
+  )
+}
+
+const list = <M>(h: HtmlBuilder<M>, value: string): Html =>
+  h.div(
+    [h.Class(wrapCls)],
+    [
+      h.div(
+        [h.Class(listCls)],
+        lines(value).map((line) => h.div([], [line])),
+      ),
+      copy(h, value),
+    ],
+  )
+
+const display = <M>(h: HtmlBuilder<M>, value: string): Html =>
+  h.div([h.Class(wrapCls)], [h.div([h.Class(displayCls)], [value]), copy(h, value)])
+
 /** The answer of a tool, in its own presenter if it has one, else as facts or plain text. */
 export const presentOutput = <M>(
   h: HtmlBuilder<M>,
@@ -238,6 +325,10 @@ export const presentOutput = <M>(
     if (present === 'tokens') return tokens(h, value)
     if (present === 'pairs') return pairs(h, value)
     if (present === 'bars') return bars(h, value)
+    if (present === 'verdict') return verdict(h, value)
+    if (present === 'list') return list(h, value)
+    if (present === 'display') return display(h, value)
+    if (present === 'facts') return factsView(h, value)
     if (
       category !== 'text' &&
       /^[^:\n]{1,48}: /u.test(value) &&
