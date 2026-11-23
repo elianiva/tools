@@ -2,6 +2,7 @@
 // the modes and in what `run` does, so this builds the Model, Messages, update and view.
 import { Effect, Schema } from 'effect'
 import { Command, File, Submodel } from 'foldkit'
+import type { Html, HtmlBuilder } from 'foldkit/html'
 import { defineMessageUnion } from 'foldkit/message'
 import { css } from '../../styled-system/css'
 import { columns, field, hint, output, panel, segmented, stack, textArea } from './kit.ts'
@@ -20,6 +21,8 @@ type TransformSpec = Readonly<{
   example?: string
   /** When set, a dropped text file is read into the input. */
   acceptsFiles?: boolean
+  /** Put the output under the input at full width, for long output lines. */
+  stacked?: boolean
 }>
 
 const Model = Schema.Struct({ input: Schema.String, mode: Schema.String })
@@ -68,6 +71,9 @@ const attempt = (spec: TransformSpec, model: Model): Readonly<{ value: string; e
   }
 }
 
+const stackedPanels = <M>(h: HtmlBuilder<M>, children: ReadonlyArray<Html>): Html =>
+  h.div([h.Class(stack)], children)
+
 const errorCls = css({
   margin: 0,
   color: 'var(--danger)',
@@ -98,7 +104,7 @@ export const defineTransform = (spec: TransformSpec) => {
         h.div(
           [h.Class(stack)],
           [
-            columns(h, [
+            (spec.stacked === true ? stackedPanels : columns)(h, [
               panel(h, null, [
                 field(
                   h,

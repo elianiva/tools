@@ -172,10 +172,12 @@ export const run = (text: string, mode: string): string => {
   const basis = [
     '',
     'Basis',
-    'PMK 168/2023 (TER tables, December true-up, rounding of PKP in Art. 8(4)): https://peraturan.bpk.go.id/Download/346093/2023pmkeuangan168.pdf',
+    'PMK 168/2023 (TER tables, December true-up, rounding of PKP in Art. 8(4))',
+    'https://peraturan.bpk.go.id/Download/346093/2023pmkeuangan168.pdf',
     'PP 58/2023: withholding rates for PPh 21',
     'UU PPh Art. 17(1)a as amended by UU HPP (UU 7/2021): progressive brackets',
-    'PMK 101/PMK.010/2016: PTKP. DJP guide with worked examples: https://www.pajak.go.id/sites/default/files/2024-01/Buku%20Cermat%20Pemotongan%20PPh%20Pasal%2021.pdf',
+    'PMK 101/PMK.010/2016: PTKP. DJP guide with worked examples',
+    'https://static.pajak.go.id/download/kalkulator/Buku_PPh2126_Release_20240108.pdf',
     'PER-11/PJ/2025 Art. 129(3): amounts in whole rupiah',
   ]
 
@@ -250,5 +252,6 @@ export const pph21 = defineTransform({
   ],
   placeholder: 'monthly gross, PTKP status, optional monthly pension contribution: 15.000.000 TK/0',
   example: '15.000.000 TK/0',
+  stacked: true,
   run,
 })
