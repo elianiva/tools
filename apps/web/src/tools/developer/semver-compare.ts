@@ -55,5 +55,9 @@ export const semverCompare = defineTransform({
   modes: [{ id: 'run', label: 'Run' }],
   placeholder: '1.2.3 1.10.0',
   example: '1.2.3 1.10.0',
+  fields: [
+    { label: 'Version A', kind: 'text' },
+    { label: 'Version B', kind: 'text' },
+  ],
   run,
 })
