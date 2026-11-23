@@ -1,7 +1,9 @@
 import { Effect, Schema } from 'effect'
 import { Command, Submodel } from 'foldkit'
 import { defineMessageUnion } from 'foldkit/message'
-import { button, checkbox, columns, output, panel, range, row, stack, stats } from '../kit.ts'
+import { Elements } from '@tools/ui'
+import { css } from '../../../styled-system/css'
+import { button, checkbox, columns, meter, panel, range, row, stack, stats } from '../kit.ts'
 import { defineTool } from '../tool.ts'
 import { entropyBits, generatePassword, secureInt, SET_IDS, type SetId } from './password.logic.ts'
 
@@ -60,13 +62,51 @@ const update = (model: Model, message: Message) =>
     Generated: ({ password }) => ({ model: { ...model, password } }),
   })
 
+const kindOf = (char: string): string =>
+  /\d/u.test(char) ? 'digit' : /[a-z]/iu.test(char) ? 'letter' : 'symbol'
+
+const strengthLabel = (bits: number): string =>
+  bits < 40 ? 'Weak' : bits < 64 ? 'Fair' : bits < 100 ? 'Strong' : 'Excellent'
+
+const passwordCls = css({
+  position: 'relative',
+  padding: '1.4rem 3rem 1.4rem 1.4rem',
+  borderRadius: 'var(--radius)',
+  background: 'var(--card)',
+  boxShadow: 'var(--elev-card)',
+  fontFamily: 'var(--mono)',
+  fontSize: 'clamp(1.3rem, 3vw, 2rem)',
+  letterSpacing: '0.04em',
+  wordBreak: 'break-all',
+  '& [data-kind=digit]': { color: 'oklch(0.55 0.2 255)' },
+  '& [data-kind=symbol]': { color: 'oklch(0.58 0.22 25)' },
+  '& > button': { position: 'absolute', top: '0.6rem', right: '0.6rem' },
+})
+
 const view = Submodel.defineView<Model, Message>((model, h) => {
   const bits = entropyBits(model.length, setsOf(model))
   return h.div(
     [h.Class(stack)],
     [
       panel(h, null, [
-        output(h, { label: 'Password', value: model.password }),
+        h.div(
+          [h.Class(passwordCls)],
+          [
+            h.div(
+              [h.AriaLabel('Password'), h.Tabindex(0)],
+              [...model.password].map((char) =>
+                h.span([h.Attribute('data-kind', kindOf(char))], [char]),
+              ),
+            ),
+            Elements.copyButton(h, false, h.Attribute('data-copy', model.password)),
+          ],
+        ),
+        meter(h, {
+          label: strengthLabel(bits),
+          value: Math.min(bits, 128),
+          limit: 128,
+          display: `${bits} bits`,
+        }),
         h.div(
           [h.Class(row)],
           [
