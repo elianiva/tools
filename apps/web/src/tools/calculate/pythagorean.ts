@@ -25,5 +25,6 @@ export const pythagorean = defineTransform({
   ],
   placeholder: 'two sides: 3 4',
   example: '3 4',
+  fields: [{ label: 'Side A' }, { label: 'Side B' }],
   run,
 })
