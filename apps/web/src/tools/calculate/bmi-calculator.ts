@@ -26,5 +26,9 @@ export const bmiCalculator = defineTransform({
   ],
   placeholder: '70 175',
   example: '70 175',
+  fields: [
+    { label: 'Weight', suffix: 'kg / lb' },
+    { label: 'Height', suffix: 'cm / in' },
+  ],
   run,
 })
