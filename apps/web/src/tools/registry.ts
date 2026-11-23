@@ -1,3 +1,4 @@
+import { jsonToTypescript } from './developer/json-to-typescript.ts'
 import { diceRoller } from './generate/dice-roller.ts'
 import { randomPicker } from './generate/random-picker.ts'
 import { uuidGenerator } from './generate/uuid-generator.ts'
@@ -136,6 +137,7 @@ export const tools: ReadonlyArray<Tool> = [
   uuidGenerator,
   randomPicker,
   diceRoller,
+  jsonToTypescript,
 ]
 
 export const toolOf = (category: string, id: string): Tool | undefined =>
