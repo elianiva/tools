@@ -1,3 +1,4 @@
+import { pigLatin } from './text/pig-latin.ts'
 import { caesarCipher } from './text/caesar-cipher.ts'
 import { salary } from './calculate/salary.ts'
 import { duration } from './convert/duration.ts'
@@ -158,6 +159,7 @@ export const tools: ReadonlyArray<Tool> = [
   duration,
   salary,
   caesarCipher,
+  pigLatin,
 ]
 
 export const toolOf = (category: string, id: string): Tool | undefined =>
