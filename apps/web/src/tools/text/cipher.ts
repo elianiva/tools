@@ -29,5 +29,6 @@ export const cipher = defineTransform({
   ],
   placeholder: 'Type or paste text',
   example: 'Hello',
+  present: 'display',
   run,
 })
