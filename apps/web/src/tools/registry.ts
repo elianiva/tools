@@ -1,3 +1,4 @@
+import { percentageCalculator } from './calculate/percentage.ts'
 import { units } from './convert/units.ts'
 import { slug } from './text/slug.ts'
 import { cron } from './developer/cron.ts'
@@ -32,6 +33,7 @@ export const tools: ReadonlyArray<Tool> = [
   cron,
   slug,
   units,
+  percentageCalculator,
 ]
 
 export const toolOf = (category: string, id: string): Tool | undefined =>
