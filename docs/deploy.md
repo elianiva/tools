@@ -2,7 +2,7 @@
 
 Alchemy deploys the website Worker and the API Worker as one stack. The website
 Worker reaches the API through a service binding, so the API has no public URL.
-This page covers the first deploy and the manual CI workflow.
+This page covers the first deploy and the CI deploy job.
 
 ## Prerequisites
 
@@ -53,12 +53,14 @@ Alchemy state documentation instead of removing the resource by hand.
 
 ## Deploy from CI
 
-The repository ships `.github/workflows/deploy.yml`. It is manual on purpose: a
-template should not deploy itself when someone pushes.
+The `deploy` job in `.github/workflows/ci.yml` runs on every push to `main`,
+after the check, typecheck, test, and build jobs pass. Pull requests and other
+branches run the checks only. Production serves from `tools.elianiva.com`; the
+domain is set in `alchemy.run.ts` for the `prod` stage.
 
 1. Add `CLOUDFLARE_API_TOKEN` and `CLOUDFLARE_ACCOUNT_ID` as repository secrets.
    The workflow also reads `CLOUDFLARE_ACCOUNT_ID` from a repository variable if
-   you prefer.
+   you prefer. The `elianiva.com` zone must be in the same Cloudflare account.
 2. Add `VITE_SENTRY_DSN`, `SENTRY_AUTH_TOKEN`, `SENTRY_ORG`, and
    `SENTRY_PROJECT` if you want Sentry. The workflow sets
    `VITE_SENTRY_RELEASE` to the commit. Sentry is optional: without a DSN the
@@ -66,22 +68,9 @@ template should not deploy itself when someone pushes.
    source maps are not uploaded.
 3. Create an environment named `production` in the repository settings. Add the
    same secrets there if you want the environment to own them.
-4. Run the `Deploy` workflow from the Actions tab.
 
-The workflow runs `pnpm install --frozen-lockfile`, then
-`pnpm exec alchemy deploy --stage prod --yes`. It does not run the checks. Let
-the `CI` workflow pass on the same commit before you deploy, or add a
-`workflow_run` trigger after you are comfortable with the pipeline.
-
-To deploy on every push to `main`, change the trigger to:
-
-```yaml
-on:
-  push:
-    branches: [main]
-```
-
-Keep the `production` environment approval if you want a human gate.
+The job runs `pnpm install --frozen-lockfile`, then
+`pnpm exec alchemy deploy --stage prod --yes`.
 
 ## Custom domain
 

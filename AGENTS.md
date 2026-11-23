@@ -35,7 +35,7 @@ This repository is a pnpm monorepo for an Effect + Foldkit application deployed 
 - `pnpm rename <name>` replaces the template's package scope and stack name.
 - `.agents/setup` prepares a fresh orb: Node 26, pnpm 12, `.env`, and dependencies.
 - `.agents/resume` repairs the hooks and `.env` after an orb wakes. It does not install dependencies.
-- `pnpm deploy` changes Cloudflare infrastructure. Do not run it without explicit approval. The manual `Deploy` workflow does the same thing.
+- `pnpm deploy` changes Cloudflare infrastructure. Do not run it without explicit approval. The `deploy` job in `ci.yml` does the same thing on every push to `main`.
 
 See `docs/architecture.md` and `docs/tooling.md` before changing workspace boundaries or tool ownership. `docs/guardrails.md` lists the rules this repository enforces and the check behind each one. `docs/recipes.md` shows the D1 and binding path, `docs/deploy.md` covers deployment, and `docs/production.md` covers the launch baseline.
 
