@@ -1,3 +1,4 @@
+import { ruleOf72 } from './calculate/rule-of-72.ts'
 import { cagr } from './calculate/cagr.ts'
 import { roi } from './calculate/roi.ts'
 import { breakEven } from './calculate/break-even.ts'
@@ -234,6 +235,7 @@ export const tools: ReadonlyArray<Tool> = [
   breakEven,
   roi,
   cagr,
+  ruleOf72,
 ]
 
 export const toolOf = (category: string, id: string): Tool | undefined =>
