@@ -1,3 +1,4 @@
+import { clockFormat } from './convert/clock-format.ts'
 import { cmyk } from './convert/cmyk.ts'
 import { hoursDecimal } from './convert/hours-decimal.ts'
 import { sphere } from './calculate/sphere.ts'
@@ -258,6 +259,7 @@ export const tools: ReadonlyArray<Tool> = [
   sphere,
   hoursDecimal,
   cmyk,
+  clockFormat,
 ]
 
 export const toolOf = (category: string, id: string): Tool | undefined =>
