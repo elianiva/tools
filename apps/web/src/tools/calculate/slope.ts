@@ -29,5 +29,6 @@ export const slope = defineTransform({
   modes: [{ id: 'run', label: 'Run' }],
   placeholder: 'x1 y1 x2 y2: 1 2 3 6',
   example: '1 2 3 6',
+  fields: [{ label: 'x1' }, { label: 'y1' }, { label: 'x2' }, { label: 'y2' }],
   run,
 })
