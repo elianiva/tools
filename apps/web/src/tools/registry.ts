@@ -1,3 +1,4 @@
+import { palindrome } from './text/palindrome.ts'
 import { acronym } from './text/acronym.ts'
 import { bulletList } from './text/bullet-list.ts'
 import { indent } from './text/indent.ts'
@@ -174,6 +175,7 @@ export const tools: ReadonlyArray<Tool> = [
   indent,
   bulletList,
   acronym,
+  palindrome,
 ]
 
 export const toolOf = (category: string, id: string): Tool | undefined =>
