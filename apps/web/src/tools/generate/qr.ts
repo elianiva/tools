@@ -1,0 +1,143 @@
+import { Effect, Schema } from 'effect'
+import { Command, Submodel } from 'foldkit'
+import { defineMessageUnion } from 'foldkit/message'
+import QRCode from 'qrcode'
+import { css } from '../../../styled-system/css'
+import { field, hint, panel, columns, segmented, stack, textArea } from '../kit.ts'
+import { defineTool } from '../tool.ts'
+
+const LEVELS = [
+  { value: 'L', label: 'Low' },
+  { value: 'M', label: 'Medium' },
+  { value: 'Q', label: 'Quartile' },
+  { value: 'H', label: 'High' },
+] as const
+
+const Model = Schema.Struct({
+  text: Schema.String,
+  level: Schema.String,
+  url: Schema.String,
+  failed: Schema.Boolean,
+})
+type Model = typeof Model.Type
+
+const Message = defineMessageUnion({
+  ChangedText: { text: Schema.String },
+  ChangedLevel: { level: Schema.String },
+  Drew: { text: Schema.String, level: Schema.String, url: Schema.String },
+  FailedDraw: { text: Schema.String, level: Schema.String },
+})
+type Message = typeof Message.Type
+
+const Draw = Command.define('DrawQr', {
+  args: { text: Schema.String, level: Schema.String },
+  messages: [Message.Drew, Message.FailedDraw],
+  execute: ({ text, level }) =>
+    Effect.tryPromise(() =>
+      QRCode.toDataURL(text, {
+        errorCorrectionLevel: level === 'L' || level === 'Q' || level === 'H' ? level : 'M',
+        margin: 2,
+        width: 640,
+      }),
+    ).pipe(
+      Effect.map((url) => Message.Drew({ text, level, url })),
+      Effect.orElseSucceed(() => Message.FailedDraw({ text, level })),
+    ),
+})
+
+const redraw = (model: Model) =>
+  model.text === ''
+    ? { model: { ...model, url: '', failed: false } }
+    : { model, commands: [Draw({ text: model.text, level: model.level })] }
+
+const update = (model: Model, message: Message) =>
+  Message.match<{ model: Model; commands?: ReadonlyArray<Command.Command<Message>> }>(message, {
+    ChangedText: ({ text }) => redraw({ ...model, text }),
+    ChangedLevel: ({ level }) => redraw({ ...model, level }),
+    // An answer for text or a level the user has already changed is ignored.
+    Drew: ({ text, level, url }) =>
+      text === model.text && level === model.level
+        ? { model: { ...model, url, failed: false } }
+        : { model },
+    FailedDraw: ({ text, level }) =>
+      text === model.text && level === model.level
+        ? { model: { ...model, url: '', failed: true } }
+        : { model },
+  })
+
+const imageCls = css({
+  width: '100%',
+  maxWidth: '20rem',
+  aspectRatio: '1',
+  borderRadius: 'var(--radius)',
+  background: '#fff',
+  boxShadow: 'var(--elev-card)',
+  imageRendering: 'pixelated',
+})
+const downloadCls = css({
+  alignSelf: 'flex-start',
+  padding: '0.45rem 0.9rem',
+  borderRadius: '8px',
+  background: 'linear-gradient(var(--primary-fill-top), var(--primary-fill-bottom))',
+  boxShadow: 'var(--elev-primary)',
+  color: 'var(--primary-foreground)',
+  fontSize: '0.85rem',
+  fontWeight: 500,
+  textDecoration: 'none',
+})
+
+const view = Submodel.defineView<Model, Message>((model, h) =>
+  h.div(
+    [h.Class(stack)],
+    [
+      columns(h, [
+        panel(h, null, [
+          field(
+            h,
+            { label: 'Text or link', for: 'qr-text' },
+            textArea(h, {
+              id: 'qr-text',
+              value: model.text,
+              placeholder: 'https://example.com',
+              rows: 6,
+              onInput: (text) => Message.ChangedText({ text }),
+            }),
+          ),
+          segmented(h, {
+            label: 'Error correction',
+            value: model.level,
+            options: LEVELS,
+            onSelect: (level) => Message.ChangedLevel({ level }),
+          }),
+          hint(h, 'Higher correction survives more damage but needs a denser code.'),
+        ]),
+        panel(h, null, [
+          model.failed
+            ? h.p([h.Role('alert')], ['This text is too long for a QR code at this level.'])
+            : model.url === ''
+              ? hint(h, 'Your code appears here.')
+              : h.img([h.Class(imageCls), h.Src(model.url), h.Alt('QR code')]),
+          model.url === ''
+            ? null
+            : h.a(
+                [h.Class(downloadCls), h.Href(model.url), h.Download('qr-code.png')],
+                ['Download PNG'],
+              ),
+        ]),
+      ]),
+    ],
+  ),
+)
+
+export const qrCode = defineTool({
+  meta: {
+    id: 'qr',
+    name: 'QR code generator',
+    category: 'generate',
+    description: 'Turn a link or text into a QR code you can download.',
+    keywords: ['qr', 'barcode', 'link', 'url', 'wifi', 'scan'],
+  },
+  init: () => ({ text: '', level: 'M', url: '', failed: false }),
+  update,
+  view,
+})

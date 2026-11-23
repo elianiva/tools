@@ -1,3 +1,4 @@
+import { qrCode } from './generate/qr.ts'
 import { textDiff } from './text/diff.ts'
 import { regexTester } from './developer/regex.ts'
 import { percentageCalculator } from './calculate/percentage.ts'
@@ -38,6 +39,7 @@ export const tools: ReadonlyArray<Tool> = [
   percentageCalculator,
   regexTester,
   textDiff,
+  qrCode,
 ]
 
 export const toolOf = (category: string, id: string): Tool | undefined =>
