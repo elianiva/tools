@@ -116,7 +116,11 @@ export const textDiff = defineTool({
     description: 'Compare two texts by line, word, or character.',
     keywords: ['compare', 'difference', 'changes', 'merge', 'versions'],
   },
-  init: () => ({ before: '', after: '', mode: 'lines' }),
+  init: () => ({
+    before: 'name: tools\nversion: 1.0.0\nlicense: MIT\nprivate: true',
+    after: 'name: tools\nversion: 1.1.0\nlicense: MIT\nhomepage: tools.elianiva.com',
+    mode: 'lines',
+  }),
   update,
   view,
 })
