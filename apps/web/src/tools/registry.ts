@@ -1,3 +1,4 @@
+import { salary } from './calculate/salary.ts'
 import { duration } from './convert/duration.ts'
 import { timezones } from './convert/timezones.ts'
 import { contrastChecker } from './developer/contrast-checker.ts'
@@ -154,6 +155,7 @@ export const tools: ReadonlyArray<Tool> = [
   contrastChecker,
   timezones,
   duration,
+  salary,
 ]
 
 export const toolOf = (category: string, id: string): Tool | undefined =>
