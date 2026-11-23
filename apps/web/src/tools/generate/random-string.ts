@@ -33,5 +33,6 @@ export const randomString = defineTransform({
   ],
   placeholder: '16',
   example: '16',
+  fields: [{ label: 'Length' }],
   run,
 })
