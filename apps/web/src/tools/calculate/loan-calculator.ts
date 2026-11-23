@@ -30,5 +30,10 @@ export const loanCalculator = defineTransform({
   modes: [{ id: 'run', label: 'Run' }],
   placeholder: 'amount, yearly rate %, years: 10000 5 3',
   example: '10000 5 3',
+  fields: [
+    { label: 'Amount' },
+    { label: 'Yearly rate', suffix: '%' },
+    { label: 'Term', suffix: 'yrs' },
+  ],
   run,
 })
