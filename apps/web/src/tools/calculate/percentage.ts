@@ -12,5 +12,6 @@ export const percentageCalculator = defineTransform({
   modes: [{ id: 'calc', label: 'Calculate' }],
   placeholder: '20% of 150',
   example: '20% of 150',
+  present: 'display',
   run: (text) => percentage(text),
 })
