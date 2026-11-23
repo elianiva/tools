@@ -1,3 +1,4 @@
+import { editDistance } from './text/edit-distance.ts'
 import { findReplace } from './text/find-replace.ts'
 import { unicodeNormalize } from './text/unicode-normalize.ts'
 import { portNumbers } from './developer/port-numbers.ts'
@@ -276,6 +277,7 @@ export const tools: ReadonlyArray<Tool> = [
   portNumbers,
   unicodeNormalize,
   findReplace,
+  editDistance,
 ]
 
 export const toolOf = (category: string, id: string): Tool | undefined =>
