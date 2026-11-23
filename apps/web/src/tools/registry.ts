@@ -1,3 +1,4 @@
+import { base32 } from './developer/base32.ts'
 import { envJson } from './developer/env-json.ts'
 import { jsonl } from './developer/jsonl.ts'
 import { titleCase } from './text/title-case.ts'
@@ -184,6 +185,7 @@ export const tools: ReadonlyArray<Tool> = [
   titleCase,
   jsonl,
   envJson,
+  base32,
 ]
 
 export const toolOf = (category: string, id: string): Tool | undefined =>
