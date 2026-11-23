@@ -1,3 +1,4 @@
+import { textDiff } from './text/diff.ts'
 import { regexTester } from './developer/regex.ts'
 import { percentageCalculator } from './calculate/percentage.ts'
 import { units } from './convert/units.ts'
@@ -36,6 +37,7 @@ export const tools: ReadonlyArray<Tool> = [
   units,
   percentageCalculator,
   regexTester,
+  textDiff,
 ]
 
 export const toolOf = (category: string, id: string): Tool | undefined =>
