@@ -76,5 +76,6 @@ export const loremIpsum = defineTransform({
   ],
   placeholder: '3',
   example: '3',
+  fields: [{ label: 'Count' }],
   run,
 })
