@@ -1,3 +1,4 @@
+import { quadratic } from './calculate/quadratic.ts'
 import { pythagorean } from './calculate/pythagorean.ts'
 import { circle } from './calculate/circle.ts'
 import { bmr } from './calculate/bmr.ts'
@@ -214,6 +215,7 @@ export const tools: ReadonlyArray<Tool> = [
   bmr,
   circle,
   pythagorean,
+  quadratic,
 ]
 
 export const toolOf = (category: string, id: string): Tool | undefined =>
