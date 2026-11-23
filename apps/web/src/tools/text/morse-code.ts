@@ -86,5 +86,6 @@ export const morseCode = defineTransform({
   ],
   placeholder: 'Type or paste text',
   example: 'SOS',
+  present: 'tokens',
   run,
 })

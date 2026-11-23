@@ -11,5 +11,6 @@ export const timestamp = defineTransform({
   },
   modes: [{ id: 'all', label: 'All' }],
   placeholder: '1700000000 or 2024-05-01T12:00:00Z',
+  present: 'pairs',
   run: (text) => describeTime(text),
 })

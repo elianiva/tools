@@ -20,5 +20,6 @@ export const randomColor = defineTransform({
   modes: [{ id: 'run', label: 'Run' }],
   placeholder: '5',
   example: '5',
+  present: 'swatch',
   run,
 })

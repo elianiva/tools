@@ -23,5 +23,6 @@ export const unicodeInspector = defineTransform({
   placeholder: 'Type or paste text',
   acceptsFiles: true,
   example: 'A€',
+  present: 'pairs',
   run,
 })

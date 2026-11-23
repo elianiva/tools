@@ -15,6 +15,6 @@ export const describeColor = (text: string): string => {
     `RGB    ${formatRgb(color)}`,
     `HSL    ${formatHsl(color)}`,
     `OKLCH  oklch(${round(lch.l, 3)} ${round(lch.c, 3)} ${round(lch.h, 1)}${alpha < 1 ? ` / ${round(alpha, 2)}` : ''})`,
-    `CSS    ${formatCss(color)}`,
+    `CSS    ${formatCss(color).replace(/\d+\.\d{4,}/gu, (n) => String(Number(Number(n).toFixed(3))))}`,
   ].join('\n')
 }

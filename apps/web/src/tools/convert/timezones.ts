@@ -42,5 +42,6 @@ export const timezones = defineTransform({
   modes: [{ id: 'run', label: 'Run' }],
   placeholder: '2024-05-01T12:00:00Z',
   example: '2024-05-01T12:00:00Z',
+  present: 'pairs',
   run,
 })

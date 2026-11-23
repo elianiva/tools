@@ -214,22 +214,40 @@ const hiddenCls = css({
   whiteSpace: 'nowrap',
 })
 
+// Static on purpose: Panda reads these literals at build time.
 const tones: Readonly<Record<string, string>> = {
-  images: 'var(--info)',
-  text: 'var(--foreground)',
-  developer: 'oklch(0.55 0.15 300)',
-  convert: 'var(--warn)',
-  calculate: 'var(--ok)',
-  generate: 'oklch(0.58 0.17 350)',
+  images: css({
+    '--tone': 'var(--info)',
+    '--tone-soft': 'color-mix(in oklab, var(--info) 12%, transparent)',
+    '--tone-ink': 'color-mix(in oklab, var(--info) 75%, var(--foreground))',
+  }),
+  text: css({
+    '--tone': 'var(--foreground)',
+    '--tone-soft': 'color-mix(in oklab, var(--foreground) 12%, transparent)',
+    '--tone-ink': 'color-mix(in oklab, var(--foreground) 75%, var(--foreground))',
+  }),
+  developer: css({
+    '--tone': 'oklch(0.55 0.15 300)',
+    '--tone-soft': 'color-mix(in oklab, oklch(0.55 0.15 300) 12%, transparent)',
+    '--tone-ink': 'color-mix(in oklab, oklch(0.55 0.15 300) 75%, var(--foreground))',
+  }),
+  convert: css({
+    '--tone': 'var(--warn)',
+    '--tone-soft': 'color-mix(in oklab, var(--warn) 12%, transparent)',
+    '--tone-ink': 'color-mix(in oklab, var(--warn) 75%, var(--foreground))',
+  }),
+  calculate: css({
+    '--tone': 'var(--ok)',
+    '--tone-soft': 'color-mix(in oklab, var(--ok) 12%, transparent)',
+    '--tone-ink': 'color-mix(in oklab, var(--ok) 75%, var(--foreground))',
+  }),
+  generate: css({
+    '--tone': 'oklch(0.58 0.17 350)',
+    '--tone-soft': 'color-mix(in oklab, oklch(0.58 0.17 350) 12%, transparent)',
+    '--tone-ink': 'color-mix(in oklab, oklch(0.58 0.17 350) 75%, var(--foreground))',
+  }),
 }
-const toneCls = (category: string): string => {
-  const tone = tones[category] ?? 'var(--foreground)'
-  return css({
-    '--tone': tone,
-    '--tone-soft': `color-mix(in oklab, ${tone} 12%, transparent)`,
-    '--tone-ink': `color-mix(in oklab, ${tone} 75%, var(--foreground))`,
-  })
-}
+const toneCls = (category: string): string => tones[category] ?? ''
 
 const uiOf = (model: Model): PartsConfig<Message> => ({
   toMessage: (message: UiMessage) => AppMessage.GotUiMessage({ message }),

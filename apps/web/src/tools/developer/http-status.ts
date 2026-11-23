@@ -60,5 +60,6 @@ export const httpStatus = defineTransform({
   modes: [{ id: 'run', label: 'Run' }],
   placeholder: '404, 4xx, or teapot',
   example: '404',
+  present: 'pairs',
   run,
 })

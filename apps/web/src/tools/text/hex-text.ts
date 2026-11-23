@@ -32,5 +32,6 @@ export const hexText = defineTransform({
   ],
   placeholder: 'Type or paste text',
   example: 'Hi',
+  present: 'tokens',
   run,
 })

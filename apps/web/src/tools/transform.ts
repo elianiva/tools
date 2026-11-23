@@ -5,8 +5,8 @@ import { Command, File, Submodel } from 'foldkit'
 import type { Html, HtmlBuilder } from 'foldkit/html'
 import { defineMessageUnion } from 'foldkit/message'
 import { css } from '../../styled-system/css'
-import { factsView, parseFacts } from './facts.ts'
-import { columns, field, hint, output, panel, segmented, stack, textArea } from './kit.ts'
+import { presentOutput, type Present } from './presenters.ts'
+import { columns, field, hint, panel, segmented, stack, textArea } from './kit.ts'
 import { defineTool, type ToolMeta } from './tool.ts'
 
 type Mode = Readonly<{ id: string; label: string }>
@@ -24,6 +24,8 @@ type TransformSpec = Readonly<{
   acceptsFiles?: boolean
   /** Put the output under the input at full width, for long output lines. */
   stacked?: boolean
+  /** How the answer is drawn: swatches, chips, cards, or bars. */
+  present?: Present
 }>
 
 const Model = Schema.Struct({ input: Schema.String, mode: Schema.String })
@@ -71,8 +73,6 @@ const attempt = (spec: TransformSpec, model: Model): Readonly<{ value: string; e
     }
   }
 }
-
-const FACT_START = /^[^:\n]{1,48}: /u
 
 const stackedPanels = <M>(h: HtmlBuilder<M>, children: ReadonlyArray<Html>): Html =>
   h.div([h.Class(stack)], children)
@@ -125,12 +125,7 @@ export const defineTransform = (spec: TransformSpec) => {
                 field(
                   h,
                   { label: 'Output', for: `${id}-output` },
-                  result.value !== '' &&
-                    spec.meta.category !== 'text' &&
-                    parseFacts(result.value).facts.length > 0 &&
-                    FACT_START.test(result.value)
-                    ? factsView(h, result.value)
-                    : output(h, { label: 'Output', value: result.value }),
+                  presentOutput(h, spec.present, spec.meta.category, model.input, result.value),
                 ),
                 result.error === ''
                   ? null

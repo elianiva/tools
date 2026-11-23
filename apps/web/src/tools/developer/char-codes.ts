@@ -36,5 +36,6 @@ export const charCodes = defineTransform({
   ],
   placeholder: 'Type or paste text',
   example: 'Hi€',
+  present: 'tokens',
   run,
 })

@@ -25,5 +25,6 @@ export const wordFrequency = defineTransform({
   placeholder: 'Type or paste text',
   acceptsFiles: true,
   example: 'the cat the dog',
+  present: 'bars',
   run,
 })

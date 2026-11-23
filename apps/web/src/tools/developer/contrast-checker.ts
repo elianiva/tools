@@ -45,5 +45,6 @@ export const contrastChecker = defineTransform({
   modes: [{ id: 'run', label: 'Run' }],
   placeholder: '#777777 #ffffff',
   example: '#777777 #ffffff',
+  present: 'swatch',
   run,
 })

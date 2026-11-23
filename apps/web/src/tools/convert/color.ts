@@ -12,5 +12,6 @@ export const color = defineTransform({
   modes: [{ id: 'all', label: 'All' }],
   placeholder: '#3b82f6',
   example: '#3b82f6',
+  present: 'swatch',
   run: (text) => describeColor(text),
 })

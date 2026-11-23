@@ -44,5 +44,6 @@ export const cmyk = defineTransform({
   ],
   placeholder: '#3b82f6',
   example: '#3b82f6',
+  present: 'swatch',
   run,
 })
