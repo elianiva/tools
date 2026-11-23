@@ -1,3 +1,4 @@
+import { slug } from './text/slug.ts'
 import { cron } from './developer/cron.ts'
 import { timestamp } from './convert/timestamp.ts'
 import { color } from './convert/color.ts'
@@ -28,6 +29,7 @@ export const tools: ReadonlyArray<Tool> = [
   color,
   timestamp,
   cron,
+  slug,
 ]
 
 export const toolOf = (category: string, id: string): Tool | undefined =>
