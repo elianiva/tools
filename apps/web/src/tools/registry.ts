@@ -1,3 +1,4 @@
+import { listConverter } from './text/list-converter.ts'
 import { csvJson } from './developer/csv-json.ts'
 import { htmlToText } from './text/html-to-text.ts'
 import { markdownToHtml } from './developer/markdown-to-html.ts'
@@ -78,6 +79,7 @@ export const tools: ReadonlyArray<Tool> = [
   markdownToHtml,
   htmlToText,
   csvJson,
+  listConverter,
 ]
 
 export const toolOf = (category: string, id: string): Tool | undefined =>
