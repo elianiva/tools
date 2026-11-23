@@ -23,5 +23,6 @@ export const acronym = defineTransform({
   ],
   placeholder: 'Type or paste text',
   example: 'portable network graphics',
+  present: 'display',
   run,
 })
