@@ -16,5 +16,6 @@ export const uuidGenerator = defineTransform({
   modes: [{ id: 'run', label: 'Run' }],
   placeholder: '5',
   example: '5',
+  fields: [{ label: 'How many' }],
   run,
 })
