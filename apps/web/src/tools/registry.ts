@@ -1,3 +1,4 @@
+import { contrastChecker } from './developer/contrast-checker.ts'
 import { cssMinifier } from './developer/css-minifier.ts'
 import { subnet } from './developer/subnet.ts'
 import { chmod } from './developer/chmod.ts'
@@ -148,6 +149,7 @@ export const tools: ReadonlyArray<Tool> = [
   chmod,
   subnet,
   cssMinifier,
+  contrastChecker,
 ]
 
 export const toolOf = (category: string, id: string): Tool | undefined =>
