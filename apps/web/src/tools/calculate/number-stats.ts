@@ -38,5 +38,6 @@ export const numberStats = defineTransform({
   placeholder: 'Numbers separated by spaces, commas, or lines',
   example: '1 2 3 4',
   acceptsFiles: true,
+  present: 'facts',
   run,
 })
