@@ -1,3 +1,4 @@
+import { bmiCalculator } from './calculate/bmi-calculator.ts'
 import { markdownToc } from './text/markdown-toc.ts'
 import { removeLineBreaks } from './text/remove-line-breaks.ts'
 import { smartQuotes } from './text/smart-quotes.ts'
@@ -104,6 +105,7 @@ export const tools: ReadonlyArray<Tool> = [
   smartQuotes,
   removeLineBreaks,
   markdownToc,
+  bmiCalculator,
 ]
 
 export const toolOf = (category: string, id: string): Tool | undefined =>
