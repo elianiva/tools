@@ -1,3 +1,4 @@
+import { mimeTypes } from './developer/mime-types.ts'
 import { bitwise } from './developer/bitwise.ts'
 import { scientificNotation } from './convert/scientific-notation.ts'
 import { excelColumn } from './convert/excel-column.ts'
@@ -268,6 +269,7 @@ export const tools: ReadonlyArray<Tool> = [
   excelColumn,
   scientificNotation,
   bitwise,
+  mimeTypes,
 ]
 
 export const toolOf = (category: string, id: string): Tool | undefined =>
