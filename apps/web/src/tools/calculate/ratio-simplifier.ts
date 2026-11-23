@@ -20,5 +20,6 @@ export const ratioSimplifier = defineTransform({
   modes: [{ id: 'run', label: 'Run' }],
   placeholder: '8:12',
   example: '8:12',
+  present: 'display',
   run,
 })
