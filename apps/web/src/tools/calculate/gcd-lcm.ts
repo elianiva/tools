@@ -22,5 +22,6 @@ export const gcdLcm = defineTransform({
   modes: [{ id: 'run', label: 'Run' }],
   placeholder: '12 18',
   example: '12 18',
+  fields: [{ label: 'First number' }, { label: 'Second number' }],
   run,
 })
