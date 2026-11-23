@@ -1,3 +1,4 @@
+import { reverseText } from './text/reverse-text.ts'
 import { passwordGenerator } from './generate/password.ts'
 import { qrCode } from './generate/qr.ts'
 import { textDiff } from './text/diff.ts'
@@ -42,6 +43,7 @@ export const tools: ReadonlyArray<Tool> = [
   textDiff,
   qrCode,
   passwordGenerator,
+  reverseText,
 ]
 
 export const toolOf = (category: string, id: string): Tool | undefined =>
