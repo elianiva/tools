@@ -1,3 +1,4 @@
+import { bitwise } from './developer/bitwise.ts'
 import { scientificNotation } from './convert/scientific-notation.ts'
 import { excelColumn } from './convert/excel-column.ts'
 import { terbilang } from './convert/terbilang.ts'
@@ -266,6 +267,7 @@ export const tools: ReadonlyArray<Tool> = [
   terbilang,
   excelColumn,
   scientificNotation,
+  bitwise,
 ]
 
 export const toolOf = (category: string, id: string): Tool | undefined =>
