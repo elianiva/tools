@@ -20,5 +20,6 @@ export const coinFlip = defineTransform({
   modes: [{ id: 'run', label: 'Run' }],
   placeholder: '1',
   example: '1',
+  fields: [{ label: 'Flips' }],
   run,
 })
