@@ -1,3 +1,4 @@
+import { subnet } from './developer/subnet.ts'
 import { chmod } from './developer/chmod.ts'
 import { httpStatus } from './developer/http-status.ts'
 import { urlParser } from './developer/url-parser.ts'
@@ -144,6 +145,7 @@ export const tools: ReadonlyArray<Tool> = [
   urlParser,
   httpStatus,
   chmod,
+  subnet,
 ]
 
 export const toolOf = (category: string, id: string): Tool | undefined =>
