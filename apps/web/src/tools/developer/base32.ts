@@ -42,5 +42,6 @@ export const base32 = defineTransform({
   ],
   placeholder: 'Type or paste text',
   example: 'foobar',
+  present: 'display',
   run,
 })
