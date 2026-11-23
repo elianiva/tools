@@ -1,3 +1,4 @@
+import { markdownToc } from './text/markdown-toc.ts'
 import { removeLineBreaks } from './text/remove-line-breaks.ts'
 import { smartQuotes } from './text/smart-quotes.ts'
 import { sentenceSplitter } from './text/sentence-splitter.ts'
@@ -102,6 +103,7 @@ export const tools: ReadonlyArray<Tool> = [
   sentenceSplitter,
   smartQuotes,
   removeLineBreaks,
+  markdownToc,
 ]
 
 export const toolOf = (category: string, id: string): Tool | undefined =>
