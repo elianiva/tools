@@ -1,3 +1,4 @@
+import { regexTester } from './developer/regex.ts'
 import { percentageCalculator } from './calculate/percentage.ts'
 import { units } from './convert/units.ts'
 import { slug } from './text/slug.ts'
@@ -34,6 +35,7 @@ export const tools: ReadonlyArray<Tool> = [
   slug,
   units,
   percentageCalculator,
+  regexTester,
 ]
 
 export const toolOf = (category: string, id: string): Tool | undefined =>
