@@ -1,3 +1,4 @@
+import { pythagorean } from './calculate/pythagorean.ts'
 import { circle } from './calculate/circle.ts'
 import { bmr } from './calculate/bmr.ts'
 import { weightedAverage } from './calculate/weighted-average.ts'
@@ -212,6 +213,7 @@ export const tools: ReadonlyArray<Tool> = [
   weightedAverage,
   bmr,
   circle,
+  pythagorean,
 ]
 
 export const toolOf = (category: string, id: string): Tool | undefined =>
