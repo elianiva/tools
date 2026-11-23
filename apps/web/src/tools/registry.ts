@@ -1,3 +1,4 @@
+import { leapYear } from './calculate/leap-year.ts'
 import { combinatorics } from './calculate/combinatorics.ts'
 import { fibonacci } from './calculate/fibonacci.ts'
 import { factorial } from './calculate/factorial.ts'
@@ -222,6 +223,7 @@ export const tools: ReadonlyArray<Tool> = [
   factorial,
   fibonacci,
   combinatorics,
+  leapYear,
 ]
 
 export const toolOf = (category: string, id: string): Tool | undefined =>
