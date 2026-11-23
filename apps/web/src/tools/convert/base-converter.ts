@@ -41,5 +41,6 @@ export const baseConverter = defineTransform({
   ],
   placeholder: '255',
   example: '255',
+  fields: [{ label: 'Number', kind: 'text' }],
   run,
 })
