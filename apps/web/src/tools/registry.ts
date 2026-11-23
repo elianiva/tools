@@ -1,3 +1,4 @@
+import { randomPicker } from './generate/random-picker.ts'
 import { uuidGenerator } from './generate/uuid-generator.ts'
 import { fractionDecimal } from './convert/fraction-decimal.ts'
 import { pxRem } from './convert/px-rem.ts'
@@ -132,6 +133,7 @@ export const tools: ReadonlyArray<Tool> = [
   pxRem,
   fractionDecimal,
   uuidGenerator,
+  randomPicker,
 ]
 
 export const toolOf = (category: string, id: string): Tool | undefined =>
