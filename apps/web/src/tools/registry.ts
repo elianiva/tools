@@ -1,3 +1,4 @@
+import { envJson } from './developer/env-json.ts'
 import { jsonl } from './developer/jsonl.ts'
 import { titleCase } from './text/title-case.ts'
 import { strikethrough } from './text/strikethrough.ts'
@@ -182,6 +183,7 @@ export const tools: ReadonlyArray<Tool> = [
   strikethrough,
   titleCase,
   jsonl,
+  envJson,
 ]
 
 export const toolOf = (category: string, id: string): Tool | undefined =>
