@@ -389,7 +389,9 @@ const chmod = <M>(h: HtmlBuilder<M>, value: string): Html => {
   const bits = /^[rwx-]{9}$/u.test(text)
     ? [...text].map((char) => char !== '-')
     : /^[0-7]{3,4}$/u.test(text)
-      ? [...text.slice(-3)].flatMap((digit) => [4, 2, 1].map((bit) => (Number(digit) & bit) !== 0))
+      ? Array.from(text.slice(-3)).flatMap((digit) =>
+          [4, 2, 1].map((bit) => (Number(digit) & bit) !== 0),
+        )
       : null
   if (bits === null) return display(h, value)
   return h.div(
