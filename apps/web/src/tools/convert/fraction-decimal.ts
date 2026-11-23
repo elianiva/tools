@@ -39,5 +39,6 @@ export const fractionDecimal = defineTransform({
   ],
   placeholder: '3/8',
   example: '3/8',
+  fields: [{ label: 'Fraction or decimal', kind: 'text' }],
   run,
 })
