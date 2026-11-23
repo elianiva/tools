@@ -1,3 +1,4 @@
+import { loremIpsum } from './generate/lorem-ipsum.ts'
 import { listConverter } from './text/list-converter.ts'
 import { csvJson } from './developer/csv-json.ts'
 import { htmlToText } from './text/html-to-text.ts'
@@ -80,6 +81,7 @@ export const tools: ReadonlyArray<Tool> = [
   htmlToText,
   csvJson,
   listConverter,
+  loremIpsum,
 ]
 
 export const toolOf = (category: string, id: string): Tool | undefined =>
