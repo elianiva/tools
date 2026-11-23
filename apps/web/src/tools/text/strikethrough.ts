@@ -25,5 +25,6 @@ export const strikethrough = defineTransform({
   ],
   placeholder: 'Type or paste text',
   example: 'ab',
+  present: 'display',
   run,
 })
