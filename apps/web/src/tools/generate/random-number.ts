@@ -22,5 +22,6 @@ export const randomNumber = defineTransform({
   modes: [{ id: 'run', label: 'Run' }],
   placeholder: 'min, max, how many: 1 100 5',
   example: '1 100 5',
+  fields: [{ label: 'Minimum' }, { label: 'Maximum' }, { label: 'How many' }],
   run,
 })
