@@ -14,6 +14,7 @@ export const urlEncoder = defineTransform({
     { id: 'decode', label: 'Decode' },
   ],
   placeholder: 'hello world & more',
+  present: 'code',
   run: (text, mode) => {
     try {
       return mode === 'decode'
