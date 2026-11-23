@@ -1,8 +1,9 @@
+import { imageConverter } from './images/convert.ts'
 import { wordCounter } from './text/word-counter.ts'
 import type { CategoryId, Tool } from './tool.ts'
 
 /** Every tool on the site. One line per tool; the palette, sidebar, home and routes all read this. */
-export const tools: ReadonlyArray<Tool> = [wordCounter]
+export const tools: ReadonlyArray<Tool> = [imageConverter, wordCounter]
 
 export const toolOf = (category: string, id: string): Tool | undefined =>
   tools.find((tool) => tool.meta.category === category && tool.meta.id === id)

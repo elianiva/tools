@@ -46,10 +46,12 @@ describe('favorites', () => {
 describe('files', () => {
   const text = new File(['hi there'], 'note.txt', { type: 'text/plain' })
   const photo = new File([''], 'a.png', { type: 'image/png' })
+  const archive = new File([''], 'a.zip', { type: 'application/zip' })
 
   it('finds the tools that take a file', () => {
     expect(toolsFor([text]).map((tool) => tool.meta.id)).toEqual(['word-counter'])
-    expect(toolsFor([photo])).toEqual([])
+    expect(toolsFor([photo]).map((tool) => tool.meta.id)).toEqual(['image-converter'])
+    expect(toolsFor([archive])).toEqual([])
   })
 
   it('hands a dropped text file to the tool on screen and reads it', () => {
@@ -63,8 +65,14 @@ describe('files', () => {
     expect(result.commands?.map((command) => command.name)).toEqual(['LoadText', 'Navigate'])
   })
 
-  it('tells the user when nothing takes the file', () => {
+  it('opens the image converter for a dropped image and starts converting it', () => {
     const result = update(start(), Message.ReceivedFiles({ files: [photo] }))
+    expect(result.model.route).toEqual(AppRoute.Tool({ category: 'images', id: 'image-converter' }))
+    expect(result.commands?.map((command) => command.name)).toEqual(['ConvertImage', 'Navigate'])
+  })
+
+  it('tells the user when nothing takes the file', () => {
+    const result = update(start(), Message.ReceivedFiles({ files: [archive] }))
     expect(result.commands?.map((command) => command.name)).toEqual(['ShowToast'])
   })
 })
