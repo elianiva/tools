@@ -69,7 +69,7 @@ const groupCls = css({
   textTransform: 'uppercase',
   color: 'var(--muted-foreground)',
 })
-const linkCls = css({
+const linkStyle = {
   display: 'block',
   padding: '0.3rem 0.6rem',
   borderRadius: '6px',
@@ -83,6 +83,15 @@ const linkCls = css({
     color: 'var(--foreground)',
     fontWeight: 550,
   },
+} as const
+const linkCls = css(linkStyle)
+const countCls = css({ fontFamily: 'var(--mono)', fontSize: '0.72rem', opacity: 0.7 })
+const categoryLinkCls = css(linkStyle, {
+  display: 'flex',
+  justifyContent: 'space-between',
+  alignItems: 'center',
+  color: 'var(--foreground)',
+  fontWeight: 550,
 })
 const mainCls = css({
   display: 'flex',
@@ -237,7 +246,15 @@ const topbar = (h: H): Html =>
 
 const sidebar = (h: H, model: Model): Html => {
   const current = currentToolId(model)
+  const openCategory =
+    model.route._tag === 'Tool' || model.route._tag === 'Category'
+      ? model.route.category
+      : undefined
   const starred = model.favorites.flatMap((id) => tools.filter((tool) => tool.meta.id === id))
+  const recent = model.recents
+    .filter((id) => !model.favorites.includes(id))
+    .slice(0, 5)
+    .flatMap((id) => tools.filter((tool) => tool.meta.id === id))
   return h.nav(
     [h.Class(sideCls), h.AriaLabel('Tools')],
     [
@@ -249,14 +266,27 @@ const sidebar = (h: H, model: Model): Html => {
               link(h, pathOfTool(tool), tool.meta.name, tool.meta.id === current),
             ),
           ]),
+      ...(recent.length === 0
+        ? []
+        : [
+            h.p([h.Class(groupCls)], ['Recent']),
+            ...recent.map((tool) =>
+              link(h, pathOfTool(tool), tool.meta.name, tool.meta.id === current),
+            ),
+          ]),
+      h.p([h.Class(groupCls)], ['Categories']),
       ...CATEGORIES.flatMap((category) => {
-        const inCategory = toolsIn(category.id)
-        return inCategory.length === 0
+        const count = toolsIn(category.id).length
+        return count === 0
           ? []
           : [
-              h.p([h.Class(groupCls)], [category.name]),
-              ...inCategory.map((tool) =>
-                link(h, pathOfTool(tool), tool.meta.name, tool.meta.id === current),
+              h.a(
+                [
+                  h.Class(categoryLinkCls),
+                  h.Href(`/${category.id}`),
+                  ...(openCategory === category.id ? [h.AriaCurrent('page')] : []),
+                ],
+                [category.name, h.span([h.Class(countCls)], [String(count)])],
               ),
             ]
       }),
