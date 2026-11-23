@@ -1,3 +1,4 @@
+import { angle } from './convert/angle.ts'
 import { checksums } from './developer/checksums.ts'
 import { charCodes } from './developer/char-codes.ts'
 import { semverCompare } from './developer/semver-compare.ts'
@@ -192,6 +193,7 @@ export const tools: ReadonlyArray<Tool> = [
   semverCompare,
   charCodes,
   checksums,
+  angle,
 ]
 
 export const toolOf = (category: string, id: string): Tool | undefined =>
