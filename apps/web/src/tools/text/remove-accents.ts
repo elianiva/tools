@@ -16,5 +16,6 @@ export const removeAccents = defineTransform({
   placeholder: 'Type or paste text',
   acceptsFiles: true,
   example: 'Crème brûlée ñ',
+  present: 'display',
   run,
 })
