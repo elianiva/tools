@@ -1,3 +1,4 @@
+import { weekday } from './calculate/weekday.ts'
 import { dateDifference } from './calculate/date-difference.ts'
 import { compoundInterest } from './calculate/compound-interest.ts'
 import { loanCalculator } from './calculate/loan-calculator.ts'
@@ -116,6 +117,7 @@ export const tools: ReadonlyArray<Tool> = [
   loanCalculator,
   compoundInterest,
   dateDifference,
+  weekday,
 ]
 
 export const toolOf = (category: string, id: string): Tool | undefined =>
