@@ -19,5 +19,6 @@ export const discountCalculator = defineTransform({
   modes: [{ id: 'run', label: 'Run' }],
   placeholder: 'price, percent off: 100 25',
   example: '100 25',
+  fields: [{ label: 'Price' }, { label: 'Percent off', suffix: '%' }],
   run,
 })
