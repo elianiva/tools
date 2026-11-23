@@ -29,5 +29,6 @@ export const indent = defineTransform({
   placeholder: 'Type or paste text',
   acceptsFiles: true,
   example: 'a\n\nb',
+  present: 'code',
   run,
 })
