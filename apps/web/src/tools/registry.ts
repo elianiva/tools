@@ -1,3 +1,4 @@
+import { charCodes } from './developer/char-codes.ts'
 import { semverCompare } from './developer/semver-compare.ts'
 import { base32 } from './developer/base32.ts'
 import { envJson } from './developer/env-json.ts'
@@ -188,6 +189,7 @@ export const tools: ReadonlyArray<Tool> = [
   envJson,
   base32,
   semverCompare,
+  charCodes,
 ]
 
 export const toolOf = (category: string, id: string): Tool | undefined =>
