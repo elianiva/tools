@@ -1,3 +1,4 @@
+import { simpleInterest } from './calculate/simple-interest.ts'
 import { pph21 } from './calculate/pph21.ts'
 import { leapYear } from './calculate/leap-year.ts'
 import { combinatorics } from './calculate/combinatorics.ts'
@@ -226,6 +227,7 @@ export const tools: ReadonlyArray<Tool> = [
   combinatorics,
   leapYear,
   pph21,
+  simpleInterest,
 ]
 
 export const toolOf = (category: string, id: string): Tool | undefined =>
