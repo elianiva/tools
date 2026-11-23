@@ -23,5 +23,9 @@ export const aspectRatio = defineTransform({
   modes: [{ id: 'run', label: 'Run' }],
   placeholder: '1920 1080',
   example: '1920 1080',
+  fields: [
+    { label: 'Width', suffix: 'px' },
+    { label: 'Height', suffix: 'px' },
+  ],
   run,
 })
