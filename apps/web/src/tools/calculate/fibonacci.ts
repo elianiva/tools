@@ -25,5 +25,6 @@ export const fibonacci = defineTransform({
   modes: [{ id: 'run', label: 'Run' }],
   placeholder: '10',
   example: '10',
+  fields: [{ label: 'Position' }],
   run,
 })
