@@ -1,3 +1,4 @@
+import { randomColor } from './generate/random-color.ts'
 import { randomString } from './generate/random-string.ts'
 import { coinFlip } from './generate/coin-flip.ts'
 import { randomNumber } from './generate/random-number.ts'
@@ -292,6 +293,7 @@ export const tools: ReadonlyArray<Tool> = [
   randomNumber,
   coinFlip,
   randomString,
+  randomColor,
 ]
 
 export const toolOf = (category: string, id: string): Tool | undefined =>
