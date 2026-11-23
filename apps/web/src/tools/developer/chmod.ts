@@ -36,5 +36,6 @@ export const chmod = defineTransform({
   ],
   placeholder: '755',
   example: '755',
+  fields: [{ label: 'Mode or permissions', kind: 'text' }],
   run,
 })
