@@ -1,3 +1,4 @@
+import { markdownToHtml } from './developer/markdown-to-html.ts'
 import { htmlEntities } from './developer/html-entities.ts'
 import { romanNumerals } from './convert/roman-numerals.ts'
 import { numberToWords } from './convert/number-to-words.ts'
@@ -72,6 +73,7 @@ export const tools: ReadonlyArray<Tool> = [
   numberToWords,
   romanNumerals,
   htmlEntities,
+  markdownToHtml,
 ]
 
 export const toolOf = (category: string, id: string): Tool | undefined =>
