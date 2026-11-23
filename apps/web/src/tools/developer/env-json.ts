@@ -46,5 +46,6 @@ export const envJson = defineTransform({
   placeholder: 'Type or paste text',
   acceptsFiles: true,
   example: 'A=1\n# note\nexport B="x y"\nC=\'z\'',
+  present: 'code',
   run,
 })
