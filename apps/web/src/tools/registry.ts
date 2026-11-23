@@ -1,3 +1,4 @@
+import { httpStatus } from './developer/http-status.ts'
 import { urlParser } from './developer/url-parser.ts'
 import { jsonToTypescript } from './developer/json-to-typescript.ts'
 import { diceRoller } from './generate/dice-roller.ts'
@@ -140,6 +141,7 @@ export const tools: ReadonlyArray<Tool> = [
   diceRoller,
   jsonToTypescript,
   urlParser,
+  httpStatus,
 ]
 
 export const toolOf = (category: string, id: string): Tool | undefined =>
