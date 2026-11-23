@@ -26,5 +26,6 @@ export const anagramChecker = defineTransform({
   modes: [{ id: 'run', label: 'Run' }],
   placeholder: 'Type or paste text',
   example: 'listen\nsilent',
+  present: 'verdict',
   run,
 })
