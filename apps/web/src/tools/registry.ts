@@ -1,3 +1,4 @@
+import { indent } from './text/indent.ts'
 import { textWrap } from './text/text-wrap.ts'
 import { numberStats } from './calculate/number-stats.ts'
 import { numberFormat } from './convert/number-format.ts'
@@ -168,6 +169,7 @@ export const tools: ReadonlyArray<Tool> = [
   numberFormat,
   numberStats,
   textWrap,
+  indent,
 ]
 
 export const toolOf = (category: string, id: string): Tool | undefined =>
