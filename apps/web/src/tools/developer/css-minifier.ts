@@ -21,5 +21,6 @@ export const cssMinifier = defineTransform({
   placeholder: 'Type or paste text',
   acceptsFiles: true,
   example: 'a { color : red; }\n/* c */ b{margin:0 }',
+  present: 'code',
   run,
 })
