@@ -29,5 +29,6 @@ export const pace = defineTransform({
   ],
   placeholder: 'distance and time: 5 25:00',
   example: '5 25:00',
+  fields: [{ label: 'Distance' }, { label: 'Time', kind: 'text' }],
   run,
 })
