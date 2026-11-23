@@ -21,5 +21,6 @@ export const ruleOf72 = defineTransform({
   modes: [{ id: 'run', label: 'Run' }],
   placeholder: 'yearly rate %: 8',
   example: '8',
+  fields: [{ label: 'Yearly rate', suffix: '%' }],
   run,
 })
