@@ -36,5 +36,6 @@ export const zodiac = defineTransform({
   modes: [{ id: 'run', label: 'Run' }],
   placeholder: '1990-08-15',
   example: '1990-08-15',
+  fields: [{ label: 'Birth date', kind: 'date' }],
   run,
 })
