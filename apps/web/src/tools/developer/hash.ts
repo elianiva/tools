@@ -16,5 +16,7 @@ export const hash = defineTransform({
     { id: 'md5', label: 'MD5' },
   ],
   placeholder: 'Text to hash',
+  example: 'hello world',
+  present: 'display',
   run: hashText,
 })
