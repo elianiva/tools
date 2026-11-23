@@ -26,5 +26,6 @@ export const duplicateWords = defineTransform({
   placeholder: 'Type or paste text',
   acceptsFiles: true,
   example: 'the the cat sat sat down',
+  present: 'list',
   run,
 })
