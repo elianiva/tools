@@ -1,3 +1,4 @@
+import { yamlJson } from './developer/yaml-json.ts'
 import { hash } from './developer/hash.ts'
 import { jwtDecoder } from './developer/jwt-decoder.ts'
 import { lineTools } from './text/line-tools.ts'
@@ -20,6 +21,7 @@ export const tools: ReadonlyArray<Tool> = [
   lineTools,
   jwtDecoder,
   hash,
+  yamlJson,
 ]
 
 export const toolOf = (category: string, id: string): Tool | undefined =>
