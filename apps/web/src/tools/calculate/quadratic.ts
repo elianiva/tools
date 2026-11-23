@@ -29,5 +29,6 @@ export const quadratic = defineTransform({
   modes: [{ id: 'run', label: 'Run' }],
   placeholder: 'a b c: 1 -3 2',
   example: '1 -3 2',
+  fields: [{ label: 'a' }, { label: 'b' }, { label: 'c' }],
   run,
 })
