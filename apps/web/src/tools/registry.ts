@@ -1,3 +1,4 @@
+import { sortWords } from './text/sort-words.ts'
 import { textRepeater } from './text/text-repeater.ts'
 import { whitespaceCleaner } from './text/whitespace-cleaner.ts'
 import { reverseText } from './text/reverse-text.ts'
@@ -48,6 +49,7 @@ export const tools: ReadonlyArray<Tool> = [
   reverseText,
   whitespaceCleaner,
   textRepeater,
+  sortWords,
 ]
 
 export const toolOf = (category: string, id: string): Tool | undefined =>
