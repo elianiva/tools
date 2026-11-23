@@ -20,5 +20,6 @@ export const textRepeater = defineTransform({
   ],
   placeholder: 'Type or paste text',
   example: 'hi',
+  present: 'code',
   run,
 })
