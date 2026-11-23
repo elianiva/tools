@@ -1,3 +1,4 @@
+import { gcdLcm } from './calculate/gcd-lcm.ts'
 import { weekday } from './calculate/weekday.ts'
 import { dateDifference } from './calculate/date-difference.ts'
 import { compoundInterest } from './calculate/compound-interest.ts'
@@ -118,6 +119,7 @@ export const tools: ReadonlyArray<Tool> = [
   compoundInterest,
   dateDifference,
   weekday,
+  gcdLcm,
 ]
 
 export const toolOf = (category: string, id: string): Tool | undefined =>
