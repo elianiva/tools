@@ -3,6 +3,8 @@ packages:
   - packages/*
   - examples/*
 allowBuilds:
+  '@parcel/watcher': true
+  esbuild: false
   lefthook: true
   workerd: true
 overrides:
@@ -19,3 +21,6 @@ minimumReleaseAgeExclude:
   - '@voidzero-dev/vite-plus-win32-arm64-msvc@1.7.0'
   - '@voidzero-dev/vite-plus-win32-x64-msvc@1.7.0'
   - '@voidzero-dev/vite-plus-core@8.3.8000'
+  - '@foldkit/ui@0.170.0'
+  - '@floating-ui/dom@1.8.0'
+  - '@ui-sdk/core@0.1.0-beta.7'

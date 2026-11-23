@@ -1,0 +1,25 @@
+{
+  "name": "@tools/adapter",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./testing": "./src/testing.ts"
+  },
+  "scripts": {
+    "typecheck": "tsrs --noEmit -p tsconfig.json && effect-tsrs diagnostics --strict --project tsconfig.json",
+    "test": "vitest run --passWithNoTests"
+  },
+  "dependencies": {
+    "@ui-sdk/core": "0.1.0-beta.7"
+  },
+  "devDependencies": {
+    "effect": "4.1.4",
+    "foldkit": "0.170.0",
+    "happy-dom": "21.0.4"
+  },
+  "peerDependencies": {
+    "effect": "4.1.4",
+    "foldkit": "0.170.0"
+  }
+}
