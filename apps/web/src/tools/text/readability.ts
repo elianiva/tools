@@ -48,5 +48,6 @@ export const readability = defineTransform({
   placeholder: 'Type or paste text',
   acceptsFiles: true,
   example: 'The quick brown fox jumps over the lazy dog.',
+  present: 'facts',
   run,
 })
