@@ -1,3 +1,4 @@
+import { textRepeater } from './text/text-repeater.ts'
 import { whitespaceCleaner } from './text/whitespace-cleaner.ts'
 import { reverseText } from './text/reverse-text.ts'
 import { passwordGenerator } from './generate/password.ts'
@@ -46,6 +47,7 @@ export const tools: ReadonlyArray<Tool> = [
   passwordGenerator,
   reverseText,
   whitespaceCleaner,
+  textRepeater,
 ]
 
 export const toolOf = (category: string, id: string): Tool | undefined =>
