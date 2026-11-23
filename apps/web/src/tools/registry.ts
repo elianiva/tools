@@ -1,3 +1,4 @@
+import { scientificNotation } from './convert/scientific-notation.ts'
 import { excelColumn } from './convert/excel-column.ts'
 import { terbilang } from './convert/terbilang.ts'
 import { clockFormat } from './convert/clock-format.ts'
@@ -264,6 +265,7 @@ export const tools: ReadonlyArray<Tool> = [
   clockFormat,
   terbilang,
   excelColumn,
+  scientificNotation,
 ]
 
 export const toolOf = (category: string, id: string): Tool | undefined =>
