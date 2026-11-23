@@ -1,3 +1,4 @@
+import { hash } from './developer/hash.ts'
 import { jwtDecoder } from './developer/jwt-decoder.ts'
 import { lineTools } from './text/line-tools.ts'
 import { caseConverter } from './text/case-converter.ts'
@@ -18,6 +19,7 @@ export const tools: ReadonlyArray<Tool> = [
   caseConverter,
   lineTools,
   jwtDecoder,
+  hash,
 ]
 
 export const toolOf = (category: string, id: string): Tool | undefined =>
