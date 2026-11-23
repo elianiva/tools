@@ -1,3 +1,4 @@
+import { terbilang } from './convert/terbilang.ts'
 import { clockFormat } from './convert/clock-format.ts'
 import { cmyk } from './convert/cmyk.ts'
 import { hoursDecimal } from './convert/hours-decimal.ts'
@@ -260,6 +261,7 @@ export const tools: ReadonlyArray<Tool> = [
   hoursDecimal,
   cmyk,
   clockFormat,
+  terbilang,
 ]
 
 export const toolOf = (category: string, id: string): Tool | undefined =>
