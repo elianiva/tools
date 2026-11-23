@@ -1,3 +1,4 @@
+import { speed } from './convert/speed.ts'
 import { angle } from './convert/angle.ts'
 import { checksums } from './developer/checksums.ts'
 import { charCodes } from './developer/char-codes.ts'
@@ -194,6 +195,7 @@ export const tools: ReadonlyArray<Tool> = [
   charCodes,
   checksums,
   angle,
+  speed,
 ]
 
 export const toolOf = (category: string, id: string): Tool | undefined =>
