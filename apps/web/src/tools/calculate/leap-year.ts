@@ -18,5 +18,6 @@ export const leapYear = defineTransform({
   modes: [{ id: 'run', label: 'Run' }],
   placeholder: '2024',
   example: '2024',
+  fields: [{ label: 'Year' }],
   run,
 })
