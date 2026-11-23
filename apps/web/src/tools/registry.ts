@@ -1,3 +1,4 @@
+import { diceRoller } from './generate/dice-roller.ts'
 import { randomPicker } from './generate/random-picker.ts'
 import { uuidGenerator } from './generate/uuid-generator.ts'
 import { fractionDecimal } from './convert/fraction-decimal.ts'
@@ -134,6 +135,7 @@ export const tools: ReadonlyArray<Tool> = [
   fractionDecimal,
   uuidGenerator,
   randomPicker,
+  diceRoller,
 ]
 
 export const toolOf = (category: string, id: string): Tool | undefined =>
