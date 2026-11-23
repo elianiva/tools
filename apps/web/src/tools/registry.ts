@@ -1,3 +1,4 @@
+import { numberFormat } from './convert/number-format.ts'
 import { passwordStrength } from './developer/password-strength.ts'
 import { pigLatin } from './text/pig-latin.ts'
 import { caesarCipher } from './text/caesar-cipher.ts'
@@ -162,6 +163,7 @@ export const tools: ReadonlyArray<Tool> = [
   caesarCipher,
   pigLatin,
   passwordStrength,
+  numberFormat,
 ]
 
 export const toolOf = (category: string, id: string): Tool | undefined =>
