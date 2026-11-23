@@ -1,3 +1,4 @@
+import { aspectRatio } from './calculate/aspect-ratio.ts'
 import { baseConverter } from './convert/base-converter.ts'
 import { primeFactors } from './calculate/prime-factors.ts'
 import { gcdLcm } from './calculate/gcd-lcm.ts'
@@ -124,6 +125,7 @@ export const tools: ReadonlyArray<Tool> = [
   gcdLcm,
   primeFactors,
   baseConverter,
+  aspectRatio,
 ]
 
 export const toolOf = (category: string, id: string): Tool | undefined =>
