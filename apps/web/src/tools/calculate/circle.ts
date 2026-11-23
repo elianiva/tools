@@ -28,5 +28,6 @@ export const circle = defineTransform({
   ],
   placeholder: '5',
   example: '5',
+  fields: [{ label: 'Radius' }],
   run,
 })
