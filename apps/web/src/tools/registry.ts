@@ -1,3 +1,4 @@
+import { ratioSimplifier } from './calculate/ratio-simplifier.ts'
 import { fuelCost } from './calculate/fuel-cost.ts'
 import { ruleOf72 } from './calculate/rule-of-72.ts'
 import { cagr } from './calculate/cagr.ts'
@@ -238,6 +239,7 @@ export const tools: ReadonlyArray<Tool> = [
   cagr,
   ruleOf72,
   fuelCost,
+  ratioSimplifier,
 ]
 
 export const toolOf = (category: string, id: string): Tool | undefined =>
