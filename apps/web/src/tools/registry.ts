@@ -1,3 +1,4 @@
+import { passwordGenerator } from './generate/password.ts'
 import { qrCode } from './generate/qr.ts'
 import { textDiff } from './text/diff.ts'
 import { regexTester } from './developer/regex.ts'
@@ -40,6 +41,7 @@ export const tools: ReadonlyArray<Tool> = [
   regexTester,
   textDiff,
   qrCode,
+  passwordGenerator,
 ]
 
 export const toolOf = (category: string, id: string): Tool | undefined =>
