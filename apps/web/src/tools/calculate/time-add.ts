@@ -31,5 +31,9 @@ export const timeAdd = defineTransform({
   ],
   placeholder: '1:30 2:45',
   example: '1:30 2:45',
+  fields: [
+    { label: 'First time', kind: 'time' },
+    { label: 'Second time', kind: 'time' },
+  ],
   run,
 })
