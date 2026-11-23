@@ -23,5 +23,6 @@ export const combinatorics = defineTransform({
   modes: [{ id: 'run', label: 'Run' }],
   placeholder: 'n and r: 52 5',
   example: '52 5',
+  fields: [{ label: 'Items (n)' }, { label: 'Chosen (r)' }],
   run,
 })
