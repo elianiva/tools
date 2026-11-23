@@ -28,5 +28,6 @@ export const escapeString = defineTransform({
   ],
   placeholder: 'Type or paste text',
   example: 'a"b\nc',
+  present: 'code',
   run,
 })
