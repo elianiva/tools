@@ -1,3 +1,4 @@
+import { vowelCounter } from './text/vowel-counter.ts'
 import { anagramChecker } from './text/anagram-checker.ts'
 import { emojiRemover } from './text/emoji-remover.ts'
 import { duplicateWords } from './text/duplicate-words.ts'
@@ -284,6 +285,7 @@ export const tools: ReadonlyArray<Tool> = [
   duplicateWords,
   emojiRemover,
   anagramChecker,
+  vowelCounter,
 ]
 
 export const toolOf = (category: string, id: string): Tool | undefined =>
