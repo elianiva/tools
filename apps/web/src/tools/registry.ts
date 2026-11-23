@@ -1,3 +1,4 @@
+import { acronym } from './text/acronym.ts'
 import { bulletList } from './text/bullet-list.ts'
 import { indent } from './text/indent.ts'
 import { textWrap } from './text/text-wrap.ts'
@@ -172,6 +173,7 @@ export const tools: ReadonlyArray<Tool> = [
   textWrap,
   indent,
   bulletList,
+  acronym,
 ]
 
 export const toolOf = (category: string, id: string): Tool | undefined =>
