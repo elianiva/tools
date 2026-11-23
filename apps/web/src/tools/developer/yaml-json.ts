@@ -14,6 +14,7 @@ export const yamlJson = defineTransform({
     { id: 'json-to-yaml', label: 'JSON to YAML' },
   ],
   placeholder: 'key: value',
+  present: 'code',
   run: convertYaml,
   acceptsFiles: true,
 })
