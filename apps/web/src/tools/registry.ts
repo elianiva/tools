@@ -1,3 +1,4 @@
+import { fractionDecimal } from './convert/fraction-decimal.ts'
 import { pxRem } from './convert/px-rem.ts'
 import { aspectRatio } from './calculate/aspect-ratio.ts'
 import { baseConverter } from './convert/base-converter.ts'
@@ -128,6 +129,7 @@ export const tools: ReadonlyArray<Tool> = [
   baseConverter,
   aspectRatio,
   pxRem,
+  fractionDecimal,
 ]
 
 export const toolOf = (category: string, id: string): Tool | undefined =>
