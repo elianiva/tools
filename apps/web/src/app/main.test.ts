@@ -49,7 +49,8 @@ describe('files', () => {
   const archive = new File([''], 'a.zip', { type: 'application/zip' })
 
   it('finds the tools that take a file', () => {
-    expect(toolsFor([text]).map((tool) => tool.meta.id)).toEqual(['word-counter'])
+    expect(toolsFor([text]).map((tool) => tool.meta.id)).toContain('word-counter')
+    expect(toolsFor([text]).length).toBeGreaterThan(1)
     expect(toolsFor([photo]).map((tool) => tool.meta.id)).toEqual(['image-converter'])
     expect(toolsFor([archive])).toEqual([])
   })
@@ -59,9 +60,18 @@ describe('files', () => {
     expect(result.commands?.map((command) => command.name)).toEqual(['LoadText'])
   })
 
-  it('opens the tool that takes a file dropped on the home page', () => {
+  it('asks which tool to use when several take the file dropped on the home page', () => {
     const result = update(start(), Message.ReceivedFiles({ files: [text] }))
+    expect(result.model.route._tag).toBe('Home')
+    expect(result.model.pendingFiles).toEqual([text])
+    expect(result.commands ?? []).toEqual([])
+  })
+
+  it('hands the pending file to the tool the user picks', () => {
+    const pending = update(start(), Message.ReceivedFiles({ files: [text] })).model
+    const result = update(pending, Message.ChoseFileTool({ id: 'word-counter' }))
     expect(result.model.route).toEqual(AppRoute.Tool({ category: 'text', id: 'word-counter' }))
+    expect(result.model.pendingFiles).toEqual([])
     expect(result.commands?.map((command) => command.name)).toEqual(['LoadText', 'Navigate'])
   })
 
