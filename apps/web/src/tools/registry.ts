@@ -1,3 +1,4 @@
+import { timestamp } from './convert/timestamp.ts'
 import { color } from './convert/color.ts'
 import { yamlJson } from './developer/yaml-json.ts'
 import { hash } from './developer/hash.ts'
@@ -24,6 +25,7 @@ export const tools: ReadonlyArray<Tool> = [
   hash,
   yamlJson,
   color,
+  timestamp,
 ]
 
 export const toolOf = (category: string, id: string): Tool | undefined =>
