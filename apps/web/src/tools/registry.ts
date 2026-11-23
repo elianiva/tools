@@ -1,3 +1,4 @@
+import { unicodeNormalize } from './text/unicode-normalize.ts'
 import { portNumbers } from './developer/port-numbers.ts'
 import { mimeTypes } from './developer/mime-types.ts'
 import { bitwise } from './developer/bitwise.ts'
@@ -272,6 +273,7 @@ export const tools: ReadonlyArray<Tool> = [
   bitwise,
   mimeTypes,
   portNumbers,
+  unicodeNormalize,
 ]
 
 export const toolOf = (category: string, id: string): Tool | undefined =>
