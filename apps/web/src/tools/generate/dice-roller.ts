@@ -25,5 +25,6 @@ export const diceRoller = defineTransform({
   modes: [{ id: 'run', label: 'Run' }],
   placeholder: '2d6+3',
   example: '2d6+3',
+  fields: [{ label: 'Dice', kind: 'text' }],
   run,
 })
