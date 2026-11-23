@@ -1,3 +1,4 @@
+import { electricityCost } from './calculate/electricity-cost.ts'
 import { timeAdd } from './calculate/time-add.ts'
 import { ratioSimplifier } from './calculate/ratio-simplifier.ts'
 import { fuelCost } from './calculate/fuel-cost.ts'
@@ -242,6 +243,7 @@ export const tools: ReadonlyArray<Tool> = [
   fuelCost,
   ratioSimplifier,
   timeAdd,
+  electricityCost,
 ]
 
 export const toolOf = (category: string, id: string): Tool | undefined =>
