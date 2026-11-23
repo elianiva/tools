@@ -6,7 +6,17 @@ import type { Html, HtmlBuilder } from 'foldkit/html'
 import { defineMessageUnion } from 'foldkit/message'
 import { css } from '../../styled-system/css'
 import { presentOutput, type Present } from './presenters.ts'
-import { columns, field, hint, panel, segmented, stack, textArea, textInput } from './kit.ts'
+import {
+  button,
+  columns,
+  field,
+  hint,
+  panel,
+  segmented,
+  stack,
+  textArea,
+  textInput,
+} from './kit.ts'
 import { defineTool, type ToolMeta } from './tool.ts'
 
 type Mode = Readonly<{ id: string; label: string }>
@@ -113,6 +123,57 @@ const errorCls = css({
   fontFamily: 'var(--mono)',
 })
 
+type Size = Readonly<{ chars: number; words: number; lines: number }>
+
+const measure = (text: string): Size => ({
+  chars: [...text].length,
+  words: text.split(/\s+/u).filter((word) => word !== '').length,
+  lines: text === '' ? 0 : text.split('\n').length,
+})
+
+const stripCls = css({
+  display: 'flex',
+  flexWrap: 'wrap',
+  gap: '0.3rem 1rem',
+  fontFamily: 'var(--mono)',
+  fontSize: '0.72rem',
+  color: 'var(--muted-foreground)',
+  '& b': { color: 'var(--foreground)', fontWeight: 600 },
+  '& em': { fontStyle: 'normal', color: 'var(--tone, var(--primary))' },
+})
+const footCls = css({
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'space-between',
+  gap: '0.75rem',
+  flexWrap: 'wrap',
+})
+
+const delta = (now: number, before: number): string =>
+  now === before ? '' : ` ${now > before ? '+' : '−'}${Math.abs(now - before)}`
+
+/** Counts under a text box, with how far the text moved from `from` when it is given. */
+const stripView = <M>(h: HtmlBuilder<M>, size: Size, from?: Size): Html =>
+  h.div(
+    [h.Class(stripCls)],
+    [
+      ['chars', size.chars, from?.chars],
+      ['words', size.words, from?.words],
+      ['lines', size.lines, from?.lines],
+    ].map(([label, now, before]) =>
+      h.span(
+        [],
+        [
+          h.b([], [String(now)]),
+          ` ${String(label)}`,
+          before === undefined ? '' : h.em([], [delta(Number(now), Number(before))]),
+        ],
+      ),
+    ),
+  )
+
+const bigCls = css({ '& input': { fontSize: '1.6rem', padding: '0.9rem 1rem', height: 'auto' } })
+
 const formCls = css({
   display: 'grid',
   gap: '1rem',
@@ -173,10 +234,11 @@ export const defineTransform = (spec: TransformSpec) => {
                           onInput: (input) => Message.ChangedInput({ input }),
                         }),
                       ),
+                      stripView(h, measure(model.input)),
                     ]
                   : [
                       h.div(
-                        [h.Class(formCls)],
+                        [h.Class(spec.fields.length === 1 ? `${formCls} ${bigCls}` : formCls)],
                         spec.fields.map((item, index) =>
                           field(
                             h,
@@ -216,6 +278,22 @@ export const defineTransform = (spec: TransformSpec) => {
                     result.value,
                   ),
                 ),
+                result.value !== '' && spec.fields === undefined && spec.present === undefined
+                  ? h.div(
+                      [h.Class(footCls)],
+                      [
+                        stripView(h, measure(result.value), measure(model.input)),
+                        spec.meta.category === 'text' || spec.meta.category === 'developer'
+                          ? button(
+                              h,
+                              { variant: 'ghost', size: 'sm' },
+                              [h.OnClick(Message.ChangedInput({ input: result.value }))],
+                              ['Use as input'],
+                            )
+                          : null,
+                      ],
+                    )
+                  : null,
                 result.error === ''
                   ? null
                   : h.p([h.Role('alert'), h.Class(errorCls)], [result.error]),
