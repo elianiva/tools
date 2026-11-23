@@ -41,5 +41,9 @@ export const ageCalculator = defineTransform({
   modes: [{ id: 'run', label: 'Run' }],
   placeholder: 'birth date and today: 1990-08-15 2024-08-14',
   example: '1990-08-15 2024-08-14',
+  fields: [
+    { label: 'Born', kind: 'date' },
+    { label: 'On this day', kind: 'date' },
+  ],
   run,
 })
