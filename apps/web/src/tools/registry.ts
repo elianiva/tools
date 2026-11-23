@@ -1,3 +1,4 @@
+import { zodiac } from './calculate/zodiac.ts'
 import { ordinalNumbers } from './convert/ordinal-numbers.ts'
 import { speed } from './convert/speed.ts'
 import { angle } from './convert/angle.ts'
@@ -198,6 +199,7 @@ export const tools: ReadonlyArray<Tool> = [
   angle,
   speed,
   ordinalNumbers,
+  zodiac,
 ]
 
 export const toolOf = (category: string, id: string): Tool | undefined =>
