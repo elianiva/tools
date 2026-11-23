@@ -1,3 +1,4 @@
+import { hoursDecimal } from './convert/hours-decimal.ts'
 import { sphere } from './calculate/sphere.ts'
 import { triangle } from './calculate/triangle.ts'
 import { slope } from './calculate/slope.ts'
@@ -254,6 +255,7 @@ export const tools: ReadonlyArray<Tool> = [
   slope,
   triangle,
   sphere,
+  hoursDecimal,
 ]
 
 export const toolOf = (category: string, id: string): Tool | undefined =>
