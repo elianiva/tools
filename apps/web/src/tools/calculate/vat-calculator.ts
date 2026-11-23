@@ -27,5 +27,6 @@ export const vatCalculator = defineTransform({
   ],
   placeholder: 'amount and rate %: 100 11',
   example: '100 11',
+  fields: [{ label: 'Amount' }, { label: 'Rate', suffix: '%' }],
   run,
 })
