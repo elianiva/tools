@@ -11,5 +11,6 @@ export const slug = defineTransform({
   },
   modes: [{ id: 'slug', label: 'Slug' }],
   placeholder: 'My Blog Post Title',
+  present: 'display',
   run: (text) => slugify(text),
 })
