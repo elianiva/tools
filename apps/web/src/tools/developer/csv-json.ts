@@ -101,5 +101,6 @@ export const csvJson = defineTransform({
   placeholder: 'Type or paste text',
   acceptsFiles: true,
   example: 'a,b\n1,"x,y"\n2,"say ""hi"""',
+  present: 'code',
   run,
 })
