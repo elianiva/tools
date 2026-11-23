@@ -1,3 +1,4 @@
+import { duration } from './convert/duration.ts'
 import { timezones } from './convert/timezones.ts'
 import { contrastChecker } from './developer/contrast-checker.ts'
 import { cssMinifier } from './developer/css-minifier.ts'
@@ -152,6 +153,7 @@ export const tools: ReadonlyArray<Tool> = [
   cssMinifier,
   contrastChecker,
   timezones,
+  duration,
 ]
 
 export const toolOf = (category: string, id: string): Tool | undefined =>
