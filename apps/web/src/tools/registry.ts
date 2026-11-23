@@ -1,3 +1,4 @@
+import { workHours } from './calculate/work-hours.ts'
 import { markupMargin } from './calculate/markup-margin.ts'
 import { vatCalculator } from './calculate/vat-calculator.ts'
 import { zodiac } from './calculate/zodiac.ts'
@@ -204,6 +205,7 @@ export const tools: ReadonlyArray<Tool> = [
   zodiac,
   vatCalculator,
   markupMargin,
+  workHours,
 ]
 
 export const toolOf = (category: string, id: string): Tool | undefined =>
