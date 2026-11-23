@@ -1,3 +1,4 @@
+import { wordFrequency } from './text/word-frequency.ts'
 import { characterFrequency } from './text/character-frequency.ts'
 import { loremIpsum } from './generate/lorem-ipsum.ts'
 import { listConverter } from './text/list-converter.ts'
@@ -84,6 +85,7 @@ export const tools: ReadonlyArray<Tool> = [
   listConverter,
   loremIpsum,
   characterFrequency,
+  wordFrequency,
 ]
 
 export const toolOf = (category: string, id: string): Tool | undefined =>
