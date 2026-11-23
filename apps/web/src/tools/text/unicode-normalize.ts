@@ -21,5 +21,6 @@ export const unicodeNormalize = defineTransform({
   placeholder: 'Type or paste text',
   acceptsFiles: true,
   example: 'e\u0301',
+  present: 'display',
   run,
 })
