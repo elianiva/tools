@@ -27,5 +27,6 @@ export const angle = defineTransform({
   ],
   placeholder: '180',
   example: '180',
+  fields: [{ label: 'Value' }],
   run,
 })
