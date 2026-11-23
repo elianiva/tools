@@ -33,5 +33,6 @@ export const markdownToc = defineTransform({
   placeholder: 'Type or paste text',
   acceptsFiles: true,
   example: '# Intro\n## Setup & Run\n### Deep',
+  present: 'list',
   run,
 })
