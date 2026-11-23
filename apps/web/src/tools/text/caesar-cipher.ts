@@ -28,5 +28,6 @@ export const caesarCipher = defineTransform({
   ],
   placeholder: 'Type or paste text',
   example: 'Zz',
+  present: 'display',
   run,
 })
