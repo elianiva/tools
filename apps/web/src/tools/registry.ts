@@ -1,3 +1,4 @@
+import { weightedAverage } from './calculate/weighted-average.ts'
 import { workHours } from './calculate/work-hours.ts'
 import { markupMargin } from './calculate/markup-margin.ts'
 import { vatCalculator } from './calculate/vat-calculator.ts'
@@ -206,6 +207,7 @@ export const tools: ReadonlyArray<Tool> = [
   vatCalculator,
   markupMargin,
   workHours,
+  weightedAverage,
 ]
 
 export const toolOf = (category: string, id: string): Tool | undefined =>
