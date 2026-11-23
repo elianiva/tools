@@ -160,7 +160,11 @@ export const regexTester = defineTool({
     description: 'Test a JavaScript regular expression with live highlighting and groups.',
     keywords: ['regular expression', 'regexp', 'pattern', 'match', 'groups', 'test'],
   },
-  init: () => ({ pattern: '', flags: '', text: '' }),
+  init: () => ({
+    pattern: '(\\w+)@(\\w+)\\.com',
+    flags: '',
+    text: 'Write to ada@example.com or grace@navy.com.\nIgnore bob@example.org.',
+  }),
   update,
   view,
 })
