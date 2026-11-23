@@ -1,3 +1,4 @@
+import { discountCalculator } from './calculate/discount-calculator.ts'
 import { tipCalculator } from './calculate/tip-calculator.ts'
 import { bmiCalculator } from './calculate/bmi-calculator.ts'
 import { markdownToc } from './text/markdown-toc.ts'
@@ -108,6 +109,7 @@ export const tools: ReadonlyArray<Tool> = [
   markdownToc,
   bmiCalculator,
   tipCalculator,
+  discountCalculator,
 ]
 
 export const toolOf = (category: string, id: string): Tool | undefined =>
