@@ -21,5 +21,10 @@ export const simpleInterest = defineTransform({
   modes: [{ id: 'run', label: 'Run' }],
   placeholder: 'principal, yearly rate %, years: 1000 5 3',
   example: '1000 5 3',
+  fields: [
+    { label: 'Principal' },
+    { label: 'Yearly rate', suffix: '%' },
+    { label: 'Years', suffix: 'yrs' },
+  ],
   run,
 })
