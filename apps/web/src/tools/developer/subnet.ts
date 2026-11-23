@@ -37,5 +37,6 @@ export const subnet = defineTransform({
   placeholder: '192.168.1.10/24',
   example: '192.168.1.10/24',
   fields: [{ label: 'IP address with prefix', kind: 'text' }],
+  present: 'facts',
   run,
 })
