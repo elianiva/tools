@@ -19,5 +19,6 @@ export const sentenceSplitter = defineTransform({
   placeholder: 'Type or paste text',
   acceptsFiles: true,
   example: 'Hi there. How are you? Fine!',
+  present: 'list',
   run,
 })
