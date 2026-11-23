@@ -42,5 +42,6 @@ export const fancyText = defineTransform({
   ],
   placeholder: 'Type or paste text',
   example: 'Ab1',
+  present: 'display',
   run,
 })
