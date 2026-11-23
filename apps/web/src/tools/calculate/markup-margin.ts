@@ -23,5 +23,6 @@ export const markupMargin = defineTransform({
   modes: [{ id: 'run', label: 'Run' }],
   placeholder: 'cost and price: 60 100',
   example: '60 100',
+  fields: [{ label: 'Cost' }, { label: 'Price' }],
   run,
 })
