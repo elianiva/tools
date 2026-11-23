@@ -33,5 +33,6 @@ export const checksums = defineTransform({
   ],
   placeholder: 'Type or paste text',
   example: 'hello',
+  present: 'display',
   run,
 })
