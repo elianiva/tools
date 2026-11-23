@@ -23,5 +23,6 @@ export const squareRoot = defineTransform({
   modes: [{ id: 'run', label: 'Run' }],
   placeholder: '16',
   example: '16',
+  fields: [{ label: 'Number' }],
   run,
 })
