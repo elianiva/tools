@@ -59,5 +59,6 @@ export const romanNumerals = defineTransform({
   ],
   placeholder: 'Type or paste text',
   example: '1994',
+  fields: [{ label: 'Number or numeral', kind: 'text' }],
   run,
 })
