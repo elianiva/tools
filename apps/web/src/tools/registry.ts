@@ -1,3 +1,4 @@
+import { circle } from './calculate/circle.ts'
 import { bmr } from './calculate/bmr.ts'
 import { weightedAverage } from './calculate/weighted-average.ts'
 import { workHours } from './calculate/work-hours.ts'
@@ -210,6 +211,7 @@ export const tools: ReadonlyArray<Tool> = [
   workHours,
   weightedAverage,
   bmr,
+  circle,
 ]
 
 export const toolOf = (category: string, id: string): Tool | undefined =>
