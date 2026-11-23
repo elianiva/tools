@@ -37,5 +37,6 @@ export const clockFormat = defineTransform({
   placeholder: 'Type or paste text',
   acceptsFiles: true,
   example: '14:30',
+  fields: [{ label: 'Time', kind: 'text' }],
   run,
 })
