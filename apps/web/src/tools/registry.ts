@@ -1,3 +1,4 @@
+import { titleCase } from './text/title-case.ts'
 import { strikethrough } from './text/strikethrough.ts'
 import { palindrome } from './text/palindrome.ts'
 import { acronym } from './text/acronym.ts'
@@ -178,6 +179,7 @@ export const tools: ReadonlyArray<Tool> = [
   acronym,
   palindrome,
   strikethrough,
+  titleCase,
 ]
 
 export const toolOf = (category: string, id: string): Tool | undefined =>
