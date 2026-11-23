@@ -1,3 +1,4 @@
+import { romanNumerals } from './convert/roman-numerals.ts'
 import { numberToWords } from './convert/number-to-words.ts'
 import { cipher } from './text/cipher.ts'
 import { hexText } from './text/hex-text.ts'
@@ -68,6 +69,7 @@ export const tools: ReadonlyArray<Tool> = [
   hexText,
   cipher,
   numberToWords,
+  romanNumerals,
 ]
 
 export const toolOf = (category: string, id: string): Tool | undefined =>
