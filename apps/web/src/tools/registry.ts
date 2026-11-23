@@ -1,3 +1,4 @@
+import { extractData } from './text/extract-data.ts'
 import { sortWords } from './text/sort-words.ts'
 import { textRepeater } from './text/text-repeater.ts'
 import { whitespaceCleaner } from './text/whitespace-cleaner.ts'
@@ -50,6 +51,7 @@ export const tools: ReadonlyArray<Tool> = [
   whitespaceCleaner,
   textRepeater,
   sortWords,
+  extractData,
 ]
 
 export const toolOf = (category: string, id: string): Tool | undefined =>
