@@ -22,5 +22,6 @@ export const pxRem = defineTransform({
   ],
   placeholder: '24 (add a base size: 24 12)',
   example: '24',
+  fields: [{ label: 'Value' }],
   run,
 })
