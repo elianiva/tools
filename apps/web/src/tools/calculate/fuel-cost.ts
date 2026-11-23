@@ -22,5 +22,6 @@ export const fuelCost = defineTransform({
   ],
   placeholder: 'distance, efficiency, price per litre: 300 8 15000',
   example: '300 8 15000',
+  fields: [{ label: 'Distance' }, { label: 'Efficiency' }, { label: 'Price per litre' }],
   run,
 })
