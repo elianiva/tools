@@ -51,5 +51,6 @@ export const titleCase = defineTransform({
   placeholder: 'Type or paste text',
   acceptsFiles: true,
   example: 'the lord of the rings',
+  present: 'display',
   run,
 })
