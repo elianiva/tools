@@ -1,3 +1,4 @@
+import { slope } from './calculate/slope.ts'
 import { squareRoot } from './calculate/square-root.ts'
 import { logarithm } from './calculate/logarithm.ts'
 import { electricityCost } from './calculate/electricity-cost.ts'
@@ -248,6 +249,7 @@ export const tools: ReadonlyArray<Tool> = [
   electricityCost,
   logarithm,
   squareRoot,
+  slope,
 ]
 
 export const toolOf = (category: string, id: string): Tool | undefined =>
