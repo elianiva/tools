@@ -1,3 +1,4 @@
+import { randomString } from './generate/random-string.ts'
 import { coinFlip } from './generate/coin-flip.ts'
 import { randomNumber } from './generate/random-number.ts'
 import { vowelCounter } from './text/vowel-counter.ts'
@@ -290,6 +291,7 @@ export const tools: ReadonlyArray<Tool> = [
   vowelCounter,
   randomNumber,
   coinFlip,
+  randomString,
 ]
 
 export const toolOf = (category: string, id: string): Tool | undefined =>
