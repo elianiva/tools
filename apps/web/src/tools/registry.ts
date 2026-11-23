@@ -1,3 +1,4 @@
+import { numberStats } from './calculate/number-stats.ts'
 import { numberFormat } from './convert/number-format.ts'
 import { passwordStrength } from './developer/password-strength.ts'
 import { pigLatin } from './text/pig-latin.ts'
@@ -164,6 +165,7 @@ export const tools: ReadonlyArray<Tool> = [
   pigLatin,
   passwordStrength,
   numberFormat,
+  numberStats,
 ]
 
 export const toolOf = (category: string, id: string): Tool | undefined =>
