@@ -1,3 +1,4 @@
+import { jwtDecoder } from './developer/jwt-decoder.ts'
 import { lineTools } from './text/line-tools.ts'
 import { caseConverter } from './text/case-converter.ts'
 import { urlEncoder } from './developer/url-encoder.ts'
@@ -16,6 +17,7 @@ export const tools: ReadonlyArray<Tool> = [
   urlEncoder,
   caseConverter,
   lineTools,
+  jwtDecoder,
 ]
 
 export const toolOf = (category: string, id: string): Tool | undefined =>
