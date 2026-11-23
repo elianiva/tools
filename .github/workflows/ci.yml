@@ -110,6 +110,8 @@ jobs:
           node-version: 26
           cache: pnpm
       - run: pnpm install --frozen-lockfile
+      # The website build imports the generated Panda styles, which are not committed.
+      - run: pnpm --filter @tools/web codegen
       # `--yes` accepts the state-store bootstrap in CI. The first run may create
       # the Cloudflare state-store Worker in the same account.
       - run: pnpm exec alchemy deploy --stage prod --yes
