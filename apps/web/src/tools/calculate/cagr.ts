@@ -18,5 +18,6 @@ export const cagr = defineTransform({
   modes: [{ id: 'run', label: 'Run' }],
   placeholder: 'start value, end value, years: 1000 2000 5',
   example: '1000 2000 5',
+  fields: [{ label: 'Start value' }, { label: 'End value' }, { label: 'Years', suffix: 'yrs' }],
   run,
 })
