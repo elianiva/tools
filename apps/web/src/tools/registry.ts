@@ -1,3 +1,4 @@
+import { morseCode } from './text/morse-code.ts'
 import { upsideDown } from './text/upside-down.ts'
 import { fancyText } from './text/fancy-text.ts'
 import { removeAccents } from './text/remove-accents.ts'
@@ -58,6 +59,7 @@ export const tools: ReadonlyArray<Tool> = [
   removeAccents,
   fancyText,
   upsideDown,
+  morseCode,
 ]
 
 export const toolOf = (category: string, id: string): Tool | undefined =>
