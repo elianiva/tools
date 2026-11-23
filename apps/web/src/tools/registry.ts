@@ -1,3 +1,4 @@
+import { removeAccents } from './text/remove-accents.ts'
 import { extractData } from './text/extract-data.ts'
 import { sortWords } from './text/sort-words.ts'
 import { textRepeater } from './text/text-repeater.ts'
@@ -52,6 +53,7 @@ export const tools: ReadonlyArray<Tool> = [
   textRepeater,
   sortWords,
   extractData,
+  removeAccents,
 ]
 
 export const toolOf = (category: string, id: string): Tool | undefined =>
