@@ -1,3 +1,4 @@
+import { duplicateWords } from './text/duplicate-words.ts'
 import { editDistance } from './text/edit-distance.ts'
 import { findReplace } from './text/find-replace.ts'
 import { unicodeNormalize } from './text/unicode-normalize.ts'
@@ -278,6 +279,7 @@ export const tools: ReadonlyArray<Tool> = [
   unicodeNormalize,
   findReplace,
   editDistance,
+  duplicateWords,
 ]
 
 export const toolOf = (category: string, id: string): Tool | undefined =>
