@@ -1,3 +1,4 @@
+import { cssMinifier } from './developer/css-minifier.ts'
 import { subnet } from './developer/subnet.ts'
 import { chmod } from './developer/chmod.ts'
 import { httpStatus } from './developer/http-status.ts'
@@ -146,6 +147,7 @@ export const tools: ReadonlyArray<Tool> = [
   httpStatus,
   chmod,
   subnet,
+  cssMinifier,
 ]
 
 export const toolOf = (category: string, id: string): Tool | undefined =>
