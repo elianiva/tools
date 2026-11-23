@@ -1,3 +1,4 @@
+import { units } from './convert/units.ts'
 import { slug } from './text/slug.ts'
 import { cron } from './developer/cron.ts'
 import { timestamp } from './convert/timestamp.ts'
@@ -30,6 +31,7 @@ export const tools: ReadonlyArray<Tool> = [
   timestamp,
   cron,
   slug,
+  units,
 ]
 
 export const toolOf = (category: string, id: string): Tool | undefined =>
