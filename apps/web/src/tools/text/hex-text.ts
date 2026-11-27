@@ -1,4 +1,5 @@
-import { defineTransform } from '../transform.ts'
+import { attempt, byteBreakdown, defineLab, directionBar, ioPanels, layout } from './ui-b.ts'
+import { panel } from '../kit.ts'
 
 export const run = (text: string, mode: string): string => {
   if (mode === 'to-hex') {
@@ -18,7 +19,7 @@ export const run = (text: string, mode: string): string => {
   }
 }
 
-export const hexText = defineTransform({
+export const hexText = defineLab({
   meta: {
     id: 'hex-text',
     name: 'Text to hex',
@@ -26,12 +27,39 @@ export const hexText = defineTransform({
     description: 'Convert text to hexadecimal bytes and back.',
     keywords: ['hex', 'hexadecimal', 'bytes', 'utf-8'],
   },
-  modes: [
-    { id: 'to-hex', label: 'Text to hex' },
-    { id: 'from-hex', label: 'Hex to text' },
-  ],
-  placeholder: 'Type or paste text',
+  mode: 'to-hex',
   example: 'Hi',
-  present: 'tokens',
-  run,
+  view: (ctx) => {
+    const { h, model } = ctx
+    const encoding = model.mode === 'to-hex'
+    const result =
+      model.input.trim() === ''
+        ? { value: '', error: '' }
+        : attempt(() => run(model.input, model.mode))
+    const text = encoding ? model.input : result.value
+    return layout(
+      h,
+      [
+        directionBar(ctx, {
+          options: [
+            { value: 'to-hex', label: 'Text to hex' },
+            { value: 'from-hex', label: 'Hex to text' },
+          ],
+          swapTo:
+            result.value === ''
+              ? null
+              : { input: result.value, mode: encoding ? 'from-hex' : 'to-hex' },
+        }),
+      ],
+      [
+        ioPanels(ctx, {
+          inputLabel: encoding ? 'Text' : 'Hex',
+          outputLabel: encoding ? 'Hex' : 'Text',
+          placeholder: encoding ? 'Type or paste text' : '48 69',
+          result,
+        }),
+        text === '' || result.error !== '' ? null : panel(h, 'Bytes', [byteBreakdown(h, text, 16)]),
+      ],
+    )
+  },
 })

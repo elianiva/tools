@@ -1,4 +1,5 @@
-import { defineTransform } from '../transform.ts'
+import { attempt, byteBreakdown, defineLab, directionBar, ioPanels, layout } from './ui-b.ts'
+import { panel } from '../kit.ts'
 
 export const run = (text: string, mode: string): string => {
   if (mode === 'to-binary') {
@@ -18,7 +19,7 @@ export const run = (text: string, mode: string): string => {
   }
 }
 
-export const binaryText = defineTransform({
+export const binaryText = defineLab({
   meta: {
     id: 'binary-text',
     name: 'Text to binary',
@@ -26,12 +27,39 @@ export const binaryText = defineTransform({
     description: 'Convert text to binary and back.',
     keywords: ['binary', 'bits', '0 and 1', 'utf-8'],
   },
-  modes: [
-    { id: 'to-binary', label: 'Text to binary' },
-    { id: 'from-binary', label: 'Binary to text' },
-  ],
-  placeholder: 'Type or paste text',
+  mode: 'to-binary',
   example: 'Hi',
-  present: 'tokens',
-  run,
+  view: (ctx) => {
+    const { h, model } = ctx
+    const encoding = model.mode === 'to-binary'
+    const result =
+      model.input.trim() === ''
+        ? { value: '', error: '' }
+        : attempt(() => run(model.input, model.mode))
+    const text = encoding ? model.input : result.value
+    return layout(
+      h,
+      [
+        directionBar(ctx, {
+          options: [
+            { value: 'to-binary', label: 'Text to binary' },
+            { value: 'from-binary', label: 'Binary to text' },
+          ],
+          swapTo:
+            result.value === ''
+              ? null
+              : { input: result.value, mode: encoding ? 'from-binary' : 'to-binary' },
+        }),
+      ],
+      [
+        ioPanels(ctx, {
+          inputLabel: encoding ? 'Text' : 'Binary',
+          outputLabel: encoding ? 'Binary' : 'Text',
+          placeholder: encoding ? 'Type or paste text' : '01001000 01101001',
+          result,
+        }),
+        text === '' || result.error !== '' ? null : panel(h, 'Bytes', [byteBreakdown(h, text, 2)]),
+      ],
+    )
+  },
 })

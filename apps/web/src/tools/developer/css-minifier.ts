@@ -1,4 +1,5 @@
-import { defineTransform } from '../transform.ts'
+import { byteLength, codecView, defineWorkbench, formatSize } from './ui.ts'
+import { facts } from './ui.ts'
 
 export const run = (text: string): string => {
   return text
@@ -9,7 +10,7 @@ export const run = (text: string): string => {
     .trim()
 }
 
-export const cssMinifier = defineTransform({
+export const cssMinifier = defineWorkbench({
   meta: {
     id: 'css-minifier',
     name: 'CSS minifier',
@@ -17,10 +18,23 @@ export const cssMinifier = defineTransform({
     description: 'Strip comments and whitespace from CSS.',
     keywords: ['css', 'minify', 'compress', 'stylesheet', 'whitespace'],
   },
-  modes: [{ id: 'run', label: 'Run' }],
-  placeholder: 'Type or paste text',
-  acceptsFiles: true,
   example: 'a { color : red; }\n/* c */ b{margin:0 }',
-  present: 'code',
-  run,
+  acceptsFiles: true,
+  view: (h, ctx) =>
+    codecView(h, ctx, {
+      id: 'css-minifier',
+      modes: [],
+      run,
+      labels: () => ['CSS', 'Minified'],
+      placeholder: 'a { color: red; }',
+      details: (input, output) => {
+        const before = byteLength(input)
+        const after = byteLength(output)
+        return facts(h, [
+          ['Original', formatSize(before)],
+          ['Minified', formatSize(after)],
+          ['Saved', before === 0 ? '—' : `${(((before - after) / before) * 100).toFixed(0)}%`],
+        ])
+      },
+    }),
 })

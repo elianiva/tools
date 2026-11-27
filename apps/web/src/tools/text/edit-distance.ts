@@ -1,4 +1,6 @@
-import { defineTransform } from '../transform.ts'
+import { panel, stats } from '../kit.ts'
+import { align } from './edit-distance.logic.ts'
+import { banner, defineLab, layout, pairOf, pairPanel, tile, tileStrip } from './ui-b.ts'
 
 export const run = (text: string): string => {
   const lines = text.split('\n').map((line) => line.replace(/\r$/u, ''))
@@ -25,8 +27,9 @@ export const run = (text: string): string => {
   const longest = Math.max(x.length, y.length)
   return `Distance: ${distance}\nSimilarity: ${longest === 0 ? '100.0' : ((1 - distance / longest) * 100).toFixed(1)}%`
 }
+const MARK = { sub: '→', ins: '+', del: '−' } as const
 
-export const editDistance = defineTransform({
+export const editDistance = defineLab({
   meta: {
     id: 'edit-distance',
     name: 'Edit distance',
@@ -34,9 +37,44 @@ export const editDistance = defineTransform({
     description: 'How many single-character edits turn one line into another.',
     keywords: ['levenshtein', 'edit distance', 'similarity', 'fuzzy', 'typo', 'compare'],
   },
-  modes: [{ id: 'run', label: 'Run' }],
-  placeholder: 'Two lines: kitten and sitting',
   example: 'kitten\nsitting',
-  present: 'facts',
-  run,
+  view: (ctx) => {
+    const { h, model } = ctx
+    const [first, second] = pairOf(model.input)
+    const facts = run(`${first}\n${second}`)
+      .split('\n')
+      .map((line) => {
+        const [label = '', value = ''] = line.split(': ')
+        return [label, value] as const
+      })
+    const steps =
+      Array.from(first).length > 150 || Array.from(second).length > 150 ? [] : align(first, second)
+    const same = first === second
+    return layout(
+      h,
+      [],
+      [
+        pairPanel(ctx, { labels: ['From', 'To'], placeholders: ['kitten', 'sitting'] }),
+        first === '' && second === ''
+          ? null
+          : panel(h, null, [
+              stats(h, facts),
+              steps.length === 0
+                ? null
+                : tileStrip(
+                    h,
+                    steps.map((step) =>
+                      tile(h, {
+                        top: step.from === '' ? '∅' : step.from,
+                        ...(step.kind === 'same' ? {} : { join: MARK[step.kind] }),
+                        bottom: step.to === '' ? '∅' : step.to,
+                        state: step.kind === 'same' ? 'same' : 'diff',
+                      }),
+                    ),
+                  ),
+              same ? banner(h, { yes: true, title: 'Identical', detail: '' }) : null,
+            ]),
+      ],
+    )
+  },
 })

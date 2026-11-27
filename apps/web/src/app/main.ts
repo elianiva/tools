@@ -5,7 +5,8 @@ import { Command, Dom, File, Navigation, Subscription, Update, Url } from 'foldk
 import type { Document, HtmlBuilder } from 'foldkit/html'
 import { defineMessageUnion } from 'foldkit/message'
 import { acceptsFile } from '../tools/files.ts'
-import { pathOfTool, toolOf, tools } from '../tools/registry.ts'
+import { pathOfTool, toolById, toolOf, tools } from '../tools/registry.ts'
+import { isSuite } from '../tools/suite.ts'
 import { groupByBestMatch, groupTools, searchTools } from '../tools/search.ts'
 import type { Tool } from '../tools/tool.ts'
 import { shellView } from '../shell/view.ts'
@@ -172,11 +173,14 @@ const toolOfRoute = (route: AppRoute): Tool | undefined =>
 const enter = (model: Model, route: AppRoute): Model => {
   const tool = toolOfRoute(route)
   if (tool === undefined) return { ...model, route }
+  const current = model.tools[tool.meta.id] ?? tool.init()
+  // A link to a tool from before it joined a suite opens that suite on the tool.
+  const old = route._tag === 'Tool' ? route.id : tool.meta.id
+  const opened = isSuite(tool) && old !== tool.meta.id ? tool.select(current, old) : current
   return {
     ...model,
     route,
-    tools:
-      tool.meta.id in model.tools ? model.tools : { ...model.tools, [tool.meta.id]: tool.init() },
+    tools: { ...model.tools, [tool.meta.id]: opened },
     recents: [tool.meta.id, ...model.recents.filter((id) => id !== tool.meta.id)].slice(
       0,
       RECENT_LIMIT,
@@ -249,8 +253,14 @@ export type PaletteGroup = Readonly<{
 }>
 
 /** Tools picked by id, in the order the ids appear. */
-const pickTools = (ids: ReadonlyArray<string>): ReadonlyArray<Tool> =>
-  ids.flatMap((id) => tools.filter((tool) => tool.meta.id === id))
+const pickTools = (ids: ReadonlyArray<string>): ReadonlyArray<Tool> => [
+  ...new Set(
+    ids.flatMap((id) => {
+      const tool = toolById(id)
+      return tool === undefined ? [] : [tool]
+    }),
+  ),
+]
 
 /**
  * What the palette lists, in the order it lists it. With no query the list

@@ -1,4 +1,4 @@
-import { defineTransform } from '../transform.ts'
+import { card, defineForm, errorText, linked, page, rows } from './ui.ts'
 
 export const run = (text: string, mode: string): string => {
   if (mode === 'to-decimal') {
@@ -19,7 +19,7 @@ export const run = (text: string, mode: string): string => {
   return `${mantissa} × 10^${Number(exponent)}`
 }
 
-export const scientificNotation = defineTransform({
+export const scientificNotation = defineForm({
   meta: {
     id: 'scientific-notation',
     name: 'Scientific notation',
@@ -27,12 +27,35 @@ export const scientificNotation = defineTransform({
     description: 'Write numbers as a × 10^n and read them back.',
     keywords: ['scientific notation', 'exponent', 'standard form', 'e notation'],
   },
-  modes: [
-    { id: 'to-scientific', label: 'To scientific' },
-    { id: 'to-decimal', label: 'To decimal' },
-  ],
-  placeholder: '12345',
-  example: '12345',
-  fields: [{ label: 'Number', kind: 'text' }],
-  run,
+  init: { src: 'dec', text: '12345' },
+  view: (form, h) => {
+    const pair = linked(
+      h,
+      form,
+      [
+        { key: 'dec', label: 'Decimal' },
+        { key: 'sci', label: 'Scientific' },
+      ],
+      (src, text) =>
+        src === 'dec' ? { sci: run(text, 'to-scientific') } : { dec: run(text, 'to-decimal') },
+    )
+    const decimal = Number((pair.values['dec'] ?? form.get('text')).replaceAll(/[,_\s]/gu, ''))
+    return page(h, [
+      card(h, null, [pair.fields, errorText(h, pair.error)]),
+      pair.error !== '' || !Number.isFinite(decimal) || form.get('text').trim() === ''
+        ? null
+        : card(h, null, [
+            rows(h, [
+              ['E notation', decimal.toExponential().replace('e+', 'e')],
+              ['Engineering', engineering(decimal)],
+            ]),
+          ]),
+    ])
+  },
 })
+
+const engineering = (value: number): string => {
+  if (value === 0) return '0 × 10^0'
+  const exponent = Math.floor(Math.log10(Math.abs(value)) / 3) * 3
+  return `${Number((value / 10 ** exponent).toPrecision(10))} × 10^${exponent}`
+}

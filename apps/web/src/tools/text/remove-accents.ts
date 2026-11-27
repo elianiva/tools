@@ -1,10 +1,10 @@
-import { defineTransform } from '../transform.ts'
+import { cleaner, defineTextTool } from './ui.ts'
 
 export const run = (text: string): string => {
   return text.normalize('NFD').replaceAll(/\p{M}/gu, '').normalize('NFC')
 }
 
-export const removeAccents = defineTransform({
+export const removeAccents = defineTextTool({
   meta: {
     id: 'remove-accents',
     name: 'Accent remover',
@@ -12,10 +12,13 @@ export const removeAccents = defineTransform({
     description: 'Strip diacritics: café becomes cafe.',
     keywords: ['diacritics', 'accents', 'normalize', 'ascii'],
   },
-  modes: [{ id: 'run', label: 'Run' }],
-  placeholder: 'Type or paste text',
-  acceptsFiles: true,
-  example: 'Crème brûlée ñ',
-  present: 'display',
-  run,
+  example: 'Crème brûlée, jalapeño, and Zürich',
+  files: true,
+  render: (c) =>
+    cleaner(c, {
+      run,
+      extra: (before) => [
+        ['Accented letters', String((before.normalize('NFD').match(/\p{M}/gu) ?? []).length)],
+      ],
+    }),
 })

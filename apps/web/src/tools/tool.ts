@@ -9,6 +9,11 @@ export const CATEGORIES = [
     description: 'Convert, shrink, and inspect pictures.',
   },
   {
+    id: 'pdf',
+    name: 'PDF',
+    description: 'Merge, split, rotate, and convert PDFs.',
+  },
+  {
     id: 'text',
     name: 'Text',
     description: 'Count, clean, transform, and compare writing.',

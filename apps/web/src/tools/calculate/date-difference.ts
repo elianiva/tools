@@ -1,4 +1,16 @@
-import { defineTransform } from '../transform.ts'
+import {
+  chipRowCls,
+  column,
+  dateCard,
+  defineCalc,
+  elapsed,
+  hero,
+  parseIso,
+  spoken,
+  dayNumber,
+  tiles,
+  fact,
+} from './ui.ts'
 
 export const run = (text: string): string => {
   const found = text.match(/\d{4}-\d{2}-\d{2}/gu) ?? []
@@ -12,7 +24,7 @@ export const run = (text: string): string => {
   return [`Days: ${days}`, `Weeks: ${Math.floor(days / 7)} weeks ${days % 7} days`].join('\n')
 }
 
-export const dateDifference = defineTransform({
+export const dateDifference = defineCalc({
   meta: {
     id: 'date-difference',
     name: 'Date difference',
@@ -20,12 +32,24 @@ export const dateDifference = defineTransform({
     description: 'Days and weeks between two dates.',
     keywords: ['days between', 'date', 'duration', 'weeks', 'countdown'],
   },
-  modes: [{ id: 'run', label: 'Run' }],
-  placeholder: '2024-01-01 2024-03-01',
-  example: '2024-01-01 2024-03-01',
-  fields: [
-    { label: 'From', kind: 'date' },
-    { label: 'To', kind: 'date' },
-  ],
   run,
+  fields: [
+    { label: 'From', value: '2024-01-01', kind: 'date' },
+    { label: 'To', value: '2024-03-01', kind: 'date' },
+  ],
+  view: (h, { values, out }) => {
+    const a = parseIso(values[0] ?? '')
+    const b = parseIso(values[1] ?? '')
+    if (a === null || b === null) return column(h, [])
+    const [from, to] = dayNumber(a) <= dayNumber(b) ? [a, b] : [b, a]
+    const human = spoken(elapsed(from, to))
+    return column(h, [
+      hero(h, { label: 'Difference', value: human, sub: `${fact(out, 'Days')} days`, copy: out }),
+      h.div([h.Class(chipRowCls)], [dateCard(h, from), dateCard(h, to)]),
+      tiles(h, [
+        ['Days', fact(out, 'Days')],
+        ['Weeks', fact(out, 'Weeks')],
+      ]),
+    ])
+  },
 })

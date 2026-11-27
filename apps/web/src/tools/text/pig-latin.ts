@@ -1,4 +1,5 @@
-import { defineTransform } from '../transform.ts'
+import { panel } from '../kit.ts'
+import { defineLab, ioPanels, layout, tile, tileStrip } from './ui-b.ts'
 
 export const run = (text: string): string => {
   return text.replaceAll(/[A-Za-z]+/gu, (word) => {
@@ -15,8 +16,7 @@ export const run = (text: string): string => {
       : out.charAt(0).toUpperCase() + out.slice(1)
   })
 }
-
-export const pigLatin = defineTransform({
+export const pigLatin = defineLab({
   meta: {
     id: 'pig-latin',
     name: 'Pig Latin',
@@ -24,9 +24,33 @@ export const pigLatin = defineTransform({
     description: 'Translate English into Pig Latin.',
     keywords: ['pig latin', 'game', 'translate', 'fun'],
   },
-  modes: [{ id: 'run', label: 'Run' }],
-  placeholder: 'Type or paste text',
   example: 'hello world',
-  present: 'display',
-  run,
+  view: (ctx) => {
+    const { h, model } = ctx
+    const words = model.input
+      .split(/\s+/u)
+      .filter((word) => /[A-Za-z]/u.test(word))
+      .slice(0, 80)
+    return layout(
+      h,
+      [],
+      [
+        ioPanels(ctx, {
+          inputLabel: 'English',
+          outputLabel: 'Pig Latin',
+          placeholder: 'Type or paste text',
+          rows: 6,
+          result: { value: run(model.input), error: '' },
+        }),
+        words.length === 0
+          ? null
+          : panel(h, 'Words', [
+              tileStrip(
+                h,
+                words.map((word) => tile(h, { top: word, join: '↓', bottom: run(word) })),
+              ),
+            ]),
+      ],
+    )
+  },
 })

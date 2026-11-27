@@ -1,4 +1,4 @@
-import { defineTransform } from '../transform.ts'
+import { card, defineForm, errorText, linked, page, parseLines, rows, spaced } from './ui.ts'
 
 export const run = (text: string, mode: string): string => {
   const clean = text.trim().replaceAll(/[_\s]/gu, '').toLowerCase()
@@ -25,7 +25,7 @@ export const run = (text: string, mode: string): string => {
   ].join('\n')
 }
 
-export const baseConverter = defineTransform({
+export const baseConverter = defineForm({
   meta: {
     id: 'base-converter',
     name: 'Number base converter',
@@ -33,14 +33,41 @@ export const baseConverter = defineTransform({
     description: 'Binary, octal, decimal, and hexadecimal side by side.',
     keywords: ['binary', 'hex', 'octal', 'decimal', 'radix', 'base'],
   },
-  modes: [
-    { id: 'dec', label: 'Decimal' },
-    { id: 'hex', label: 'Hex' },
-    { id: 'bin', label: 'Binary' },
-    { id: 'oct', label: 'Octal' },
-  ],
-  placeholder: '255',
-  example: '255',
-  fields: [{ label: 'Number', kind: 'text' }],
-  run,
+  init: { src: 'dec', text: '255' },
+  view: (form, h) => {
+    const pair = linked(
+      h,
+      form,
+      [
+        { key: 'dec', label: 'Decimal', suffix: '10' },
+        { key: 'hex', label: 'Hexadecimal', suffix: '16' },
+        { key: 'bin', label: 'Binary', suffix: '2' },
+        { key: 'oct', label: 'Octal', suffix: '8' },
+      ],
+      (src, text) => {
+        const out = parseLines(run(text, src))
+        return {
+          dec: out['Decimal'] ?? '',
+          hex: out['Hex'] ?? '',
+          bin: out['Binary'] ?? '',
+          oct: out['Octal'] ?? '',
+        }
+      },
+    )
+    const v = pair.values
+    return page(h, [
+      card(h, null, [pair.fields, errorText(h, pair.error)]),
+      v['bin'] === undefined
+        ? null
+        : card(h, 'Grouped', [
+            rows(h, [
+              ['Binary', spaced(v['bin'] ?? '', 4)],
+              ['Hexadecimal', spaced(v['hex'] ?? '', 2).toUpperCase()],
+              ['Decimal', Number(v['dec']).toLocaleString('en')],
+              ['Octal', spaced(v['oct'] ?? '', 3)],
+              ['Bits', String((v['bin'] ?? '').replace('-', '').length)],
+            ]),
+          ]),
+    ])
+  },
 })

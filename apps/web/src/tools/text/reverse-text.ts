@@ -1,4 +1,5 @@
-import { defineTransform } from '../transform.ts'
+import { columns, hint, panel, stack } from '../kit.ts'
+import { defineTextTool, display, previewGrid, sourcePanel, useAsInput } from './ui.ts'
 
 export const run = (text: string, mode: string): string => {
   if (mode === 'lines') return text.split('\n').toReversed().join('\n')
@@ -14,7 +15,13 @@ export const run = (text: string, mode: string): string => {
     .join('')
 }
 
-export const reverseText = defineTransform({
+const MODES = [
+  { value: 'chars', label: 'Characters' },
+  { value: 'words', label: 'Word order' },
+  { value: 'lines', label: 'Line order' },
+] as const
+
+export const reverseText = defineTextTool({
   meta: {
     id: 'reverse-text',
     name: 'Reverse text',
@@ -22,13 +29,29 @@ export const reverseText = defineTransform({
     description: 'Reverse characters, words, or lines.',
     keywords: ['flip', 'backwards', 'mirror'],
   },
-  modes: [
-    { id: 'chars', label: 'Characters' },
-    { id: 'words', label: 'Word order' },
-    { id: 'lines', label: 'Line order' },
-  ],
-  placeholder: 'Type or paste text',
-  example: 'abc',
-  present: 'display',
-  run,
+  mode: 'chars',
+  example: 'one fish\ntwo fish\nred fish',
+  render: (c) => {
+    const { h } = c
+    const value = run(c.input, c.mode)
+    return h.div(
+      [h.Class(stack)],
+      [
+        previewGrid(
+          c,
+          MODES.map((item) => ({
+            ...item,
+            text: c.input === '' ? '' : run(c.input.split('\n')[0] ?? '', item.value),
+          })),
+        ),
+        columns(h, [
+          sourcePanel(c),
+          panel(h, 'Reversed', [
+            c.input === '' ? hint(h, 'Paste text to reverse.') : display(h, 'Reversed', value),
+            useAsInput(c, value),
+          ]),
+        ]),
+      ],
+    )
+  },
 })

@@ -12,6 +12,7 @@ import {
   field,
   hint,
   panel,
+  row,
   segmented,
   stack,
   textArea,
@@ -59,6 +60,7 @@ const Message = defineMessageUnion({
   ChangedInput: { input: Schema.String },
   ChangedMode: { mode: Schema.String },
   ChangedField: { index: Schema.Number, value: Schema.String },
+  ClickedClear: {},
   DroppedFiles: { files: Schema.Array(File.File) },
   LoadedText: { input: Schema.String },
   FailedLoad: {},
@@ -89,6 +91,7 @@ const update = (model: Model, message: Message) =>
       const first = files[0]
       return first === undefined ? { model } : { model, commands: [LoadText({ file: first })] }
     },
+    ClickedClear: () => ({ model: { ...model, input: '', values: model.values.map(() => '') } }),
     LoadedText: ({ input }) => ({ model: { ...model, input } }),
     FailedLoad: () => ({ model }),
   })
@@ -234,7 +237,31 @@ export const defineTransform = (spec: TransformSpec) => {
                           onInput: (input) => Message.ChangedInput({ input }),
                         }),
                       ),
-                      stripView(h, measure(model.input)),
+                      h.div(
+                        [h.Class(footCls)],
+                        [
+                          stripView(h, measure(model.input)),
+                          h.div(
+                            [h.Class(row)],
+                            [
+                              spec.example === undefined || model.input === spec.example
+                                ? null
+                                : button(
+                                    h,
+                                    { variant: 'ghost', size: 'sm' },
+                                    [h.OnClick(Message.ChangedInput({ input: spec.example }))],
+                                    ['Example'],
+                                  ),
+                              button(
+                                h,
+                                { variant: 'ghost', size: 'sm' },
+                                [h.Disabled(model.input === ''), h.OnClick(Message.ClickedClear())],
+                                ['Clear'],
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
                     ]
                   : [
                       h.div(

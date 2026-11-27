@@ -3,7 +3,7 @@ import { Command, File, Submodel } from 'foldkit'
 import { zipSync } from 'fflate'
 import { defineMessageUnion } from 'foldkit/message'
 import { css } from '../../../styled-system/css'
-import { badge, button, panel, range, row, segmented, stack, hint, dropzone } from '../kit.ts'
+import { badge, button, panel, range, row, segmented, stack, hint } from '../kit.ts'
 import { defineTool } from '../tool.ts'
 import { convertImage } from './convert.engine.ts'
 import { FORMATS, formatBytes, formatOf, outputName, savedPercent } from './convert.logic.ts'
@@ -27,11 +27,14 @@ const Model = Schema.Struct({
   run: Schema.Finite,
   next: Schema.Finite,
   zipUrl: Schema.String,
+  dragging: Schema.Boolean,
 })
 type Model = typeof Model.Type
 
 const Message = defineMessageUnion({
   AddedFiles: { files: Schema.Array(File.File) },
+  DraggedOver: {},
+  DraggedAway: {},
   ChangedFormat: { format: Schema.String },
   ChangedQuality: { quality: Schema.Finite },
   ChangedMaxWidth: { maxWidth: Schema.Finite },
@@ -134,9 +137,16 @@ const update = (model: Model, message: Message) =>
         url: '',
         note: '',
       }))
-      const next = { ...model, items: [...model.items, ...fresh], next: model.next + files.length }
+      const next = {
+        ...model,
+        dragging: false,
+        items: [...model.items, ...fresh],
+        next: model.next + files.length,
+      }
       return { model: next, commands: convertAll(next, fresh) }
     },
+    DraggedOver: () => ({ model: { ...model, dragging: true } }),
+    DraggedAway: () => ({ model: { ...model, dragging: false } }),
     ChangedFormat: ({ format }) => settingsChanged({ ...model, format }, model),
     ChangedQuality: ({ quality }) => settingsChanged({ ...model, quality }, model),
     ChangedMaxWidth: ({ maxWidth }) => settingsChanged({ ...model, maxWidth }, model),
@@ -216,10 +226,10 @@ const listCls = css({
 })
 const itemCls = css({
   display: 'grid',
-  gridTemplateColumns: 'minmax(0, 1fr) auto',
+  gridTemplateColumns: '3.5rem minmax(0, 1fr) auto',
   alignItems: 'center',
   gap: '0.75rem',
-  padding: '0.65rem 0.85rem',
+  padding: '0.6rem 0.75rem',
   borderRadius: 'var(--radius)',
   background: 'var(--well)',
   boxShadow: 'var(--elev-well)',
@@ -242,7 +252,81 @@ const itemCls = css({
     textDecoration: 'none',
   },
 })
+const thumbCls = css({
+  width: '3.5rem',
+  height: '3.5rem',
+  borderRadius: '8px',
+  objectFit: 'cover',
+  background: 'var(--card)',
+  boxShadow: 'var(--elev-card)',
+})
+const thumbEmptyCls = css({
+  width: '3.5rem',
+  height: '3.5rem',
+  borderRadius: '8px',
+  background: 'var(--card)',
+  boxShadow: 'var(--elev-card)',
+})
+const sizesCls = css({
+  display: 'flex',
+  flexDirection: 'column',
+  gap: '0.25rem',
+  marginBlockStart: '0.3rem',
+  '& div': {
+    display: 'grid',
+    gridTemplateColumns: '1fr 5.5rem',
+    alignItems: 'center',
+    gap: '0.5rem',
+  },
+  '& i': {
+    display: 'block',
+    height: '6px',
+    borderRadius: '999px',
+    background: 'color-mix(in oklab, var(--foreground) 28%, transparent)',
+    transition: 'width 300ms cubic-bezier(0.23, 1, 0.32, 1)',
+  },
+  '& i[data-after]': { background: 'var(--ok)' },
+  '& i[data-after][data-grew]': { background: 'var(--warn)' },
+  '& small': { textAlign: 'right' },
+})
 const gap = css({ display: 'flex', alignItems: 'center', gap: '0.5rem' })
+const dropCls = css({
+  display: 'flex',
+  flexDirection: 'column',
+  alignItems: 'center',
+  justifyContent: 'center',
+  gap: '0.3rem',
+  minHeight: '9rem',
+  padding: '1.5rem',
+  borderRadius: 'calc(var(--radius) * 1.4)',
+  background: 'var(--well)',
+  boxShadow: 'var(--elev-well)',
+  color: 'var(--muted-foreground)',
+  textAlign: 'center',
+  cursor: 'pointer',
+  outline: '2px dashed transparent',
+  outlineOffset: '-6px',
+  transition: 'outline-color 150ms, color 150ms, background 150ms',
+  '& *': { pointerEvents: 'none' },
+  '& input': { position: 'absolute', width: 1, height: 1, opacity: 0 },
+  '&:hover, &:has(input:focus-visible)': {
+    outlineColor: 'color-mix(in oklab, var(--foreground) 30%, transparent)',
+    color: 'var(--foreground)',
+  },
+  '&[data-dragging]': {
+    outlineColor: 'var(--tone)',
+    background: 'var(--tone-soft)',
+    color: 'var(--foreground)',
+  },
+  '& strong': { color: 'var(--foreground)', fontWeight: 550 },
+})
+
+const sizeBars = (item: Item) => {
+  const before = item.file.size
+  const after = item.out?.size ?? 0
+  const top = Math.max(before, after, 1)
+  return { before: (before / top) * 100, after: (after / top) * 100, grew: after > before }
+}
 
 const WIDTHS = [
   { value: '0', label: 'Original' },
@@ -258,14 +342,31 @@ const view = Submodel.defineView<Model, Message>((model, h) => {
   return h.div(
     [h.Class(stack)],
     [
-      dropzone(h, {
-        id: 'image-files',
-        accept: ['image/*', '.heic', '.heif'],
-        multiple: true,
-        title: 'Drop images, paste them, or click to choose',
-        detail: 'PNG, JPG, WebP, AVIF, GIF, BMP, SVG and HEIC. They stay on this device.',
-        onFiles: (files) => Message.AddedFiles({ files }),
-      }),
+      h.label(
+        [
+          h.Class(dropCls),
+          h.For('image-files'),
+          ...(model.dragging ? [h.Attribute('data-dragging', '')] : []),
+          h.AllowDrop(),
+          h.OnDragEnter(Message.DraggedOver()),
+          h.OnDragLeave(Message.DraggedAway()),
+          h.OnDropFiles((files) => Message.AddedFiles({ files })),
+        ],
+        [
+          h.input([
+            h.Id('image-files'),
+            h.Type('file'),
+            h.Accept('image/*,.heic,.heif'),
+            h.Multiple(true),
+            h.OnFileChange((files) => Message.AddedFiles({ files })),
+          ]),
+          h.strong(
+            [],
+            [model.dragging ? 'Drop to convert' : 'Drop images, paste them, or click to choose'],
+          ),
+          h.span([], ['PNG, JPG, WebP, AVIF, GIF, BMP, SVG and HEIC. They stay on this device.']),
+        ],
+      ),
       panel(h, 'Convert to', [
         segmented(h, {
           label: 'Output format',
@@ -304,6 +405,9 @@ const view = Submodel.defineView<Model, Message>((model, h) => {
                 h.li(
                   [h.Key(item.id), h.Class(itemCls)],
                   [
+                    item.status === 'done'
+                      ? h.img([h.Class(thumbCls), h.Src(item.url), h.Alt('')])
+                      : h.div([h.Class(thumbEmptyCls)], []),
                     h.div(
                       [],
                       [
@@ -315,15 +419,41 @@ const view = Submodel.defineView<Model, Message>((model, h) => {
                               ? `${formatBytes(item.file.size)} · converting…`
                               : item.status === 'failed'
                                 ? item.note
-                                : [
-                                    `${formatBytes(item.file.size)} → ${formatBytes(item.out?.size ?? 0)}`,
-                                    saved(item),
-                                    item.note,
-                                  ]
+                                : [saved(item), item.note]
                                     .filter((part) => part !== '')
                                     .join(' · '),
                           ],
                         ),
+                        item.status === 'done'
+                          ? h.div(
+                              [h.Class(sizesCls)],
+                              [
+                                h.div(
+                                  [],
+                                  [
+                                    h.i([h.Style({ width: `${sizeBars(item).before}%` })], []),
+                                    h.small([], [formatBytes(item.file.size)]),
+                                  ],
+                                ),
+                                h.div(
+                                  [],
+                                  [
+                                    h.i(
+                                      [
+                                        h.Attribute('data-after', ''),
+                                        ...(sizeBars(item).grew
+                                          ? [h.Attribute('data-grew', '')]
+                                          : []),
+                                        h.Style({ width: `${sizeBars(item).after}%` }),
+                                      ],
+                                      [],
+                                    ),
+                                    h.small([], [formatBytes(item.out?.size ?? 0)]),
+                                  ],
+                                ),
+                              ],
+                            )
+                          : null,
                       ],
                     ),
                     h.div(
@@ -395,6 +525,7 @@ export const imageConverter = defineTool({
     run: 0,
     next: 0,
     zipUrl: '',
+    dragging: false,
   }),
   update,
   view,

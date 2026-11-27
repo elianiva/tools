@@ -1,4 +1,4 @@
-import { defineTransform } from '../transform.ts'
+import { cleaner, defineTextTool } from './ui.ts'
 
 export const run = (text: string, mode: string): string => {
   if (mode === 'none') return text.replaceAll(/\r?\n+/gu, '')
@@ -11,7 +11,7 @@ export const run = (text: string, mode: string): string => {
   return text.replaceAll(/\s*\n\s*/gu, ' ')
 }
 
-export const removeLineBreaks = defineTransform({
+export const removeLineBreaks = defineTextTool({
   meta: {
     id: 'remove-line-breaks',
     name: 'Line break remover',
@@ -19,14 +19,18 @@ export const removeLineBreaks = defineTransform({
     description: 'Join lines into one, or keep paragraphs apart.',
     keywords: ['newline', 'join lines', 'unwrap', 'paragraph'],
   },
-  modes: [
-    { id: 'space', label: 'Join with spaces' },
-    { id: 'none', label: 'Remove entirely' },
-    { id: 'paragraphs', label: 'Keep paragraphs' },
-  ],
-  placeholder: 'Type or paste text',
-  acceptsFiles: true,
-  example: 'a\n b',
-  present: 'display',
-  run,
+  mode: 'space',
+  example:
+    'This sentence was wrapped\nby an old email client\nat a fixed width.\n\nA second paragraph\nstarts here.',
+  files: true,
+  render: (c) =>
+    cleaner(c, {
+      run,
+      options: [
+        { value: 'space', label: 'Join with spaces' },
+        { value: 'none', label: 'Remove entirely' },
+        { value: 'paragraphs', label: 'Keep paragraphs' },
+      ],
+      extra: (before) => [['Line breaks', String(before.split('\n').length - 1)]],
+    }),
 })

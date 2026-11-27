@@ -1,4 +1,6 @@
-import { defineTransform } from '../transform.ts'
+import { css } from '../../../styled-system/css'
+import { columns, panel, stack } from '../kit.ts'
+import { attempt, defineWorkbench, errorNote, sectionLabel, textField } from './ui.ts'
 
 export const run = (text: string): string => {
   type Parsed = Readonly<{ nums: ReadonlyArray<number>; pre: ReadonlyArray<string> }>
@@ -44,7 +46,38 @@ export const run = (text: string): string => {
   return result > 0 ? `${first} is greater than ${second}` : `${second} is greater than ${first}`
 }
 
-export const semverCompare = defineTransform({
+const partsCls = css({
+  display: 'grid',
+  gridTemplateColumns: 'repeat(4, minmax(0, 1fr))',
+  gap: '0.5rem',
+  '& div': {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '0.15rem',
+    padding: '0.6rem 0.7rem',
+    borderRadius: 'var(--radius)',
+    background: 'var(--well)',
+    boxShadow: 'var(--elev-well)',
+  },
+  '& b': { fontFamily: 'var(--mono)', fontSize: '1.3rem', fontWeight: 500, wordBreak: 'break-all' },
+  '& span': { fontSize: '0.72rem', color: 'var(--muted-foreground)' },
+  '& [data-diff]': { boxShadow: 'inset 0 0 0 2px var(--warn)', background: 'var(--warn-soft)' },
+})
+const verdictCls = css({
+  margin: 0,
+  fontFamily: 'var(--mono)',
+  fontSize: 'clamp(1.2rem, 3vw, 1.8rem)',
+  fontWeight: 500,
+})
+
+const split = (value: string): ReadonlyArray<string> => {
+  const match = /^v?(\d+)\.(\d+)\.(\d+)(?:-([0-9A-Za-z.-]+))?(?:\+([0-9A-Za-z.-]+))?$/u.exec(
+    value.trim(),
+  )
+  return match === null ? [] : [match[1] ?? '', match[2] ?? '', match[3] ?? '', match[4] ?? '']
+}
+
+export const semverCompare = defineWorkbench({
   meta: {
     id: 'semver-compare',
     name: 'Semver comparer',
@@ -52,13 +85,58 @@ export const semverCompare = defineTransform({
     description: 'Say which of two semantic versions is newer.',
     keywords: ['semver', 'version', 'compare', 'npm', 'release', 'prerelease'],
   },
-  modes: [{ id: 'run', label: 'Run' }],
-  placeholder: '1.2.3 1.10.0',
-  example: '1.2.3 1.10.0',
-  fields: [
-    { label: 'Version A', kind: 'text' },
-    { label: 'Version B', kind: 'text' },
-  ],
-  present: 'display',
-  run,
+  example: '1.2.3',
+  opts: { b: '1.10.0' },
+  view: (h, ctx) => {
+    const a = ctx.input.trim()
+    const b = ctx.opt('b').trim()
+    const result = a === '' || b === '' ? { value: '', error: '' } : attempt(() => run(`${a} ${b}`))
+    const left = split(a)
+    const right = split(b)
+    const column = (label: string, parts: ReadonlyArray<string>, other: ReadonlyArray<string>) =>
+      panel(h, null, [
+        sectionLabel(h, label),
+        parts.length === 0
+          ? null
+          : h.div(
+              [h.Class(partsCls)],
+              ['Major', 'Minor', 'Patch', 'Pre-release'].map((name, index) =>
+                h.div(parts[index] === other[index] ? [] : [h.Attribute('data-diff', '')], [
+                  h.b([], [parts[index] === '' ? '—' : (parts[index] ?? '')]),
+                  h.span([], [name]),
+                ]),
+              ),
+            ),
+      ])
+    return h.div(
+      [h.Class(stack)],
+      [
+        columns(h, [
+          panel(h, null, [
+            textField(h, {
+              id: 'semver-a',
+              label: 'Version A',
+              value: ctx.input,
+              placeholder: '1.2.3',
+              onInput: ctx.on.input,
+            }),
+          ]),
+          panel(h, null, [
+            textField(h, {
+              id: 'semver-b',
+              label: 'Version B',
+              value: ctx.opt('b'),
+              placeholder: '1.10.0',
+              onInput: ctx.on.option('b'),
+            }),
+          ]),
+        ]),
+        errorNote(h, result.error),
+        result.value === '' ? null : panel(h, null, [h.p([h.Class(verdictCls)], [result.value])]),
+        left.length === 0 || right.length === 0
+          ? null
+          : columns(h, [column('A', left, right), column('B', right, left)]),
+      ],
+    )
+  },
 })

@@ -1,4 +1,4 @@
-import { defineTransform } from '../transform.ts'
+import { card, defineForm, errorText, field, page, split, swatch } from './ui.ts'
 
 export const run = (text: string, mode: string): string => {
   if (mode === 'to-hex') {
@@ -30,7 +30,14 @@ export const run = (text: string, mode: string): string => {
   return `CMYK: ${part(r)}% ${part(g)}% ${part(b)}% ${Math.round(k * 100)}%`
 }
 
-export const cmyk = defineTransform({
+const INKS: ReadonlyArray<readonly [string, string]> = [
+  ['c', 'Cyan'],
+  ['m', 'Magenta'],
+  ['y', 'Yellow'],
+  ['k', 'Black'],
+]
+
+export const cmyk = defineForm({
   meta: {
     id: 'cmyk',
     name: 'CMYK converter',
@@ -38,12 +45,64 @@ export const cmyk = defineTransform({
     description: 'Convert a hex color to CMYK percentages and back.',
     keywords: ['cmyk', 'print', 'hex', 'color', 'percent', 'ink'],
   },
-  modes: [
-    { id: 'to-cmyk', label: 'Hex to CMYK' },
-    { id: 'to-hex', label: 'CMYK to hex' },
-  ],
-  placeholder: '#3b82f6',
-  example: '#3b82f6',
-  present: 'swatch',
-  run,
+  init: { src: 'hex', hex: '#3b82f6', c: '76', m: '47', y: '0', k: '4' },
+  view: (form, h) => {
+    const fromHex = form.get('src') === 'hex'
+    let hex = form.get('hex')
+    let inks: Readonly<Record<string, string>> = {
+      c: form.get('c'),
+      m: form.get('m'),
+      y: form.get('y'),
+      k: form.get('k'),
+    }
+    let error = ''
+    try {
+      if (fromHex) {
+        const [c = '', m = '', y = '', k = ''] = run(hex, 'to-cmyk').match(/\d+/gu) ?? []
+        inks = { c, m, y, k }
+      } else {
+        hex = run(INKS.map(([key]) => inks[key] ?? '').join(' '), 'to-hex')
+      }
+    } catch (caught) {
+      error = caught instanceof Error ? caught.message : ''
+    }
+    return page(h, [
+      split(h, [
+        card(h, null, [
+          swatch(h, error === '' ? hex : ''),
+          field(h, {
+            id: 'hex',
+            label: 'Hex',
+            value: hex,
+            copy: true,
+            invalid: error !== '' && fromHex,
+            onInput: (value) => form.patch({ src: 'hex', hex: value }),
+          }),
+          errorText(h, error),
+        ]),
+        card(
+          h,
+          'CMYK',
+          INKS.map(([key, label]) =>
+            field(h, {
+              id: key,
+              label,
+              value: inks[key] ?? '',
+              suffix: '%',
+              inputMode: 'numeric',
+              onInput: (value) =>
+                form.patch({
+                  src: 'cmyk',
+                  c: inks['c'] ?? '',
+                  m: inks['m'] ?? '',
+                  y: inks['y'] ?? '',
+                  k: inks['k'] ?? '',
+                  [key]: value,
+                }),
+            }),
+          ),
+        ),
+      ]),
+    ])
+  },
 })

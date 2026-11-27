@@ -1,4 +1,5 @@
-import { defineTransform } from '../transform.ts'
+import { columns } from '../kit.ts'
+import { defineLab, inputPanel, layout, resultPanel } from './ui-b.ts'
 
 export const run = (text: string): string => {
   const flipped: Readonly<Record<string, string>> = {
@@ -58,8 +59,7 @@ export const run = (text: string): string => {
     .map((char) => flipped[char] ?? char)
     .join('')
 }
-
-export const upsideDown = defineTransform({
+export const upsideDown = defineLab({
   meta: {
     id: 'upside-down',
     name: 'Upside-down text',
@@ -67,9 +67,16 @@ export const upsideDown = defineTransform({
     description: 'Flip text upside down.',
     keywords: ['flip', 'rotate', 'inverted', 'upside'],
   },
-  modes: [{ id: 'run', label: 'Run' }],
-  placeholder: 'Type or paste text',
   example: 'hello',
-  present: 'display',
-  run,
+  view: (ctx) =>
+    layout(
+      ctx.h,
+      [],
+      [
+        columns(ctx.h, [
+          inputPanel(ctx, { label: 'Text', placeholder: 'Type or paste text', rows: 6 }),
+          resultPanel(ctx.h, run(ctx.model.input), '', 'Flipped'),
+        ]),
+      ],
+    ),
 })

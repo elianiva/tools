@@ -1,4 +1,5 @@
-import { defineTransform } from '../transform.ts'
+import { columns, field, hint, panel, range, stack, stats } from '../kit.ts'
+import { codeBlock, defineTextTool, sourcePanel, useAsInput } from './ui.ts'
 
 export const run = (text: string, mode: string): string => {
   const width = Number(mode)
@@ -21,7 +22,7 @@ export const run = (text: string, mode: string): string => {
     .join('\n')
 }
 
-export const textWrap = defineTransform({
+export const textWrap = defineTextTool({
   meta: {
     id: 'text-wrap',
     name: 'Text wrapper',
@@ -29,15 +30,45 @@ export const textWrap = defineTransform({
     description: 'Hard-wrap text at a fixed number of columns.',
     keywords: ['wrap', 'columns', 'line length', '80', 'reflow', 'fold'],
   },
-  modes: [
-    { id: '10', label: '10 columns' },
-    { id: '40', label: '40 columns' },
-    { id: '72', label: '72 columns' },
-    { id: '80', label: '80 columns' },
-  ],
-  placeholder: 'Type or paste text',
-  acceptsFiles: true,
-  example: 'the quick brown fox jumps',
-  present: 'list',
-  run,
+  example:
+    'The quick brown fox jumps over the lazy dog, then trots back to the den before it gets dark.',
+  opts: { width: '40' },
+  files: true,
+  render: (c) => {
+    const { h } = c
+    const width = Number(c.opt('width', '40'))
+    const value = c.input === '' ? '' : run(c.input, String(width))
+    const lines = value === '' ? [] : value.split('\n')
+    return h.div(
+      [h.Class(stack)],
+      [
+        panel(h, `Wrap at ${width} columns`, [
+          field(
+            h,
+            { label: 'Columns', for: 'text-wrap-width' },
+            range(h, {
+              id: 'text-wrap-width',
+              min: 10,
+              max: 120,
+              value: width,
+              onInput: (next) => c.setOpt('width')(String(next)),
+            }),
+          ),
+        ]),
+        columns(h, [
+          sourcePanel(c),
+          panel(h, 'Wrapped', [
+            value === '' ? hint(h, 'Paste text to wrap.') : codeBlock(h, 'Wrapped text', value),
+            value === ''
+              ? null
+              : stats(h, [
+                  ['Lines', String(lines.length)],
+                  ['Longest line', String(Math.max(...lines.map((line) => [...line].length)))],
+                ]),
+            useAsInput(c, value),
+          ]),
+        ]),
+      ],
+    )
+  },
 })

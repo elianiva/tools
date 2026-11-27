@@ -1,4 +1,4 @@
-import { defineTransform } from '../transform.ts'
+import { codecView, defineWorkbench } from './ui.ts'
 
 export const run = (text: string, mode: string): string => {
   const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ234567'
@@ -28,7 +28,7 @@ export const run = (text: string, mode: string): string => {
   return letters.padEnd(Math.ceil(letters.length / 8) * 8, '=')
 }
 
-export const base32 = defineTransform({
+export const base32 = defineWorkbench({
   meta: {
     id: 'base32',
     name: 'Base32',
@@ -36,12 +36,23 @@ export const base32 = defineTransform({
     description: 'Encode and decode text as Base32 (RFC 4648).',
     keywords: ['base32', 'encode', 'decode', 'rfc 4648', 'totp'],
   },
-  modes: [
-    { id: 'encode', label: 'Encode' },
-    { id: 'decode', label: 'Decode' },
-  ],
-  placeholder: 'Type or paste text',
+  mode: 'encode',
   example: 'foobar',
-  present: 'display',
-  run,
+  view: (h, ctx) =>
+    codecView(h, ctx, {
+      id: 'base32',
+      modes: [
+        { value: 'encode', label: 'Encode' },
+        { value: 'decode', label: 'Decode' },
+      ],
+      inverse: { encode: 'decode', decode: 'encode' },
+      run,
+      locate: (input, mode) => {
+        if (mode !== 'decode') return undefined
+        const at = [...input].findIndex((char) => !/[A-Za-z2-7=\s]/u.test(char))
+        return at < 0 ? undefined : at
+      },
+      labels: (mode) => (mode === 'encode' ? ['Text', 'Base32'] : ['Base32', 'Text']),
+      placeholder: ctx.mode === 'encode' ? 'Text to encode' : 'Base32 to decode',
+    }),
 })

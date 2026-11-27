@@ -1,4 +1,5 @@
-import { defineTransform } from '../transform.ts'
+import { hero } from '../generate/ui.ts'
+import { defineCalc, money, percent, splitBar, tiles } from './money-ui.ts'
 
 export const run = (text: string): string => {
   const [cost, price] = (text.match(/\d+(?:\.\d+)?/gu) ?? []).map(Number)
@@ -12,7 +13,7 @@ export const run = (text: string): string => {
   ].join('\n')
 }
 
-export const markupMargin = defineTransform({
+export const markupMargin = defineCalc({
   meta: {
     id: 'markup-margin',
     name: 'Markup and margin',
@@ -20,9 +21,30 @@ export const markupMargin = defineTransform({
     description: 'Profit, margin, and markup from a cost and a price.',
     keywords: ['margin', 'markup', 'profit', 'cost', 'price', 'pricing'],
   },
-  modes: [{ id: 'run', label: 'Run' }],
-  placeholder: 'cost and price: 60 100',
-  example: '60 100',
-  fields: [{ label: 'Cost' }, { label: 'Price' }],
+  fields: [
+    { label: 'Cost', initial: '60' },
+    { label: 'Price', initial: '100' },
+  ],
   run,
+  render: (h, { nums, num }) => {
+    const [cost = 0, price = 0] = nums
+    const profit = num('Profit')
+    return [
+      hero(h, 'Profit', money(profit)),
+      splitBar(h, 'Price', [
+        { label: 'Cost', value: cost, text: money(cost), tone: 'info' },
+        {
+          label: 'Profit',
+          value: profit,
+          text: money(profit),
+          tone: profit >= 0 ? 'ok' : 'danger',
+        },
+      ]),
+      tiles(h, [
+        ['Margin', percent(num('Margin'))],
+        ['Markup', percent(num('Markup'))],
+        ['Price', money(price)],
+      ]),
+    ]
+  },
 })

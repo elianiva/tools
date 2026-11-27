@@ -1,4 +1,4 @@
-import { defineTransform } from '../transform.ts'
+import { card, chips, defineForm, errorText, field, hero, page } from './ui.ts'
 
 export const run = (text: string): string => {
   const small = [
@@ -73,7 +73,9 @@ export const run = (text: string): string => {
   return `${negative ? 'minus ' : ''}${groups.join(' ')}`
 }
 
-export const numberToWords = defineTransform({
+const capital = (text: string): string => text.charAt(0).toUpperCase() + text.slice(1)
+
+export const numberToWords = defineForm({
   meta: {
     id: 'number-to-words',
     name: 'Number to words',
@@ -81,9 +83,39 @@ export const numberToWords = defineTransform({
     description: 'Write a number out in English.',
     keywords: ['spell out', 'cheque', 'check', 'words', 'numeral'],
   },
-  modes: [{ id: 'run', label: 'Run' }],
-  placeholder: 'Type or paste text',
-  example: '0',
-  fields: [{ label: 'Number', kind: 'text' }],
-  run,
+  init: { n: '1234' },
+  view: (form, h) => {
+    const text = form.get('n')
+    let words = ''
+    let error = ''
+    if (text.trim() !== '') {
+      try {
+        words = run(text)
+      } catch (caught) {
+        error = caught instanceof Error ? caught.message : ''
+      }
+    }
+    return page(h, [
+      card(h, null, [
+        field(h, {
+          id: 'n',
+          label: 'Number',
+          value: text,
+          inputMode: 'numeric',
+          invalid: error !== '',
+          onInput: form.set('n'),
+        }),
+        chips(
+          h,
+          ['42', '1,001', '2,500,000', '-17'].map((label) => ({
+            label,
+            message: form.patch({ n: label }),
+          })),
+        ),
+        errorText(h, error),
+      ]),
+      hero(h, 'Words', words),
+      words === '' ? null : hero(h, 'Cheque', `${capital(words)} only`),
+    ])
+  },
 })

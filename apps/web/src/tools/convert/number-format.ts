@@ -1,4 +1,4 @@
-import { defineTransform } from '../transform.ts'
+import { card, defineForm, errorText, field, page, rows } from './ui.ts'
 
 export const run = (text: string, mode: string): string => {
   const clean = text.trim().replaceAll(/[,_\s]/gu, '')
@@ -16,7 +16,14 @@ export const run = (text: string, mode: string): string => {
   )
 }
 
-export const numberFormat = defineTransform({
+const LOCALES: ReadonlyArray<readonly [string, string]> = [
+  ['en', 'English'],
+  ['de', 'German'],
+  ['in', 'Indian'],
+  ['id', 'Indonesian'],
+]
+
+export const numberFormat = defineForm({
   meta: {
     id: 'number-format',
     name: 'Number formatter',
@@ -24,14 +31,31 @@ export const numberFormat = defineTransform({
     description: 'Group digits the way English, German, Indian, or Indonesian readers expect.',
     keywords: ['thousands separator', 'locale', 'format number', 'comma', 'lakh'],
   },
-  modes: [
-    { id: 'en', label: 'English' },
-    { id: 'de', label: 'German' },
-    { id: 'in', label: 'Indian' },
-    { id: 'id', label: 'Indonesian' },
-  ],
-  placeholder: '1234567.891',
-  example: '1234567.891',
-  fields: [{ label: 'Number' }],
-  run,
+  init: { n: '1234567.891' },
+  view: (form, h) => {
+    const text = form.get('n')
+    let error = ''
+    let out: ReadonlyArray<readonly [string, string]> = []
+    if (text.trim() !== '') {
+      try {
+        out = LOCALES.map(([id, label]) => [label, run(text, id)] as const)
+      } catch (caught) {
+        error = caught instanceof Error ? caught.message : ''
+      }
+    }
+    return page(h, [
+      card(h, null, [
+        field(h, {
+          id: 'n',
+          label: 'Number',
+          value: text,
+          inputMode: 'decimal',
+          invalid: error !== '',
+          onInput: form.set('n'),
+        }),
+        errorText(h, error),
+      ]),
+      out.length === 0 ? null : card(h, null, [rows(h, out)]),
+    ])
+  },
 })

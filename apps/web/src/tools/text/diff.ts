@@ -2,9 +2,21 @@ import { Schema } from 'effect'
 import { Submodel } from 'foldkit'
 import { defineMessageUnion } from 'foldkit/message'
 import { css } from '../../../styled-system/css'
-import { columns, field, hint, panel, segmented, stack, stats, textArea } from '../kit.ts'
+import {
+  button,
+  columns,
+  field,
+  hint,
+  panel,
+  row,
+  segmented,
+  stack,
+  stats,
+  textArea,
+} from '../kit.ts'
 import { defineTool } from '../tool.ts'
 import { compare, countChanges } from './diff.logic.ts'
+import { lineRows } from './diff.rows.ts'
 
 const Model = Schema.Struct({ before: Schema.String, after: Schema.String, mode: Schema.String })
 type Model = typeof Model.Type
@@ -13,6 +25,7 @@ const Message = defineMessageUnion({
   ChangedBefore: { before: Schema.String },
   ChangedAfter: { after: Schema.String },
   ChangedMode: { mode: Schema.String },
+  ClickedSwap: {},
 })
 type Message = typeof Message.Type
 
@@ -21,6 +34,7 @@ const update = (model: Model, message: Message) =>
     ChangedBefore: ({ before }) => ({ model: { ...model, before } }),
     ChangedAfter: ({ after }) => ({ model: { ...model, after } }),
     ChangedMode: ({ mode }) => ({ model: { ...model, mode } }),
+    ClickedSwap: () => ({ model: { ...model, before: model.after, after: model.before } }),
   })
 
 const resultCls = css({
@@ -39,23 +53,67 @@ const resultCls = css({
   '& del': { background: 'var(--danger-soft)', color: 'var(--danger)' },
 })
 
+const gridCls = css({
+  display: 'grid',
+  gridTemplateColumns: '3rem minmax(0, 1fr) 3rem minmax(0, 1fr)',
+  maxHeight: '32rem',
+  overflow: 'auto',
+  borderRadius: 'var(--radius)',
+  background: 'var(--well)',
+  boxShadow: 'var(--elev-well)',
+  fontFamily: 'var(--mono)',
+  fontSize: '0.8rem',
+  '& > span': {
+    padding: '0.1rem 0.5rem',
+    whiteSpace: 'pre-wrap',
+    overflowWrap: 'anywhere',
+    minHeight: '1.5em',
+  },
+  '& > span[data-n]': {
+    textAlign: 'right',
+    color: 'var(--muted-foreground)',
+    userSelect: 'none',
+    borderInlineEnd: '1px solid color-mix(in oklab, var(--foreground) 10%, transparent)',
+  },
+  '& > [data-kind="add"]': { background: 'var(--ok-soft)', color: 'var(--ok)' },
+  '& > [data-kind="remove"]': { background: 'var(--danger-soft)', color: 'var(--danger)' },
+})
+
 const view = Submodel.defineView<Model, Message>((model, h) => {
   const parts = compare(model.before, model.after, model.mode)
-  const { added, removed } = countChanges(parts)
+  const rows = lineRows(parts)
+  const { added, removed } =
+    model.mode === 'lines'
+      ? {
+          added: rows.filter((item) => item.right?.kind === 'add').length,
+          removed: rows.filter((item) => item.left?.kind === 'remove').length,
+        }
+      : countChanges(parts)
   const identical = added === 0 && removed === 0
   return h.div(
     [h.Class(stack)],
     [
-      segmented(h, {
-        label: 'Compare by',
-        value: model.mode,
-        options: [
-          { value: 'lines', label: 'Lines' },
-          { value: 'words', label: 'Words' },
-          { value: 'chars', label: 'Characters' },
+      h.div(
+        [h.Class(row)],
+        [
+          segmented(h, {
+            label: 'Compare by',
+            value: model.mode,
+            options: [
+              { value: 'lines', label: 'Lines' },
+              { value: 'words', label: 'Words' },
+              { value: 'chars', label: 'Characters' },
+            ],
+            onSelect: (mode) => Message.ChangedMode({ mode }),
+          }),
+          button(
+            h,
+            { variant: 'secondary', size: 'sm' },
+            [h.OnClick(Message.ClickedSwap())],
+            ['⇄ Swap'],
+          ),
         ],
-        onSelect: (mode) => Message.ChangedMode({ mode }),
-      }),
+      ),
       columns(h, [
         panel(h, null, [
           field(
@@ -93,16 +151,37 @@ const view = Submodel.defineView<Model, Message>((model, h) => {
             ]),
             identical
               ? hint(h, 'The texts are identical.')
-              : h.pre(
-                  [h.Class(resultCls), h.Tabindex(0), h.AriaLabel('Difference')],
-                  parts.map((part) =>
-                    part.kind === 'add'
-                      ? h.ins([], [part.text])
-                      : part.kind === 'remove'
-                        ? h.del([], [part.text])
-                        : part.text,
+              : model.mode === 'lines'
+                ? h.div(
+                    [h.Class(gridCls), h.Tabindex(0), h.AriaLabel('Difference')],
+                    rows.flatMap((item) => [
+                      h.span(
+                        [h.Attribute('data-n', '')],
+                        [item.left === null ? '' : String(item.left.n)],
+                      ),
+                      h.span(item.left === null ? [] : [h.Attribute('data-kind', item.left.kind)], [
+                        item.left?.text ?? '',
+                      ]),
+                      h.span(
+                        [h.Attribute('data-n', '')],
+                        [item.right === null ? '' : String(item.right.n)],
+                      ),
+                      h.span(
+                        item.right === null ? [] : [h.Attribute('data-kind', item.right.kind)],
+                        [item.right?.text ?? ''],
+                      ),
+                    ]),
+                  )
+                : h.pre(
+                    [h.Class(resultCls), h.Tabindex(0), h.AriaLabel('Difference')],
+                    parts.map((part) =>
+                      part.kind === 'add'
+                        ? h.ins([], [part.text])
+                        : part.kind === 'remove'
+                          ? h.del([], [part.text])
+                          : part.text,
+                    ),
                   ),
-                ),
           ]),
     ],
   )

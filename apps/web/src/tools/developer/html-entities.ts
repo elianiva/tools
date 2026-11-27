@@ -1,4 +1,4 @@
-import { defineTransform } from '../transform.ts'
+import { codecView, defineWorkbench } from './ui.ts'
 
 export const run = (text: string, mode: string): string => {
   if (mode === 'decode') {
@@ -43,7 +43,7 @@ export const run = (text: string, mode: string): string => {
   ).join('')
 }
 
-export const htmlEntities = defineTransform({
+export const htmlEntities = defineWorkbench({
   meta: {
     id: 'html-entities',
     name: 'HTML entities',
@@ -51,13 +51,19 @@ export const htmlEntities = defineTransform({
     description: 'Escape and unescape HTML special characters.',
     keywords: ['html', 'escape', 'unescape', 'entity', '&amp;', 'xss'],
   },
-  modes: [
-    { id: 'encode', label: 'Escape' },
-    { id: 'encode-all', label: 'Escape all non-ASCII' },
-    { id: 'decode', label: 'Unescape' },
-  ],
-  placeholder: 'Type or paste text',
+  mode: 'encode',
   example: '<a href="x">&</a>',
-  present: 'code',
-  run,
+  view: (h, ctx) =>
+    codecView(h, ctx, {
+      id: 'html-entities',
+      modes: [
+        { value: 'encode', label: 'Escape' },
+        { value: 'encode-all', label: 'Escape non-ASCII' },
+        { value: 'decode', label: 'Unescape' },
+      ],
+      inverse: { encode: 'decode', 'encode-all': 'decode', decode: 'encode' },
+      run,
+      labels: (mode) => (mode === 'decode' ? ['HTML', 'Text'] : ['Text', 'HTML']),
+      placeholder: 'Type or paste text',
+    }),
 })

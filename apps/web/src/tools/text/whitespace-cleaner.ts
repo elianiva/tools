@@ -1,4 +1,4 @@
-import { defineTransform } from '../transform.ts'
+import { cleaner, defineTextTool } from './ui.ts'
 
 export const run = (text: string, mode: string): string => {
   switch (mode) {
@@ -18,7 +18,7 @@ export const run = (text: string, mode: string): string => {
   }
 }
 
-export const whitespaceCleaner = defineTransform({
+export const whitespaceCleaner = defineTextTool({
   meta: {
     id: 'whitespace-cleaner',
     name: 'Whitespace cleaner',
@@ -26,16 +26,18 @@ export const whitespaceCleaner = defineTransform({
     description: 'Collapse spaces, trim lines, or strip invisible characters.',
     keywords: ['spaces', 'trim', 'tabs', 'zero-width', 'clean'],
   },
-  modes: [
-    { id: 'collapse', label: 'Collapse spaces' },
-    { id: 'trim', label: 'Trim lines' },
-    { id: 'strip', label: 'Remove all' },
-    { id: 'tabs', label: 'Tabs to spaces' },
-    { id: 'invisible', label: 'Zero-width' },
-  ],
-  placeholder: 'Type or paste text',
-  acceptsFiles: true,
-  example: 'a   b \t c',
-  present: 'code',
-  run,
+  mode: 'collapse',
+  example: 'a   b \t c\u200b d  \n   indented line  ',
+  files: true,
+  render: (c) =>
+    cleaner(c, {
+      run,
+      options: [
+        { value: 'collapse', label: 'Collapse spaces' },
+        { value: 'trim', label: 'Trim lines' },
+        { value: 'strip', label: 'Remove all' },
+        { value: 'tabs', label: 'Tabs to spaces' },
+        { value: 'invisible', label: 'Zero-width' },
+      ],
+    }),
 })

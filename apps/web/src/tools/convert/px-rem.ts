@@ -1,4 +1,4 @@
-import { defineTransform } from '../transform.ts'
+import { card, cells, defineForm, errorText, field, linked, page, split } from './ui.ts'
 
 export const run = (text: string, mode: string): string => {
   const [value, base = 16] = (text.match(/-?\d+(?:\.\d+)?/gu) ?? []).map(Number)
@@ -8,7 +8,9 @@ export const run = (text: string, mode: string): string => {
   return mode === 'rem-to-px' ? `${clean(value * base)}px` : `${clean(value / base)}rem`
 }
 
-export const pxRem = defineTransform({
+const COMMON = [10, 12, 14, 16, 18, 20, 24, 32, 48, 64]
+
+export const pxRem = defineForm({
   meta: {
     id: 'px-rem',
     name: 'Pixels and rem',
@@ -16,12 +18,43 @@ export const pxRem = defineTransform({
     description: 'Convert px to rem and back for a base font size.',
     keywords: ['px', 'rem', 'css', 'font size', 'em'],
   },
-  modes: [
-    { id: 'px-to-rem', label: 'px to rem' },
-    { id: 'rem-to-px', label: 'rem to px' },
-  ],
-  placeholder: '24 (add a base size: 24 12)',
-  example: '24',
-  fields: [{ label: 'Value' }],
-  run,
+  init: { src: 'px', text: '24', base: '16' },
+  view: (form, h) => {
+    const base = form.get('base')
+    const pair = linked(
+      h,
+      form,
+      [
+        { key: 'px', label: 'Pixels', suffix: 'px' },
+        { key: 'rem', label: 'Rem', suffix: 'rem' },
+      ],
+      (src, text) => {
+        const out = run(`${text} ${base}`, src === 'px' ? 'px-to-rem' : 'rem-to-px')
+        return src === 'px' ? { rem: out.replace('rem', '') } : { px: out.replace('px', '') }
+      },
+    )
+    const size = Number(base)
+    return page(h, [
+      card(h, null, [
+        pair.fields,
+        field(h, {
+          id: 'base',
+          label: 'Base size',
+          value: base,
+          suffix: 'px',
+          inputMode: 'decimal',
+          onInput: form.set('base'),
+        }),
+        errorText(h, pair.error),
+      ]),
+      split(h, [
+        card(h, 'Common sizes', [
+          cells(
+            h,
+            size > 0 ? COMMON.map((px) => [`${px}px`, `${Number((px / size).toFixed(4))}rem`]) : [],
+          ),
+        ]),
+      ]),
+    ])
+  },
 })

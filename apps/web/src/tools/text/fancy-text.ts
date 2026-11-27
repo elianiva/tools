@@ -1,4 +1,4 @@
-import { defineTransform } from '../transform.ts'
+import { defineLab, gallery, inputPanel, layout } from './ui-b.ts'
 
 export const run = (text: string, mode: string): string => {
   const ranges: Readonly<Record<string, ReadonlyArray<readonly [string, string, number]>>> = {
@@ -25,8 +25,14 @@ export const run = (text: string, mode: string): string => {
     return hit === undefined ? char : String.fromCodePoint(hit[2] + code - hit[0].charCodeAt(0))
   }).join('')
 }
+const STYLES = [
+  { id: 'bold', label: 'Bold' },
+  { id: 'monospace', label: 'Monospace' },
+  { id: 'circled', label: 'Circled' },
+  { id: 'fullwidth', label: 'Full-width' },
+]
 
-export const fancyText = defineTransform({
+export const fancyText = defineLab({
   meta: {
     id: 'fancy-text',
     name: 'Fancy text',
@@ -34,14 +40,22 @@ export const fancyText = defineTransform({
     description: 'Bold, monospace, circled, and full-width Unicode letters.',
     keywords: ['unicode', 'bold', 'font', 'stylish', 'social'],
   },
-  modes: [
-    { id: 'bold', label: 'Bold' },
-    { id: 'monospace', label: 'Monospace' },
-    { id: 'circled', label: 'Circled' },
-    { id: 'fullwidth', label: 'Full-width' },
-  ],
-  placeholder: 'Type or paste text',
-  example: 'Ab1',
-  present: 'display',
-  run,
+  example: 'Fancy text 123',
+  view: (ctx) => {
+    const { h, model } = ctx
+    const empty = model.input === ''
+    const source = empty ? ctx.example : model.input
+    return layout(
+      h,
+      [],
+      [
+        inputPanel(ctx, { label: 'Text', placeholder: 'Type or paste text', rows: 4 }),
+        gallery(
+          h,
+          STYLES.map((style) => ({ label: style.label, text: run(source, style.id) })),
+          empty,
+        ),
+      ],
+    )
+  },
 })

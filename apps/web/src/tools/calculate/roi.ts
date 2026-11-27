@@ -1,4 +1,5 @@
-import { defineTransform } from '../transform.ts'
+import { hero } from '../generate/ui.ts'
+import { compareBars, defineCalc, money, percent } from './money-ui.ts'
 
 export const run = (text: string): string => {
   const [invested, final] = (text.match(/\d+(?:\.\d+)?/gu) ?? []).map(Number)
@@ -8,7 +9,7 @@ export const run = (text: string): string => {
   return [`Gain: ${gain.toFixed(2)}`, `ROI: ${((gain / invested) * 100).toFixed(2)}%`].join('\n')
 }
 
-export const roi = defineTransform({
+export const roi = defineCalc({
   meta: {
     id: 'roi',
     name: 'ROI calculator',
@@ -16,9 +17,23 @@ export const roi = defineTransform({
     description: 'Return on investment from what you put in and what you got out.',
     keywords: ['roi', 'return on investment', 'gain', 'profit', 'investment'],
   },
-  modes: [{ id: 'run', label: 'Run' }],
-  placeholder: 'invested and final value: 1000 1250',
-  example: '1000 1250',
-  fields: [{ label: 'Invested' }, { label: 'Final value' }],
+  fields: [
+    { label: 'Invested', initial: '1000' },
+    { label: 'Final value', initial: '1250' },
+  ],
   run,
+  render: (h, { nums, num }) => {
+    const [invested = 0, final = 0] = nums
+    const gain = num('Gain')
+    const tone = gain >= 0 ? 'ok' : 'danger'
+    return [
+      hero(h, 'ROI', percent(num('ROI')), [
+        h.span([], [`${gain >= 0 ? 'Gain' : 'Loss'} of ${money(Math.abs(gain))}`]),
+      ]),
+      compareBars(h, 'Invested and final value', [
+        { label: 'Invested', value: invested, text: money(invested), tone: 'info' },
+        { label: 'Final value', value: final, text: money(final), tone },
+      ]),
+    ]
+  },
 })

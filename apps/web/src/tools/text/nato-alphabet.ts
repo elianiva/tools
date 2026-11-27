@@ -1,4 +1,5 @@
-import { defineTransform } from '../transform.ts'
+import { attempt, defineLab, ioPanels, layout, tile, wordGroups } from './ui-b.ts'
+import { panel } from '../kit.ts'
 
 export const run = (text: string): string => {
   const words = [
@@ -45,8 +46,7 @@ export const run = (text: string): string => {
     )
     .join(' / ')
 }
-
-export const natoAlphabet = defineTransform({
+export const natoAlphabet = defineLab({
   meta: {
     id: 'nato-alphabet',
     name: 'NATO alphabet',
@@ -54,9 +54,37 @@ export const natoAlphabet = defineTransform({
     description: 'Spell text with Alfa, Bravo, Charlie.',
     keywords: ['phonetic', 'spelling', 'radio', 'alfa bravo'],
   },
-  modes: [{ id: 'run', label: 'Run' }],
-  placeholder: 'Type or paste text',
   example: 'Hi 5',
-  present: 'tokens',
-  run,
+  view: (ctx) => {
+    const { h, model } = ctx
+    const result =
+      model.input.trim() === '' ? { value: '', error: '' } : attempt(() => run(model.input))
+    const groups = model.input
+      .trim()
+      .split(/\s+/u)
+      .filter((word) => word !== '')
+      .map((word) =>
+        Array.from(word).map((char) => {
+          const spoken = run(char)
+          return tile(h, {
+            top: char.toUpperCase(),
+            bottom: spoken,
+            state: spoken === char ? 'dim' : 'plain',
+          })
+        }),
+      )
+    return layout(
+      h,
+      [],
+      [
+        ioPanels(ctx, {
+          inputLabel: 'Text',
+          outputLabel: 'Spelling',
+          placeholder: 'Type or paste text',
+          result,
+        }),
+        groups.length === 0 ? null : panel(h, 'Letters', [wordGroups(h, groups)]),
+      ],
+    )
+  },
 })

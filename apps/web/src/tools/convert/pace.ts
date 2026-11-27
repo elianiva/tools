@@ -1,4 +1,5 @@
-import { defineTransform } from '../transform.ts'
+import { segmented } from '../kit.ts'
+import { card, chips, defineForm, errorText, field, hero, page, parseLines, split } from './ui.ts'
 
 export const run = (text: string, mode: string): string => {
   const match = /^\s*(\d+(?:\.\d+)?)\s*(?:km|mi)?\s+(\d+(?::\d{1,2}){1,2})\s*$/iu.exec(text)
@@ -15,7 +16,14 @@ export const run = (text: string, mode: string): string => {
   ].join('\n')
 }
 
-export const pace = defineTransform({
+const PRESETS: ReadonlyArray<readonly [string, string, string]> = [
+  ['5K', '5', '25:00'],
+  ['10K', '10', '55:00'],
+  ['Half marathon', '21.0975', '1:50:00'],
+  ['Marathon', '42.195', '3:59:00'],
+]
+
+export const pace = defineForm({
   meta: {
     id: 'pace',
     name: 'Running pace',
@@ -23,12 +31,55 @@ export const pace = defineTransform({
     description: 'Pace and speed from a distance and a time.',
     keywords: ['running', 'pace', 'minutes per km', 'marathon', 'race', 'speed'],
   },
-  modes: [
-    { id: 'km', label: 'Kilometres' },
-    { id: 'mi', label: 'Miles' },
-  ],
-  placeholder: 'distance and time: 5 25:00',
-  example: '5 25:00',
-  fields: [{ label: 'Distance' }, { label: 'Time', kind: 'text' }],
-  run,
+  init: { distance: '5', time: '25:00', unit: 'km' },
+  view: (form, h) => {
+    const unit = form.get('unit')
+    let out: Readonly<Record<string, string>> = {}
+    let error = ''
+    try {
+      out = parseLines(run(`${form.get('distance')} ${form.get('time')}`, unit))
+    } catch (caught) {
+      error = caught instanceof Error ? caught.message : ''
+    }
+    return page(h, [
+      segmented(h, {
+        label: 'Unit',
+        value: unit,
+        options: [
+          { value: 'km', label: 'Kilometres' },
+          { value: 'mi', label: 'Miles' },
+        ],
+        onSelect: (value) => form.patch({ unit: value }),
+      }),
+      split(h, [
+        card(h, null, [
+          field(h, {
+            id: 'distance',
+            label: 'Distance',
+            value: form.get('distance'),
+            suffix: unit,
+            inputMode: 'decimal',
+            onInput: form.set('distance'),
+          }),
+          field(h, {
+            id: 'time',
+            label: 'Time',
+            value: form.get('time'),
+            suffix: 'h:mm:ss',
+            onInput: form.set('time'),
+          }),
+          chips(
+            h,
+            PRESETS.map(([label, distance, time]) => ({
+              label,
+              message: form.patch({ distance, time, unit: 'km' }),
+            })),
+          ),
+          errorText(h, error),
+        ]),
+        hero(h, 'Pace', out['Pace'] ?? ''),
+        hero(h, 'Speed', out['Speed'] ?? ''),
+      ]),
+    ])
+  },
 })

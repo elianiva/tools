@@ -1,4 +1,5 @@
-import { defineTransform } from '../transform.ts'
+import { hero } from '../generate/ui.ts'
+import { defineCalc, money, receipt } from './money-ui.ts'
 
 export const run = (text: string): string => {
   const [bill, tip, people = 1] = (text.match(/\d+(?:\.\d+)?/gu) ?? []).map(Number)
@@ -13,7 +14,7 @@ export const run = (text: string): string => {
   ].join('\n')
 }
 
-export const tipCalculator = defineTransform({
+export const tipCalculator = defineCalc({
   meta: {
     id: 'tip-calculator',
     name: 'Tip calculator',
@@ -21,9 +22,25 @@ export const tipCalculator = defineTransform({
     description: 'Tip, total, and the share per person.',
     keywords: ['tip', 'bill', 'split', 'restaurant', 'gratuity'],
   },
-  modes: [{ id: 'run', label: 'Run' }],
-  placeholder: 'bill, tip %, people: 100 20 4',
-  example: '100 20 4',
-  fields: [{ label: 'Bill' }, { label: 'Tip', suffix: '%' }, { label: 'People' }],
+  fields: [
+    { label: 'Bill', initial: '100' },
+    { label: 'Tip', initial: '20', suffix: '%', presets: ['10', '15', '18', '20', '25'] },
+    { label: 'People', initial: '4', integer: true, min: 1, max: 1000 },
+  ],
   run,
+  render: (h, { nums, num }) => {
+    const [bill = 0, tip = 0, people = 1] = nums
+    const total = num('Total')
+    return [
+      hero(h, people > 1 ? 'Per person' : 'Total', money(num('Per person'))),
+      receipt(h, [
+        { label: 'Bill', value: money(bill) },
+        { label: `Tip (${tip}%)`, value: money(num('Tip')), sign: '+' },
+        { label: 'Total', value: money(total), strong: true },
+        ...(people > 1
+          ? [{ label: `Split ${people} ways`, value: money(num('Per person')), strong: true }]
+          : []),
+      ]),
+    ]
+  },
 })

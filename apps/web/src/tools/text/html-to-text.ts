@@ -1,4 +1,4 @@
-import { defineTransform } from '../transform.ts'
+import { cleaner, defineTextTool } from './ui.ts'
 
 export const run = (text: string): string => {
   return text
@@ -14,7 +14,7 @@ export const run = (text: string): string => {
     .trim()
 }
 
-export const htmlToText = defineTransform({
+export const htmlToText = defineTextTool({
   meta: {
     id: 'html-to-text',
     name: 'HTML to text',
@@ -22,10 +22,12 @@ export const htmlToText = defineTransform({
     description: 'Strip HTML tags and keep the readable text.',
     keywords: ['html', 'strip tags', 'plain text', 'clean'],
   },
-  modes: [{ id: 'run', label: 'Run' }],
-  placeholder: 'Type or paste text',
-  acceptsFiles: true,
-  example: '<p>Hi <b>there</b></p><script>x()</script>',
-  present: 'display',
-  run,
+  example: '<h1>Title</h1>\n<p>Hi <b>there</b> &amp; welcome.</p><script>x()</script>',
+  files: true,
+  render: (c) =>
+    cleaner(c, {
+      run,
+      placeholder: 'Paste HTML',
+      extra: (before) => [['Tags', String((before.match(/<[^>]+>/gu) ?? []).length)]],
+    }),
 })

@@ -1,4 +1,4 @@
-import { defineTransform } from '../transform.ts'
+import { codecView, defineWorkbench } from './ui.ts'
 
 export const run = (text: string): string => {
   const quote = (key: string): string =>
@@ -32,7 +32,7 @@ export const run = (text: string): string => {
   return `type Root = ${typeOf(data, 0)}`
 }
 
-export const jsonToTypescript = defineTransform({
+export const jsonToTypescript = defineWorkbench({
   meta: {
     id: 'json-to-typescript',
     name: 'JSON to TypeScript',
@@ -40,10 +40,14 @@ export const jsonToTypescript = defineTransform({
     description: 'Write a TypeScript type from a JSON sample.',
     keywords: ['json', 'typescript', 'type', 'interface', 'schema', 'infer'],
   },
-  modes: [{ id: 'run', label: 'Run' }],
-  placeholder: 'Type or paste text',
-  acceptsFiles: true,
   example: '{"a":1,"b":[1,2],"c":{"d":true}}',
-  present: 'code',
-  run,
+  acceptsFiles: true,
+  view: (h, ctx) =>
+    codecView(h, ctx, {
+      id: 'json-to-typescript',
+      modes: [],
+      run: (input) => run(input),
+      labels: () => ['JSON', 'TypeScript'],
+      placeholder: '{"paste":"a sample"}',
+    }),
 })

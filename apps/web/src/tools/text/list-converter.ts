@@ -1,4 +1,5 @@
-import { defineTransform } from '../transform.ts'
+import { columns, hint, panel, stack } from '../kit.ts'
+import { codeBlock, defineTextTool, previewGrid, sourcePanel, useAsInput } from './ui.ts'
 
 export const run = (text: string, mode: string): string => {
   const lines = text
@@ -23,7 +24,15 @@ export const run = (text: string, mode: string): string => {
   }
 }
 
-export const listConverter = defineTransform({
+const FORMATS = [
+  { value: 'comma', label: 'Comma list', note: 'lines → list' },
+  { value: 'lines', label: 'Lines', note: 'list → lines' },
+  { value: 'quoted', label: 'Quoted' },
+  { value: 'json', label: 'JSON array' },
+  { value: 'sql', label: 'SQL IN list' },
+] as const
+
+export const listConverter = defineTextTool({
   meta: {
     id: 'list-converter',
     name: 'List converter',
@@ -31,16 +40,30 @@ export const listConverter = defineTransform({
     description: 'Turn lines into a comma list, quoted values, a JSON array, or SQL.',
     keywords: ['comma separated', 'array', 'sql in', 'join', 'split'],
   },
-  modes: [
-    { id: 'comma', label: 'Lines to comma list' },
-    { id: 'lines', label: 'Comma list to lines' },
-    { id: 'quoted', label: 'Quoted list' },
-    { id: 'json', label: 'JSON array' },
-    { id: 'sql', label: 'SQL IN list' },
-  ],
-  placeholder: 'Type or paste text',
-  acceptsFiles: true,
-  example: 'a\n b \n\nc',
-  present: 'display',
-  run,
+  mode: 'comma',
+  example: 'red\ngreen\n\nblue',
+  files: true,
+  render: (c) => {
+    const { h } = c
+    const value = run(c.input, c.mode)
+    return h.div(
+      [h.Class(stack)],
+      [
+        previewGrid(
+          c,
+          FORMATS.map((item) => ({
+            ...item,
+            text: c.input.trim() === '' ? '' : run(c.input, item.value),
+          })),
+        ),
+        columns(h, [
+          sourcePanel(c, { label: 'List' }),
+          panel(h, 'Result', [
+            value === '' ? hint(h, 'Paste a list to convert.') : codeBlock(h, 'Result', value),
+            useAsInput(c, value),
+          ]),
+        ]),
+      ],
+    )
+  },
 })

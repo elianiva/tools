@@ -1,4 +1,5 @@
-import { defineTransform } from '../transform.ts'
+import { columns, hint, panel, stack } from '../kit.ts'
+import { defineTextTool, display, sourcePanel, useAsInput, type Piece } from './ui.ts'
 
 export const run = (text: string): string => {
   const small = new Set([
@@ -39,7 +40,13 @@ export const run = (text: string): string => {
     .join('\n')
 }
 
-export const titleCase = defineTransform({
+/** Words the headline left in lower case are dimmed, so the rule is visible. */
+const pieces = (after: string): ReadonlyArray<Piece> =>
+  after.split(/(\s+)/u).map((part) => {
+    return /^\p{Ll}/u.test(part) ? { text: part, kind: 'dim' as const } : { text: part }
+  })
+
+export const titleCase = defineTextTool({
   meta: {
     id: 'title-case',
     name: 'Title case',
@@ -47,10 +54,30 @@ export const titleCase = defineTransform({
     description: 'Capitalise a headline the way style guides do.',
     keywords: ['headline', 'capitalize', 'title', 'ap style', 'chicago'],
   },
-  modes: [{ id: 'run', label: 'Run' }],
-  placeholder: 'Type or paste text',
-  acceptsFiles: true,
-  example: 'the lord of the rings',
-  present: 'display',
-  run,
+  example: 'the lord of the rings\nwhat to do in paris',
+  files: true,
+  render: (c) => {
+    const { h } = c
+    const value = run(c.input)
+    return h.div(
+      [h.Class(stack)],
+      [
+        columns(h, [
+          sourcePanel(c, { label: 'Headline', rows: 6 }),
+          panel(h, 'Title case', [
+            c.input === ''
+              ? hint(h, 'Paste a headline.')
+              : h.div(
+                  [h.Class(stack)],
+                  [
+                    display(h, 'Title case', value, pieces(value)),
+                    hint(h, 'Dimmed words stay in lower case.'),
+                    useAsInput(c, value),
+                  ],
+                ),
+          ]),
+        ]),
+      ],
+    )
+  },
 })

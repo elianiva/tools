@@ -1,7 +1,7 @@
 type Unit = Readonly<{ names: ReadonlyArray<string>; label: string; factor: number }>
 type Group = Readonly<{ name: string; units: ReadonlyArray<Unit> }>
 
-const GROUPS: ReadonlyArray<Group> = [
+export const GROUPS: ReadonlyArray<Group> = [
   {
     name: 'Length',
     units: [

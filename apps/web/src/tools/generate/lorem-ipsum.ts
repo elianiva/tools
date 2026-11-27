@@ -1,4 +1,7 @@
-import { defineTransform } from '../transform.ts'
+import { css } from '../../../styled-system/css'
+import { stack } from '../kit.ts'
+import { tiles } from '../calculate/money-ui.ts'
+import { copyButton, defineGenerator } from './ui.ts'
 
 export const run = (text: string, mode: string): string => {
   const vocabulary = [
@@ -61,7 +64,22 @@ export const run = (text: string, mode: string): string => {
   ).join('\n\n')
 }
 
-export const loremIpsum = defineTransform({
+const textCls = css({
+  position: 'relative',
+  display: 'flex',
+  flexDirection: 'column',
+  gap: '0.9rem',
+  padding: '1.2rem 3.4rem 1.2rem 1.3rem',
+  borderRadius: 'calc(var(--radius) * 1.4)',
+  background: 'var(--card)',
+  boxShadow: 'var(--elev-card)',
+  maxHeight: '32rem',
+  overflow: 'auto',
+  '& p': { margin: 0, lineHeight: 1.6 },
+  '& > [data-slot="copy-button"]': { position: 'absolute', top: '0.6rem', right: '0.6rem' },
+})
+
+export const loremIpsum = defineGenerator({
   meta: {
     id: 'lorem-ipsum',
     name: 'Lorem ipsum',
@@ -69,13 +87,37 @@ export const loremIpsum = defineTransform({
     description: 'Placeholder paragraphs, sentences, or words. Type how many.',
     keywords: ['lorem', 'ipsum', 'placeholder', 'dummy text', 'filler'],
   },
+  fields: [
+    {
+      label: 'Count',
+      initial: '3',
+      integer: true,
+      min: 1,
+      max: 200,
+      presets: ['1', '3', '5', '10'],
+    },
+  ],
   modes: [
     { id: 'paragraphs', label: 'Paragraphs' },
     { id: 'sentences', label: 'Sentences' },
     { id: 'words', label: 'Words' },
   ],
-  placeholder: '3',
-  example: '3',
-  fields: [{ label: 'Count' }],
+  modeLabel: 'Unit',
   run,
+  view: (h, { out }) => {
+    const words = out.split(/\s+/u).filter((word) => word !== '').length
+    return h.div(
+      [h.Class(stack)],
+      [
+        h.div(
+          [h.Class(textCls), h.Tabindex(0), h.AriaLabel('Lorem ipsum text')],
+          [...out.split('\n\n').map((paragraph) => h.p([], [paragraph])), copyButton(h, out)],
+        ),
+        tiles(h, [
+          ['Words', String(words)],
+          ['Characters', String(out.length)],
+        ]),
+      ],
+    )
+  },
 })

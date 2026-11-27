@@ -1,4 +1,4 @@
-import { defineTransform } from '../transform.ts'
+import { defineForm, linear, unitConverter, unitStart, type UnitSet } from './ui.ts'
 
 export const run = (text: string): string => {
   const match =
@@ -35,7 +35,21 @@ export const run = (text: string): string => {
     .join('\n')
 }
 
-export const speed = defineTransform({
+const sets: ReadonlyArray<UnitSet> = [
+  {
+    id: 'speed',
+    name: 'Speed',
+    units: [
+      linear('km/h', 'km/h', 1 / 3.6),
+      linear('mph', 'mph', 0.44704),
+      linear('m/s', 'm/s', 1),
+      linear('knots', 'knots', 1852 / 3600),
+      linear('ft/s', 'ft/s', 0.3048),
+    ],
+  },
+]
+
+export const speed = defineForm({
   meta: {
     id: 'speed',
     name: 'Speed converter',
@@ -43,9 +57,6 @@ export const speed = defineTransform({
     description: 'km/h, mph, m/s, knots, and ft/s. Type 100 kmh.',
     keywords: ['speed', 'kmh', 'mph', 'knots', 'velocity', 'm/s'],
   },
-  modes: [{ id: 'run', label: 'Run' }],
-  placeholder: '100 kmh',
-  example: '100 kmh',
-  fields: [{ label: 'Value' }, { label: 'Unit', kind: 'text' }],
-  run,
+  init: unitStart(sets, 'km/h', 'mph', '100'),
+  view: (form, h) => unitConverter(h, form, { sets }),
 })

@@ -1,4 +1,4 @@
-import { defineTransform } from '../transform.ts'
+import { defineTextTool, frequency } from './ui.ts'
 
 export const run = (text: string): string => {
   const words = [...new Intl.Segmenter(undefined, { granularity: 'word' }).segment(text)]
@@ -13,7 +13,7 @@ export const run = (text: string): string => {
     .join('\n')
 }
 
-export const wordFrequency = defineTransform({
+export const wordFrequency = defineTextTool({
   meta: {
     id: 'word-frequency',
     name: 'Word frequency',
@@ -21,10 +21,7 @@ export const wordFrequency = defineTransform({
     description: 'List your most used words.',
     keywords: ['words', 'count', 'repeated', 'keywords', 'histogram'],
   },
-  modes: [{ id: 'run', label: 'Run' }],
-  placeholder: 'Type or paste text',
-  acceptsFiles: true,
-  example: 'the cat the dog',
-  present: 'bars',
-  run,
+  example: 'the cat chased the dog and the dog chased the cat',
+  files: true,
+  render: (c) => frequency(c, { run, noun: 'words' }),
 })

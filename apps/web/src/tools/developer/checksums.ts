@@ -1,4 +1,5 @@
-import { defineTransform } from '../transform.ts'
+import { columns, panel, stack } from '../kit.ts'
+import { defineWorkbench, digestList, inputBox, sectionLabel } from './ui.ts'
 
 export const run = (text: string, mode: string): string => {
   const bytes = new TextEncoder().encode(text)
@@ -19,7 +20,7 @@ export const run = (text: string, mode: string): string => {
   return ((crc ^ 0xffffffff) >>> 0).toString(16).padStart(8, '0')
 }
 
-export const checksums = defineTransform({
+export const checksums = defineWorkbench({
   meta: {
     id: 'checksums',
     name: 'CRC32 and Adler-32',
@@ -27,12 +28,40 @@ export const checksums = defineTransform({
     description: 'Fast checksums of text.',
     keywords: ['crc32', 'adler32', 'checksum', 'crc', 'hash'],
   },
-  modes: [
-    { id: 'crc32', label: 'CRC-32' },
-    { id: 'adler32', label: 'Adler-32' },
-  ],
-  placeholder: 'Type or paste text',
   example: 'hello',
-  present: 'display',
-  run,
+  view: (h, ctx) =>
+    h.div(
+      [h.Class(stack)],
+      [
+        columns(h, [
+          panel(h, null, [
+            inputBox(h, ctx, {
+              id: 'checksums-input',
+              label: 'Text',
+              placeholder: 'Type or paste text',
+              rows: 6,
+            }),
+          ]),
+          panel(h, null, [
+            sectionLabel(h, 'Checksums'),
+            digestList(
+              h,
+              [
+                ['CRC-32', run(ctx.input, 'crc32')],
+                ['Adler-32', run(ctx.input, 'adler32')],
+              ],
+              '',
+            ),
+            digestList(
+              h,
+              [
+                ['CRC-32 (dec)', String(Number.parseInt(run(ctx.input, 'crc32'), 16))],
+                ['Adler-32 (dec)', String(Number.parseInt(run(ctx.input, 'adler32'), 16))],
+              ],
+              '',
+            ),
+          ]),
+        ]),
+      ],
+    ),
 })

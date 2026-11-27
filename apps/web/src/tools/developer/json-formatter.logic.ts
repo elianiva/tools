@@ -1,4 +1,4 @@
-const sortKeys = (value: unknown): unknown => {
+export const sortKeys = (value: unknown): unknown => {
   if (Array.isArray(value)) return value.map(sortKeys)
   if (value !== null && typeof value === 'object') {
     return Object.fromEntries(
@@ -39,4 +39,15 @@ export const formatJson = (text: string, mode: string): string => {
     default:
       return JSON.stringify(parsed, null, 2)
   }
+}
+
+/** Pretty-prints with any indent, optionally sorting keys. `indent` of `''` gives one line. */
+export const formatJsonWith = (text: string, indent: string, sort: boolean): string => {
+  let parsed: unknown
+  try {
+    parsed = JSON.parse(text)
+  } catch (error) {
+    throw explain(text, error)
+  }
+  return JSON.stringify(sort ? sortKeys(parsed) : parsed, null, indent === '' ? undefined : indent)
 }

@@ -1,4 +1,5 @@
-import { defineTransform } from '../transform.ts'
+import { segmented, textArea } from '../kit.ts'
+import { card, cells, defineForm, errorText, hero, page, split } from './ui.ts'
 
 export const run = (text: string, mode: string): string => {
   return text
@@ -22,21 +23,50 @@ export const run = (text: string, mode: string): string => {
     .join('\n')
 }
 
-export const clockFormat = defineTransform({
+export const clockFormat = defineForm({
   meta: {
     id: 'clock-format',
     name: '12 and 24 hour clock',
     category: 'convert',
     description: 'Convert times between 12-hour and 24-hour clocks, one per line.',
     keywords: ['am pm', '24 hour', 'military time', 'clock', 'time format'],
+    accepts: ['text/*', '.txt', '.json', '.md'],
   },
-  modes: [
-    { id: 'to-12', label: 'To 12-hour' },
-    { id: 'to-24', label: 'To 24-hour' },
-  ],
-  placeholder: 'Type or paste text',
-  acceptsFiles: true,
-  example: '14:30',
-  fields: [{ label: 'Time', kind: 'text' }],
-  run,
+  init: { text: '14:30', mode: 'to-12' },
+  view: (form, h) => {
+    const mode = form.get('mode')
+    const text = form.get('text')
+    let out = ''
+    let error = ''
+    if (text.trim() !== '') {
+      try {
+        out = run(text, mode)
+      } catch (caught) {
+        error = caught instanceof Error ? caught.message : ''
+      }
+    }
+    const hours = Array.from({ length: 24 }, (_, hour) => {
+      const clock = `${String(hour).padStart(2, '0')}:00`
+      return [clock, run(clock, 'to-12')] as const
+    })
+    return page(h, [
+      segmented(h, {
+        label: 'Direction',
+        value: mode,
+        options: [
+          { value: 'to-12', label: 'To 12-hour' },
+          { value: 'to-24', label: 'To 24-hour' },
+        ],
+        onSelect: (value) => form.patch({ mode: value }),
+      }),
+      split(h, [
+        card(h, null, [
+          textArea(h, { id: 'text', value: text, rows: 4, onInput: form.set('text') }),
+          errorText(h, error),
+        ]),
+        hero(h, 'Result', out),
+      ]),
+      card(h, 'All hours', [cells(h, hours)]),
+    ])
+  },
 })

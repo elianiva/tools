@@ -1,5 +1,7 @@
 import { secureInt } from './password.logic.ts'
-import { defineTransform } from '../transform.ts'
+import { stack } from '../kit.ts'
+import { tiles } from '../calculate/money-ui.ts'
+import { defineGenerator, secretBox } from './ui.ts'
 
 export const run = (text: string, mode: string): string => {
   const length = Number.parseInt(text, 10) || 16
@@ -16,7 +18,15 @@ export const run = (text: string, mode: string): string => {
   return Array.from({ length }, () => alphabet.charAt(secureInt(alphabet.length))).join('')
 }
 
-export const randomString = defineTransform({
+const SIZES: Readonly<Record<string, number>> = {
+  alnum: 62,
+  letters: 52,
+  digits: 10,
+  hex: 16,
+  url: 64,
+}
+
+export const randomString = defineGenerator({
   meta: {
     id: 'random-string',
     name: 'Random string',
@@ -24,6 +34,16 @@ export const randomString = defineTransform({
     description: 'Random letters, digits, hex, or URL-safe text of a length you choose.',
     keywords: ['random string', 'token', 'api key', 'secret', 'hex', 'identifier'],
   },
+  fields: [
+    {
+      label: 'Length',
+      initial: '16',
+      integer: true,
+      min: 1,
+      max: 256,
+      presets: ['8', '16', '32', '64'],
+    },
+  ],
   modes: [
     { id: 'alnum', label: 'Letters and digits' },
     { id: 'letters', label: 'Letters' },
@@ -31,8 +51,20 @@ export const randomString = defineTransform({
     { id: 'hex', label: 'Hex' },
     { id: 'url', label: 'URL-safe' },
   ],
-  placeholder: '16',
-  example: '16',
-  fields: [{ label: 'Length' }],
+  modeLabel: 'Characters',
+  action: 'Generate another',
   run,
+  view: (h, { out, mode }) => {
+    const bits = Math.floor(out.length * Math.log2(SIZES[mode] ?? 62))
+    return h.div(
+      [h.Class(stack)],
+      [
+        secretBox(h, 'Random string', out),
+        tiles(h, [
+          ['Length', String(out.length)],
+          ['Entropy', `${bits} bits`],
+        ]),
+      ],
+    )
+  },
 })

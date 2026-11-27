@@ -1,4 +1,4 @@
-import { defineTransform } from '../transform.ts'
+import { card, defineForm, errorText, linked, page, rows } from './ui.ts'
 
 export const run = (text: string, mode: string): string => {
   const table: ReadonlyArray<readonly [number, string]> = [
@@ -45,7 +45,23 @@ export const run = (text: string, mode: string): string => {
   return String(total)
 }
 
-export const romanNumerals = defineTransform({
+const PARTS: Readonly<Record<string, number>> = {
+  M: 1000,
+  CM: 900,
+  D: 500,
+  CD: 400,
+  C: 100,
+  XC: 90,
+  L: 50,
+  XL: 40,
+  X: 10,
+  IX: 9,
+  V: 5,
+  IV: 4,
+  I: 1,
+}
+
+export const romanNumerals = defineForm({
   meta: {
     id: 'roman-numerals',
     name: 'Roman numerals',
@@ -53,12 +69,31 @@ export const romanNumerals = defineTransform({
     description: 'Convert numbers to Roman numerals and back.',
     keywords: ['roman', 'numeral', 'mcm', 'latin'],
   },
-  modes: [
-    { id: 'to-roman', label: 'Number to Roman' },
-    { id: 'from-roman', label: 'Roman to number' },
-  ],
-  placeholder: 'Type or paste text',
-  example: '1994',
-  fields: [{ label: 'Number or numeral', kind: 'text' }],
-  run,
+  init: { src: 'number', text: '1994' },
+  view: (form, h) => {
+    const pair = linked(
+      h,
+      form,
+      [
+        { key: 'number', label: 'Number' },
+        { key: 'roman', label: 'Roman' },
+      ],
+      (src, text) =>
+        src === 'number' ? { roman: run(text, 'to-roman') } : { number: run(text, 'from-roman') },
+    )
+    const roman =
+      form.get('src') === 'roman' ? form.get('text').toUpperCase() : pair.values['roman']
+    const parts = pair.error === '' ? (roman?.match(/CM|CD|XC|XL|IX|IV|[MDCLXVI]/gu) ?? []) : []
+    return page(h, [
+      card(h, null, [pair.fields, errorText(h, pair.error)]),
+      parts.length === 0
+        ? null
+        : card(h, 'Breakdown', [
+            rows(
+              h,
+              parts.map((part) => [part, String(PARTS[part] ?? 0)] as const),
+            ),
+          ]),
+    ])
+  },
 })

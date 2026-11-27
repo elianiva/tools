@@ -1,4 +1,14 @@
-import { defineTransform } from '../transform.ts'
+import { css } from '../../../styled-system/css'
+import { columns, panel, range, stack } from '../kit.ts'
+import {
+  attempt,
+  bitRow,
+  defineWorkbench,
+  errorNote,
+  facts,
+  sectionLabel,
+  textField,
+} from './ui.ts'
 
 export const run = (text: string): string => {
   const match = /^(\d{1,3})\.(\d{1,3})\.(\d{1,3})\.(\d{1,3})\/(\d{1,2})$/u.exec(text.trim())
@@ -25,7 +35,17 @@ export const run = (text: string): string => {
   ].join('\n')
 }
 
-export const subnet = defineTransform({
+const legendCls = css({
+  display: 'flex',
+  gap: '1rem',
+  fontSize: '0.75rem',
+  color: 'var(--muted-foreground)',
+})
+
+const toNumber = (dotted: string): bigint =>
+  dotted.split('.').reduce((sum, octet) => sum * 256n + BigInt(octet), 0n)
+
+export const subnet = defineWorkbench({
   meta: {
     id: 'subnet',
     name: 'Subnet calculator',
@@ -33,10 +53,65 @@ export const subnet = defineTransform({
     description: 'Network, broadcast, and host range of an IPv4 CIDR block.',
     keywords: ['cidr', 'ip', 'subnet', 'netmask', 'network', 'ipv4'],
   },
-  modes: [{ id: 'run', label: 'Run' }],
-  placeholder: '192.168.1.10/24',
   example: '192.168.1.10/24',
-  fields: [{ label: 'IP address with prefix', kind: 'text' }],
-  present: 'facts',
-  run,
+  view: (h, ctx) => {
+    const result =
+      ctx.input.trim() === '' ? { value: '', error: '' } : attempt(() => run(ctx.input))
+    const ok = ctx.input.trim() !== '' && result.error === ''
+    const lines = ok
+      ? result.value
+          .split('\n')
+          .map((line) => [line.split(': ')[0] ?? '', line.split(': ')[1] ?? ''] as const)
+      : []
+    const [address = '', prefixText = '0'] = ctx.input.trim().split('/')
+    const prefix = Number(prefixText)
+    const mask = lines.find(([name]) => name === 'Netmask')?.[1] ?? '0.0.0.0'
+    return h.div(
+      [h.Class(stack)],
+      [
+        panel(h, null, [
+          textField(h, {
+            id: 'subnet-input',
+            label: 'Address and prefix',
+            value: ctx.input,
+            placeholder: '192.168.1.10/24',
+            onInput: ctx.on.input,
+          }),
+          errorNote(h, result.error),
+          ok
+            ? range(h, {
+                id: 'subnet-prefix',
+                min: 0,
+                max: 32,
+                value: prefix,
+                onInput: (n) => ctx.on.input(`${address}/${n}`),
+              })
+            : null,
+        ]),
+        ok
+          ? columns(h, [
+              panel(h, null, [
+                sectionLabel(h, 'Address bits'),
+                bitRow(h, {
+                  label: 'Address',
+                  value: toNumber(address),
+                  width: 32,
+                  dimFrom: prefix,
+                }),
+                sectionLabel(h, 'Mask bits'),
+                bitRow(h, { label: 'Netmask', value: toNumber(mask), width: 32, dimFrom: prefix }),
+                h.div(
+                  [h.Class(legendCls)],
+                  [
+                    h.span([], [`Network: ${prefix} bits`]),
+                    h.span([], [`Host: ${32 - prefix} bits (dimmed)`]),
+                  ],
+                ),
+              ]),
+              panel(h, null, [sectionLabel(h, 'Block'), facts(h, lines)]),
+            ])
+          : null,
+      ],
+    )
+  },
 })

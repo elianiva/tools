@@ -1,4 +1,19 @@
-import { defineTransform } from '../transform.ts'
+import {
+  chipRowCls,
+  column,
+  dateCard,
+  daysIn,
+  defineCalc,
+  dayNumber,
+  elapsed,
+  hero,
+  parseIso,
+  spoken,
+  tiles,
+  WEEKDAYS,
+  utc,
+  type Ymd,
+} from './ui.ts'
 
 export const run = (text: string): string => {
   const found = [...text.matchAll(/(\d{4})-(\d{2})-(\d{2})/gu)].map(
@@ -30,7 +45,7 @@ export const run = (text: string): string => {
   return `Age: ${years} years, ${months} months, ${days} days`
 }
 
-export const ageCalculator = defineTransform({
+export const ageCalculator = defineCalc({
   meta: {
     id: 'age-calculator',
     name: 'Age calculator',
@@ -38,12 +53,33 @@ export const ageCalculator = defineTransform({
     description: 'Exact age in years, months, and days between a birth date and another date.',
     keywords: ['age', 'birthday', 'years', 'months', 'days', 'birth date'],
   },
-  modes: [{ id: 'run', label: 'Run' }],
-  placeholder: 'birth date and today: 1990-08-15 2024-08-14',
-  example: '1990-08-15 2024-08-14',
-  fields: [
-    { label: 'Born', kind: 'date' },
-    { label: 'On this day', kind: 'date' },
-  ],
   run,
+  fields: [
+    { label: 'Born', value: '1990-08-15', kind: 'date' },
+    { label: 'On this day', value: '2024-08-14', kind: 'date' },
+  ],
+  view: (h, { values, out }) => {
+    const birth = parseIso(values[0] ?? '')
+    const end = parseIso(values[1] ?? '')
+    if (birth === null || end === null) return column(h, [])
+    const span = elapsed(birth, end)
+    const birthday = (year: number): Ymd => [
+      year,
+      birth[1],
+      Math.min(birth[2], daysIn(year, birth[1] - 1)),
+    ]
+    const upcoming =
+      dayNumber(birthday(end[0])) >= dayNumber(end) ? birthday(end[0]) : birthday(end[0] + 1)
+    const until = dayNumber(upcoming) - dayNumber(end)
+    return column(h, [
+      hero(h, { label: 'Age', value: spoken(span), copy: out }),
+      h.div([h.Class(chipRowCls)], [dateCard(h, birth, 'Born'), dateCard(h, end, 'On')]),
+      tiles(h, [
+        ['Total months', String(span.years * 12 + span.months)],
+        ['Total days', String(dayNumber(end) - dayNumber(birth))],
+        ['Born on a', WEEKDAYS[utc(birth[0], birth[1] - 1, birth[2]).getUTCDay()] ?? ''],
+        ['Next birthday', until === 0 ? 'Today' : `in ${until} days`],
+      ]),
+    ])
+  },
 })

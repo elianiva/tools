@@ -1,303 +1,44 @@
-import { randomColor } from './generate/random-color.ts'
-import { randomString } from './generate/random-string.ts'
-import { coinFlip } from './generate/coin-flip.ts'
-import { randomNumber } from './generate/random-number.ts'
-import { vowelCounter } from './text/vowel-counter.ts'
-import { anagramChecker } from './text/anagram-checker.ts'
-import { emojiRemover } from './text/emoji-remover.ts'
-import { duplicateWords } from './text/duplicate-words.ts'
-import { editDistance } from './text/edit-distance.ts'
-import { findReplace } from './text/find-replace.ts'
-import { unicodeNormalize } from './text/unicode-normalize.ts'
-import { portNumbers } from './developer/port-numbers.ts'
-import { mimeTypes } from './developer/mime-types.ts'
-import { bitwise } from './developer/bitwise.ts'
-import { scientificNotation } from './convert/scientific-notation.ts'
-import { excelColumn } from './convert/excel-column.ts'
-import { terbilang } from './convert/terbilang.ts'
-import { clockFormat } from './convert/clock-format.ts'
-import { cmyk } from './convert/cmyk.ts'
-import { hoursDecimal } from './convert/hours-decimal.ts'
-import { sphere } from './calculate/sphere.ts'
-import { triangle } from './calculate/triangle.ts'
-import { slope } from './calculate/slope.ts'
-import { squareRoot } from './calculate/square-root.ts'
-import { logarithm } from './calculate/logarithm.ts'
-import { electricityCost } from './calculate/electricity-cost.ts'
-import { timeAdd } from './calculate/time-add.ts'
-import { ratioSimplifier } from './calculate/ratio-simplifier.ts'
-import { fuelCost } from './calculate/fuel-cost.ts'
-import { ruleOf72 } from './calculate/rule-of-72.ts'
-import { cagr } from './calculate/cagr.ts'
-import { roi } from './calculate/roi.ts'
-import { breakEven } from './calculate/break-even.ts'
-import { simpleInterest } from './calculate/simple-interest.ts'
-import { pph21 } from './calculate/pph21.ts'
-import { leapYear } from './calculate/leap-year.ts'
-import { combinatorics } from './calculate/combinatorics.ts'
-import { fibonacci } from './calculate/fibonacci.ts'
-import { factorial } from './calculate/factorial.ts'
-import { quadratic } from './calculate/quadratic.ts'
-import { pythagorean } from './calculate/pythagorean.ts'
-import { circle } from './calculate/circle.ts'
-import { bmr } from './calculate/bmr.ts'
-import { weightedAverage } from './calculate/weighted-average.ts'
-import { workHours } from './calculate/work-hours.ts'
-import { markupMargin } from './calculate/markup-margin.ts'
-import { vatCalculator } from './calculate/vat-calculator.ts'
-import { zodiac } from './calculate/zodiac.ts'
-import { ordinalNumbers } from './convert/ordinal-numbers.ts'
-import { speed } from './convert/speed.ts'
-import { angle } from './convert/angle.ts'
-import { checksums } from './developer/checksums.ts'
-import { charCodes } from './developer/char-codes.ts'
-import { semverCompare } from './developer/semver-compare.ts'
-import { base32 } from './developer/base32.ts'
-import { envJson } from './developer/env-json.ts'
-import { jsonl } from './developer/jsonl.ts'
-import { titleCase } from './text/title-case.ts'
-import { strikethrough } from './text/strikethrough.ts'
-import { palindrome } from './text/palindrome.ts'
-import { acronym } from './text/acronym.ts'
-import { bulletList } from './text/bullet-list.ts'
-import { indent } from './text/indent.ts'
-import { textWrap } from './text/text-wrap.ts'
-import { numberStats } from './calculate/number-stats.ts'
-import { numberFormat } from './convert/number-format.ts'
-import { passwordStrength } from './developer/password-strength.ts'
-import { pigLatin } from './text/pig-latin.ts'
-import { caesarCipher } from './text/caesar-cipher.ts'
-import { salary } from './calculate/salary.ts'
-import { duration } from './convert/duration.ts'
-import { timezones } from './convert/timezones.ts'
-import { contrastChecker } from './developer/contrast-checker.ts'
-import { cssMinifier } from './developer/css-minifier.ts'
-import { subnet } from './developer/subnet.ts'
-import { chmod } from './developer/chmod.ts'
-import { httpStatus } from './developer/http-status.ts'
-import { urlParser } from './developer/url-parser.ts'
-import { jsonToTypescript } from './developer/json-to-typescript.ts'
-import { diceRoller } from './generate/dice-roller.ts'
-import { randomPicker } from './generate/random-picker.ts'
-import { uuidGenerator } from './generate/uuid-generator.ts'
-import { fractionDecimal } from './convert/fraction-decimal.ts'
-import { pxRem } from './convert/px-rem.ts'
-import { aspectRatio } from './calculate/aspect-ratio.ts'
-import { baseConverter } from './convert/base-converter.ts'
-import { primeFactors } from './calculate/prime-factors.ts'
-import { gcdLcm } from './calculate/gcd-lcm.ts'
-import { weekday } from './calculate/weekday.ts'
-import { dateDifference } from './calculate/date-difference.ts'
-import { compoundInterest } from './calculate/compound-interest.ts'
-import { loanCalculator } from './calculate/loan-calculator.ts'
-import { discountCalculator } from './calculate/discount-calculator.ts'
-import { tipCalculator } from './calculate/tip-calculator.ts'
-import { bmiCalculator } from './calculate/bmi-calculator.ts'
-import { markdownToc } from './text/markdown-toc.ts'
-import { removeLineBreaks } from './text/remove-line-breaks.ts'
-import { smartQuotes } from './text/smart-quotes.ts'
-import { sentenceSplitter } from './text/sentence-splitter.ts'
-import { unicodeInspector } from './developer/unicode-inspector.ts'
-import { leetspeak } from './text/leetspeak.ts'
-import { natoAlphabet } from './text/nato-alphabet.ts'
-import { escapeString } from './developer/escape-string.ts'
-import { readability } from './text/readability.ts'
-import { wordFrequency } from './text/word-frequency.ts'
-import { characterFrequency } from './text/character-frequency.ts'
-import { loremIpsum } from './generate/lorem-ipsum.ts'
-import { listConverter } from './text/list-converter.ts'
-import { csvJson } from './developer/csv-json.ts'
-import { htmlToText } from './text/html-to-text.ts'
-import { markdownToHtml } from './developer/markdown-to-html.ts'
-import { htmlEntities } from './developer/html-entities.ts'
-import { romanNumerals } from './convert/roman-numerals.ts'
-import { numberToWords } from './convert/number-to-words.ts'
-import { cipher } from './text/cipher.ts'
-import { hexText } from './text/hex-text.ts'
-import { binaryText } from './text/binary-text.ts'
-import { morseCode } from './text/morse-code.ts'
-import { upsideDown } from './text/upside-down.ts'
-import { fancyText } from './text/fancy-text.ts'
-import { removeAccents } from './text/remove-accents.ts'
-import { extractData } from './text/extract-data.ts'
-import { sortWords } from './text/sort-words.ts'
-import { textRepeater } from './text/text-repeater.ts'
-import { whitespaceCleaner } from './text/whitespace-cleaner.ts'
-import { reverseText } from './text/reverse-text.ts'
-import { passwordGenerator } from './generate/password.ts'
-import { qrCode } from './generate/qr.ts'
-import { textDiff } from './text/diff.ts'
-import { regexTester } from './developer/regex.ts'
-import { percentageCalculator } from './calculate/percentage.ts'
-import { units } from './convert/units.ts'
-import { slug } from './text/slug.ts'
 import { cron } from './developer/cron.ts'
-import { timestamp } from './convert/timestamp.ts'
-import { color } from './convert/color.ts'
-import { yamlJson } from './developer/yaml-json.ts'
-import { hash } from './developer/hash.ts'
 import { jwtDecoder } from './developer/jwt-decoder.ts'
-import { lineTools } from './text/line-tools.ts'
-import { caseConverter } from './text/case-converter.ts'
-import { urlEncoder } from './developer/url-encoder.ts'
-import { base64 } from './developer/base64.ts'
-import { jsonFormatter } from './developer/json-formatter.ts'
+import { regexTester } from './developer/regex.ts'
+import { semverCompare } from './developer/semver-compare.ts'
+import { loremIpsum } from './generate/lorem-ipsum.ts'
+import { qrCode } from './generate/qr.ts'
 import { imageConverter } from './images/convert.ts'
-import { wordCounter } from './text/word-counter.ts'
+import { pdfSuites } from './pdf/tools.ts'
+import { suites } from './suites.ts'
 import type { CategoryId, Tool } from './tool.ts'
 
-/** Every tool on the site. One line per tool; the palette, sidebar, home and routes all read this. */
+/** Every tool on the site. The palette, sidebar, home and routes all read this. */
 export const tools: ReadonlyArray<Tool> = [
   imageConverter,
-  wordCounter,
-  jsonFormatter,
-  base64,
-  urlEncoder,
-  caseConverter,
-  lineTools,
+  ...pdfSuites,
+  ...suites,
   jwtDecoder,
-  hash,
-  yamlJson,
-  color,
-  timestamp,
-  cron,
-  slug,
-  units,
-  percentageCalculator,
   regexTester,
-  textDiff,
-  qrCode,
-  passwordGenerator,
-  reverseText,
-  whitespaceCleaner,
-  textRepeater,
-  sortWords,
-  extractData,
-  removeAccents,
-  fancyText,
-  upsideDown,
-  morseCode,
-  binaryText,
-  hexText,
-  cipher,
-  numberToWords,
-  romanNumerals,
-  htmlEntities,
-  markdownToHtml,
-  htmlToText,
-  csvJson,
-  listConverter,
-  loremIpsum,
-  characterFrequency,
-  wordFrequency,
-  readability,
-  escapeString,
-  natoAlphabet,
-  leetspeak,
-  unicodeInspector,
-  sentenceSplitter,
-  smartQuotes,
-  removeLineBreaks,
-  markdownToc,
-  bmiCalculator,
-  tipCalculator,
-  discountCalculator,
-  loanCalculator,
-  compoundInterest,
-  dateDifference,
-  weekday,
-  gcdLcm,
-  primeFactors,
-  baseConverter,
-  aspectRatio,
-  pxRem,
-  fractionDecimal,
-  uuidGenerator,
-  randomPicker,
-  diceRoller,
-  jsonToTypescript,
-  urlParser,
-  httpStatus,
-  chmod,
-  subnet,
-  cssMinifier,
-  contrastChecker,
-  timezones,
-  duration,
-  salary,
-  caesarCipher,
-  pigLatin,
-  passwordStrength,
-  numberFormat,
-  numberStats,
-  textWrap,
-  indent,
-  bulletList,
-  acronym,
-  palindrome,
-  strikethrough,
-  titleCase,
-  jsonl,
-  envJson,
-  base32,
+  cron,
   semverCompare,
-  charCodes,
-  checksums,
-  angle,
-  speed,
-  ordinalNumbers,
-  zodiac,
-  vatCalculator,
-  markupMargin,
-  workHours,
-  weightedAverage,
-  bmr,
-  circle,
-  pythagorean,
-  quadratic,
-  factorial,
-  fibonacci,
-  combinatorics,
-  leapYear,
-  pph21,
-  simpleInterest,
-  breakEven,
-  roi,
-  cagr,
-  ruleOf72,
-  fuelCost,
-  ratioSimplifier,
-  timeAdd,
-  electricityCost,
-  logarithm,
-  squareRoot,
-  slope,
-  triangle,
-  sphere,
-  hoursDecimal,
-  cmyk,
-  clockFormat,
-  terbilang,
-  excelColumn,
-  scientificNotation,
-  bitwise,
-  mimeTypes,
-  portNumbers,
-  unicodeNormalize,
-  findReplace,
-  editDistance,
-  duplicateWords,
-  emojiRemover,
-  anagramChecker,
-  vowelCounter,
-  randomNumber,
-  coinFlip,
-  randomString,
-  randomColor,
+  qrCode,
+  loremIpsum,
 ]
 
-export const toolOf = (category: string, id: string): Tool | undefined =>
-  tools.find((tool) => tool.meta.category === category && tool.meta.id === id)
+/** The id a tool had before it joined a suite, mapped to the suite that holds it now. */
+const suiteOfOldId = new Map(
+  suites.flatMap((suite) => suite.variants.map((variant) => [variant.meta.id, suite] as const)),
+)
+
+/** The tool a saved or bookmarked id points to, including ids from before a tool joined a suite. */
+export const toolById = (id: string): Tool | undefined =>
+  tools.find((tool) => tool.meta.id === id) ?? suiteOfOldId.get(id)
+
+export const toolOf = (category: string, id: string): Tool | undefined => {
+  const tool = toolById(id)
+  const old = suiteOfOldId.get(id)
+  // An old URL keeps working under any category, so a link from before the merge still opens.
+  return tool !== undefined && (tool.meta.category === category || old !== undefined)
+    ? tool
+    : undefined
+}
 
 export const toolsIn = (category: CategoryId): ReadonlyArray<Tool> =>
   tools.filter((tool) => tool.meta.category === category)

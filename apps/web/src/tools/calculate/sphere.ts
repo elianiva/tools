@@ -1,4 +1,4 @@
-import { defineTransform } from '../transform.ts'
+import { column, defineCalc, draw, fact, figure, hero, num, tiles } from './ui.ts'
 
 export const run = (text: string): string => {
   const radius = Number(text.trim())
@@ -11,7 +11,7 @@ export const run = (text: string): string => {
   ].join('\n')
 }
 
-export const sphere = defineTransform({
+export const sphere = defineCalc({
   meta: {
     id: 'sphere',
     name: 'Sphere calculator',
@@ -19,9 +19,20 @@ export const sphere = defineTransform({
     description: 'Volume and surface area of a sphere from its radius.',
     keywords: ['sphere', 'volume', 'surface area', 'radius', 'ball', 'geometry'],
   },
-  modes: [{ id: 'run', label: 'Run' }],
-  placeholder: 'radius: 3',
-  example: '3',
-  fields: [{ label: 'Radius' }],
   run,
+  fields: [{ label: 'Radius', value: '3' }],
+  view: (h, { values, out }) => {
+    const d = draw(h)
+    return column(h, [
+      figure(h, { width: 300, height: 220, label: 'A sphere with its radius marked' }, [
+        d.circle({ class: 'shape', cx: 150, cy: 110, r: 90 }),
+        d.ellipse({ class: 'dash', cx: 150, cy: 110, rx: 90, ry: 26 }),
+        d.line({ class: 'ink', x1: 150, y1: 110, x2: 240, y2: 110 }),
+        d.circle({ class: 'dot', cx: 150, cy: 110, r: 4 }),
+        d.text({ class: 'val mid', x: 195, y: 102 }, `r = ${num(values[0])}`),
+      ]),
+      hero(h, { label: 'Volume', value: fact(out, 'Volume'), copy: out }),
+      tiles(h, [['Surface area', fact(out, 'Surface area')]]),
+    ])
+  },
 })

@@ -1,4 +1,4 @@
-import { defineTransform } from '../transform.ts'
+import { card, cells, defineForm, errorText, field, hero, page, split } from './ui.ts'
 
 export const run = (text: string, mode: string): string => {
   if (mode === 'to-seconds') {
@@ -31,7 +31,14 @@ export const run = (text: string, mode: string): string => {
   return out.length === 0 ? '0s' : out.join(' ')
 }
 
-export const duration = defineTransform({
+const PARTS: ReadonlyArray<readonly [string, string, number]> = [
+  ['d', 'Days', 86_400],
+  ['h', 'Hours', 3600],
+  ['m', 'Minutes', 60],
+  ['s', 'Seconds', 1],
+]
+
+export const duration = defineForm({
   meta: {
     id: 'duration',
     name: 'Duration converter',
@@ -39,12 +46,40 @@ export const duration = defineTransform({
     description: 'Seconds to days, hours, minutes, and back.',
     keywords: ['seconds', 'duration', 'time', 'hours', 'minutes', 'convert'],
   },
-  modes: [
-    { id: 'to-duration', label: 'Seconds to duration' },
-    { id: 'to-seconds', label: 'Duration to seconds' },
-  ],
-  placeholder: '3661',
-  example: '3661',
-  fields: [{ label: 'Value', kind: 'text' }],
-  run,
+  init: { d: '0', h: '1', m: '1', s: '1' },
+  view: (form, h) => {
+    const total = PARTS.reduce((sum, [key, , size]) => sum + (Number(form.get(key)) || 0) * size, 0)
+    const bad = PARTS.some(([key]) => Number.isNaN(Number(form.get(key))))
+    const seconds = Math.round(total)
+    const spelled = bad ? '' : run(String(seconds), 'to-duration')
+    return page(h, [
+      split(h, [
+        card(
+          h,
+          null,
+          PARTS.map(([key, label]) =>
+            field(h, {
+              id: key,
+              label,
+              value: form.get(key),
+              inputMode: 'decimal',
+              invalid: Number.isNaN(Number(form.get(key))),
+              onInput: form.set(key),
+            }),
+          ),
+        ),
+        hero(h, 'Total seconds', bad ? '' : String(seconds)),
+      ]),
+      bad
+        ? errorText(h, 'Enter numbers only.')
+        : card(h, null, [
+            cells(h, [
+              ['Compact', spelled],
+              ['Minutes', String(Number((seconds / 60).toFixed(4)))],
+              ['Hours', String(Number((seconds / 3600).toFixed(4)))],
+              ['Days', String(Number((seconds / 86_400).toFixed(4)))],
+            ]),
+          ]),
+    ])
+  },
 })

@@ -1,4 +1,5 @@
-import { defineTransform } from '../transform.ts'
+import { hero } from '../generate/ui.ts'
+import { compareBars, defineCalc, money } from './money-ui.ts'
 
 export const run = (text: string): string => {
   const [watts, hours, price] = (text.match(/\d+(?:\.\d+)?/gu) ?? []).map(Number)
@@ -12,7 +13,7 @@ export const run = (text: string): string => {
   ].join('\n')
 }
 
-export const electricityCost = defineTransform({
+export const electricityCost = defineCalc({
   meta: {
     id: 'electricity-cost',
     name: 'Electricity cost',
@@ -20,13 +21,24 @@ export const electricityCost = defineTransform({
     description: 'What an appliance costs to run.',
     keywords: ['electricity', 'kwh', 'watts', 'appliance', 'power', 'bill', 'energy'],
   },
-  modes: [{ id: 'run', label: 'Run' }],
-  placeholder: 'watts, hours per day, price per kWh: 1000 5 1500',
-  example: '1000 5 1500',
   fields: [
-    { label: 'Power', suffix: 'W' },
-    { label: 'Hours per day', suffix: 'h' },
-    { label: 'Price per kWh' },
+    { label: 'Power', initial: '1000', suffix: 'W' },
+    { label: 'Hours per day', initial: '5', suffix: 'h', max: 24 },
+    { label: 'Price per kWh', initial: '1500' },
   ],
   run,
+  render: (h, { num }) => {
+    const day = num('Cost per day')
+    const month = num('Cost per 30 days')
+    return [
+      hero(h, 'Cost per 30 days', money(month), [
+        h.span([], [`${num('Energy per day').toFixed(2)} kWh per day`]),
+      ]),
+      compareBars(h, 'Cost over time', [
+        { label: 'Per day', value: day, text: money(day), tone: 'info' },
+        { label: '30 days', value: month, text: money(month), tone: 'ok' },
+        { label: '365 days', value: day * 365, text: money(day * 365), tone: 'warn' },
+      ]),
+    ]
+  },
 })

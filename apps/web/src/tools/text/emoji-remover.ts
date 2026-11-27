@@ -1,4 +1,4 @@
-import { defineTransform } from '../transform.ts'
+import { cleaner, defineTextTool } from './ui.ts'
 
 export const run = (text: string): string => {
   return text
@@ -10,7 +10,7 @@ export const run = (text: string): string => {
     .trim()
 }
 
-export const emojiRemover = defineTransform({
+export const emojiRemover = defineTextTool({
   meta: {
     id: 'emoji-remover',
     name: 'Emoji remover',
@@ -18,10 +18,13 @@ export const emojiRemover = defineTransform({
     description: 'Strip emoji from text and tidy the spaces left behind.',
     keywords: ['emoji', 'remove emoji', 'strip', 'clean', 'pictograph'],
   },
-  modes: [{ id: 'run', label: 'Run' }],
-  placeholder: 'Type or paste text',
-  acceptsFiles: true,
-  example: 'hi 😀 there',
-  present: 'display',
-  run,
+  example: 'Launch day 🚀 is here 🎉 thanks team 👩‍💻',
+  files: true,
+  render: (c) =>
+    cleaner(c, {
+      run,
+      extra: (before) => [
+        ['Emoji', String((before.match(/\p{Extended_Pictographic}/gu) ?? []).length)],
+      ],
+    }),
 })

@@ -1,4 +1,4 @@
-import { defineTransform } from '../transform.ts'
+import { defineTextTool, frequency } from './ui.ts'
 
 export const run = (text: string, mode: string): string => {
   const parts = [...new Intl.Segmenter().segment(text)]
@@ -17,7 +17,7 @@ export const run = (text: string, mode: string): string => {
     .join('\n')
 }
 
-export const characterFrequency = defineTransform({
+export const characterFrequency = defineTextTool({
   meta: {
     id: 'character-frequency',
     name: 'Character frequency',
@@ -25,13 +25,16 @@ export const characterFrequency = defineTransform({
     description: 'Count how often each letter or character appears.',
     keywords: ['letters', 'histogram', 'count characters', 'frequency'],
   },
-  modes: [
-    { id: 'letters', label: 'Letters only' },
-    { id: 'all', label: 'Every character' },
-  ],
-  placeholder: 'Type or paste text',
-  acceptsFiles: true,
-  example: 'aab',
-  present: 'bars',
-  run,
+  mode: 'letters',
+  example: 'Frequency counts every letter of this sentence.',
+  files: true,
+  render: (c) =>
+    frequency(c, {
+      run,
+      noun: 'characters',
+      options: [
+        { value: 'letters', label: 'Letters only' },
+        { value: 'all', label: 'Every character' },
+      ],
+    }),
 })

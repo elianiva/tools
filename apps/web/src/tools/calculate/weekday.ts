@@ -1,4 +1,14 @@
-import { defineTransform } from '../transform.ts'
+import {
+  chipRowCls,
+  column,
+  dateCard,
+  defineCalc,
+  hero,
+  monthGrid,
+  parseIso,
+  tiles,
+  card,
+} from './ui.ts'
 
 export const run = (text: string): string => {
   const match = /(\d{4})-(\d{2})-(\d{2})/u.exec(text)
@@ -13,7 +23,7 @@ export const run = (text: string): string => {
   return `${name}, day ${dayOfYear} of ${year}`
 }
 
-export const weekday = defineTransform({
+export const weekday = defineCalc({
   meta: {
     id: 'weekday',
     name: 'Weekday finder',
@@ -21,9 +31,18 @@ export const weekday = defineTransform({
     description: 'The weekday and day of the year for any date.',
     keywords: ['day of week', 'date', 'calendar', 'day of year'],
   },
-  modes: [{ id: 'run', label: 'Run' }],
-  placeholder: '2024-02-29',
-  example: '2024-02-29',
-  fields: [{ label: 'Date', kind: 'date' }],
   run,
+  fields: [{ label: 'Date', value: '2024-02-29', kind: 'date' }],
+  view: (h, { values, out }) => {
+    const date = parseIso(values[0] ?? '')
+    if (date === null) return column(h, [])
+    const name = out.split(',')[0] ?? ''
+    const dayOfYear = /day (\d+)/u.exec(out)?.[1] ?? ''
+    return column(h, [
+      hero(h, { label: 'Weekday', value: name, copy: out }),
+      h.div([h.Class(chipRowCls)], [dateCard(h, date)]),
+      tiles(h, [['Day of year', dayOfYear]]),
+      card(h, 'Calendar', [monthGrid(h, { year: date[0], month0: date[1] - 1, marked: date[2] })]),
+    ])
+  },
 })

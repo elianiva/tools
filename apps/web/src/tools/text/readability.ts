@@ -1,4 +1,6 @@
-import { defineTransform } from '../transform.ts'
+import { css } from '../../../styled-system/css'
+import { columns, hint, panel, stack, stats } from '../kit.ts'
+import { attempt, defineTextTool, errorLine, marked, plural, sourcePanel } from './ui.ts'
 
 export const run = (text: string): string => {
   const words = (text.match(/[A-Za-z']+/gu) ?? []).map((word) => word.toLowerCase())
@@ -36,7 +38,52 @@ export const run = (text: string): string => {
   ].join('\n')
 }
 
-export const readability = defineTransform({
+const LONG = 20
+
+const scoreCls = css({ display: 'flex', alignItems: 'baseline', gap: '0.8rem' })
+const bigCls = css({
+  fontFamily: 'var(--mono)',
+  fontSize: '2.6rem',
+  fontWeight: 500,
+  fontVariantNumeric: 'tabular-nums',
+  lineHeight: 1,
+})
+const gaugeCls = css({
+  position: 'relative',
+  height: '10px',
+  margin: '0.4rem 0',
+  borderRadius: '999px',
+  background:
+    'linear-gradient(90deg, var(--danger), var(--warn) 35%, oklch(0.75 0.14 120) 65%, var(--ok))',
+  '& i': {
+    position: 'absolute',
+    top: '-5px',
+    width: '4px',
+    height: '20px',
+    marginLeft: '-2px',
+    borderRadius: '2px',
+    background: 'var(--foreground)',
+    boxShadow: '0 0 0 2px var(--card)',
+    transition: 'left 250ms cubic-bezier(0.23, 1, 0.32, 1)',
+  },
+})
+const scaleCls = css({
+  display: 'flex',
+  justifyContent: 'space-between',
+  fontSize: '0.72rem',
+  color: 'var(--muted-foreground)',
+})
+
+const field = (value: string, name: string): string =>
+  new RegExp(`^${name}: (.+)$`, 'mu').exec(value)?.[1] ?? ''
+
+const sentencesOf = (text: string): ReadonlyArray<Readonly<{ text: string; words: number }>> =>
+  [...new Intl.Segmenter('en', { granularity: 'sentence' }).segment(text)].map((part) => ({
+    text: part.segment,
+    words: (part.segment.match(/[A-Za-z']+/gu) ?? []).length,
+  }))
+
+export const readability = defineTextTool({
   meta: {
     id: 'readability',
     name: 'Readability score',
@@ -44,10 +91,77 @@ export const readability = defineTransform({
     description: 'Flesch reading ease and grade level of English text.',
     keywords: ['flesch', 'grade', 'reading level', 'syllables', 'plain language'],
   },
-  modes: [{ id: 'run', label: 'Run' }],
-  placeholder: 'Type or paste text',
-  acceptsFiles: true,
-  example: 'The quick brown fox jumps over the lazy dog.',
-  present: 'facts',
-  run,
+  example:
+    'The quick brown fox jumps over the lazy dog. Short sentences help readers. Long sentences that wander through several clauses, pile up qualifications, and never quite reach a point make the same reader work much harder than they should have to.',
+  files: true,
+  render: (c) => {
+    const { h } = c
+    const result = attempt(() => (c.input.trim() === '' ? '' : run(c.input)))
+    const [ease = '', label = ''] = field(result.value, 'Flesch reading ease')
+      .replace(')', '')
+      .split(' (')
+    const sentences = sentencesOf(c.input)
+    const long = sentences.filter((sentence) => sentence.words > LONG).length
+    const words = Number(field(result.value, 'Words'))
+    const count = Number(field(result.value, 'Sentences'))
+    return h.div(
+      [h.Class(stack)],
+      [
+        columns(h, [
+          sourcePanel(c),
+          panel(h, 'Reading ease', [
+            result.value === ''
+              ? hint(h, result.error === '' ? 'Write some English text.' : result.error)
+              : h.div(
+                  [],
+                  [
+                    h.div(
+                      [h.Class(scoreCls)],
+                      [h.span([h.Class(bigCls)], [ease]), h.b([], [label])],
+                    ),
+                    h.div(
+                      [h.Class(gaugeCls)],
+                      [
+                        h.i(
+                          [
+                            h.Style({
+                              left: `${Math.min(100, Math.max(0, Number(ease)))}%`,
+                            }),
+                          ],
+                          [],
+                        ),
+                      ],
+                    ),
+                    h.div([h.Class(scaleCls)], [h.span([], ['Hard']), h.span([], ['Easy'])]),
+                  ],
+                ),
+            errorLine(c, result.value === '' ? '' : result.error),
+            result.value === ''
+              ? null
+              : stats(h, [
+                  ['Grade level', field(result.value, 'Grade level')],
+                  ['Words', String(words)],
+                  ['Sentences', String(count)],
+                  ['Syllables', field(result.value, 'Syllables')],
+                  ['Words per sentence', count === 0 ? '0' : (words / count).toFixed(1)],
+                ]),
+          ]),
+        ]),
+        result.value === ''
+          ? null
+          : panel(h, `Long sentences · ${long} over ${LONG} words`, [
+              long === 0
+                ? hint(h, `Every sentence is ${plural(LONG, 'word')} or shorter.`)
+                : marked(
+                    h,
+                    'Text with long sentences highlighted',
+                    sentences.map((sentence) => ({
+                      text: sentence.text,
+                      ...(sentence.words > LONG ? { kind: 'warn' as const } : {}),
+                    })),
+                  ),
+            ]),
+      ],
+    )
+  },
 })

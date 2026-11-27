@@ -1,4 +1,4 @@
-import { defineTransform } from '../transform.ts'
+import { codecView, defineWorkbench } from './ui.ts'
 
 export const run = (text: string, mode: string): string => {
   if (mode === 'to-env') {
@@ -31,7 +31,7 @@ export const run = (text: string, mode: string): string => {
   return JSON.stringify(Object.fromEntries(entries), null, 2)
 }
 
-export const envJson = defineTransform({
+export const envJson = defineWorkbench({
   meta: {
     id: 'env-json',
     name: '.env and JSON',
@@ -39,13 +39,19 @@ export const envJson = defineTransform({
     description: 'Convert a .env file to JSON and back.',
     keywords: ['env', 'dotenv', 'environment', 'json', 'config', 'variables'],
   },
-  modes: [
-    { id: 'to-json', label: '.env to JSON' },
-    { id: 'to-env', label: 'JSON to .env' },
-  ],
-  placeholder: 'Type or paste text',
-  acceptsFiles: true,
+  mode: 'to-json',
   example: 'A=1\n# note\nexport B="x y"\nC=\'z\'',
-  present: 'code',
-  run,
+  acceptsFiles: true,
+  view: (h, ctx) =>
+    codecView(h, ctx, {
+      id: 'env-json',
+      modes: [
+        { value: 'to-json', label: '.env to JSON' },
+        { value: 'to-env', label: 'JSON to .env' },
+      ],
+      inverse: { 'to-json': 'to-env', 'to-env': 'to-json' },
+      run,
+      labels: (mode) => (mode === 'to-json' ? ['.env', 'JSON'] : ['JSON', '.env']),
+      placeholder: ctx.mode === 'to-json' ? 'KEY=value' : '{"KEY":"value"}',
+    }),
 })

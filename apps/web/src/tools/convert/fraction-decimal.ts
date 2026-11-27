@@ -1,4 +1,4 @@
-import { defineTransform } from '../transform.ts'
+import { card, defineForm, errorText, linked, page, rows } from './ui.ts'
 
 export const run = (text: string, mode: string): string => {
   const gcd = (a: number, b: number): number => (b === 0 ? a : gcd(b, a % b))
@@ -25,7 +25,7 @@ export const run = (text: string, mode: string): string => {
   return String(Number((sign * (whole + top / bottom)).toFixed(10)))
 }
 
-export const fractionDecimal = defineTransform({
+export const fractionDecimal = defineForm({
   meta: {
     id: 'fraction-decimal',
     name: 'Fraction and decimal',
@@ -33,12 +33,26 @@ export const fractionDecimal = defineTransform({
     description: 'Turn fractions into decimals and decimals into fractions.',
     keywords: ['fraction', 'decimal', 'mixed number', 'reduce'],
   },
-  modes: [
-    { id: 'to-decimal', label: 'Fraction to decimal' },
-    { id: 'to-fraction', label: 'Decimal to fraction' },
-  ],
-  placeholder: '3/8',
-  example: '3/8',
-  fields: [{ label: 'Fraction or decimal', kind: 'text' }],
-  run,
+  init: { src: 'fraction', text: '3/8' },
+  view: (form, h) => {
+    const pair = linked(
+      h,
+      form,
+      [
+        { key: 'fraction', label: 'Fraction' },
+        { key: 'decimal', label: 'Decimal' },
+      ],
+      (src, text) =>
+        src === 'fraction'
+          ? { decimal: run(text, 'to-decimal') }
+          : { fraction: run(text, 'to-fraction') },
+    )
+    const decimal = Number(pair.values['decimal'] ?? form.get('text'))
+    return page(h, [
+      card(h, null, [pair.fields, errorText(h, pair.error)]),
+      pair.error !== '' || !Number.isFinite(decimal) || form.get('text').trim() === ''
+        ? null
+        : card(h, null, [rows(h, [['Percent', `${Number((decimal * 100).toFixed(8))}%`]])]),
+    ])
+  },
 })

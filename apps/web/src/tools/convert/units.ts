@@ -1,7 +1,26 @@
-import { defineTransform } from '../transform.ts'
-import { convertUnits } from './units.logic.ts'
+import { GROUPS } from './units.logic.ts'
+import { defineForm, linear, unitConverter, unitStart, type UnitSet } from './ui.ts'
 
-export const units = defineTransform({
+const temperature: UnitSet = {
+  id: 'Temperature',
+  name: 'Temperature',
+  units: [
+    { id: '°C', label: '°C', toBase: (v) => v, fromBase: (v) => v },
+    { id: '°F', label: '°F', toBase: (v) => ((v - 32) * 5) / 9, fromBase: (v) => (v * 9) / 5 + 32 },
+    { id: 'K', label: 'K', toBase: (v) => v - 273.15, fromBase: (v) => v + 273.15 },
+  ],
+}
+
+const sets: ReadonlyArray<UnitSet> = [
+  ...GROUPS.map((group) => ({
+    id: group.name,
+    name: group.name,
+    units: group.units.map((unit) => linear(unit.label, unit.label, unit.factor)),
+  })),
+  temperature,
+]
+
+export const units = defineForm({
   meta: {
     id: 'units',
     name: 'Unit converter',
@@ -19,9 +38,6 @@ export const units = defineTransform({
       'imperial',
     ],
   },
-  modes: [{ id: 'all', label: 'All' }],
-  placeholder: '5 km',
-  example: '5 km',
-  fields: [{ label: 'Value' }, { label: 'Unit', kind: 'text' }],
-  run: (text) => convertUnits(text),
+  init: unitStart(sets, 'km', 'mi', '5'),
+  view: (form, h) => unitConverter(h, form, { sets }),
 })

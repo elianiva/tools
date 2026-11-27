@@ -1,4 +1,4 @@
-import { defineTransform } from '../transform.ts'
+import { column, defineCalc, draw, figure, fmt, hero, num, tiles } from './ui.ts'
 
 export const run = (text: string): string => {
   const match = /(\d{1,2}):(\d{2})\s+(\d{1,2}):(\d{2})(?:\s+(\d+))?/u.exec(text)
@@ -22,7 +22,7 @@ export const run = (text: string): string => {
   return `Worked: ${Math.floor(worked / 60)}h ${worked % 60}m (${(worked / 60).toFixed(2)} hours)`
 }
 
-export const workHours = defineTransform({
+export const workHours = defineCalc({
   meta: {
     id: 'work-hours',
     name: 'Work hours',
@@ -30,13 +30,64 @@ export const workHours = defineTransform({
     description: 'Hours worked between a start and an end time, minus a break.',
     keywords: ['timesheet', 'hours', 'shift', 'time card', 'overtime', 'break'],
   },
-  modes: [{ id: 'run', label: 'Run' }],
-  placeholder: 'start, end, break minutes: 9:00 17:30 30',
-  example: '9:00 17:30 30',
-  fields: [
-    { label: 'Start', kind: 'time' },
-    { label: 'End', kind: 'time' },
-    { label: 'Break', suffix: 'min' },
-  ],
   run,
+  fields: [
+    { label: 'Start', value: '09:00', kind: 'time' },
+    { label: 'End', value: '17:30', kind: 'time' },
+    { label: 'Break', value: '30', suffix: 'min' },
+  ],
+  view: (h, { values, out }) => {
+    const d = draw(h)
+    const minutesOf = (time: string | undefined): number => {
+      const [hh = '0', mm = '0'] = (time ?? '').split(':')
+      return Number(hh) * 60 + Number(mm)
+    }
+    const start = minutesOf(values[0])
+    const end = minutesOf(values[1])
+    const x = (minute: number): number => 10 + (minute / 1440) * 280
+    const spans =
+      end > start
+        ? [[start, end]]
+        : [
+            [start, 1440],
+            [0, end],
+          ]
+    const [, hoursText = '', minutesText = '', decimal = ''] =
+      /(\d+)h (\d+)m \((.+) hours\)/u.exec(out) ?? []
+    return column(h, [
+      figure(h, { width: 300, height: 70, label: 'The shift on a 24 hour timeline' }, [
+        d.rect({ class: 'well', x: 10, y: 20, width: 280, height: 20, rx: 4 }),
+        ...spans.map(([from = 0, to = 0]) =>
+          d.rect({
+            class: 'fill',
+            x: x(from),
+            y: 20,
+            width: Math.max(2, x(to) - x(from)),
+            height: 20,
+            rx: 4,
+          }),
+        ),
+        ...[0, 6, 12, 18, 24].map((hour) =>
+          d.text(
+            {
+              class: `lbl ${hour === 0 ? '' : hour === 24 ? 'end' : 'mid'}`,
+              x: x(hour * 60),
+              y: 58,
+            },
+            String(hour),
+          ),
+        ),
+      ]),
+      hero(h, {
+        label: 'Worked',
+        value: `${hoursText}h ${minutesText}m`,
+        sub: `${decimal} hours`,
+        copy: out,
+      }),
+      tiles(h, [
+        ['Decimal hours', fmt(Number(decimal), 2)],
+        ['Break', `${fmt(num(values[2]), 0)} min`],
+      ]),
+    ])
+  },
 })

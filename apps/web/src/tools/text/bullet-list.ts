@@ -1,4 +1,5 @@
-import { defineTransform } from '../transform.ts'
+import { columns, hint, panel, stack } from '../kit.ts'
+import { codeBlock, defineTextTool, previewGrid, sourcePanel, useAsInput } from './ui.ts'
 
 export const run = (text: string, mode: string): string => {
   const items = text
@@ -18,7 +19,16 @@ export const run = (text: string, mode: string): string => {
   }
 }
 
-export const bulletList = defineTransform({
+const STYLES = [
+  { value: 'bullets', label: 'Bullets' },
+  { value: 'numbered', label: 'Numbered' },
+  { value: 'checklist', label: 'Checklist' },
+  { value: 'strip', label: 'Plain' },
+] as const
+
+const firstItems = (text: string): string => text.split('\n').slice(0, 2).join('  ')
+
+export const bulletList = defineTextTool({
   meta: {
     id: 'bullet-list',
     name: 'Bullet list maker',
@@ -26,15 +36,30 @@ export const bulletList = defineTransform({
     description: 'Turn lines into bullets, a numbered list, or a checklist.',
     keywords: ['list', 'markdown', 'bullets', 'numbered', 'checklist', 'todo'],
   },
-  modes: [
-    { id: 'bullets', label: 'Bullets' },
-    { id: 'numbered', label: 'Numbered' },
-    { id: 'checklist', label: 'Checklist' },
-    { id: 'strip', label: 'Remove markers' },
-  ],
-  placeholder: 'Type or paste text',
-  acceptsFiles: true,
-  example: 'a\n b\n\nc',
-  present: 'list',
-  run,
+  mode: 'bullets',
+  example: 'Buy milk\nBook flights\n\nCall the bank',
+  files: true,
+  render: (c) => {
+    const { h } = c
+    const value = run(c.input, c.mode)
+    return h.div(
+      [h.Class(stack)],
+      [
+        previewGrid(
+          c,
+          STYLES.map((item) => ({
+            ...item,
+            text: c.input.trim() === '' ? '' : firstItems(run(c.input, item.value)),
+          })),
+        ),
+        columns(h, [
+          sourcePanel(c, { label: 'Items', placeholder: 'One item per line' }),
+          panel(h, 'List', [
+            value === '' ? hint(h, 'Paste items to start.') : codeBlock(h, 'List', value),
+            useAsInput(c, value),
+          ]),
+        ]),
+      ],
+    )
+  },
 })

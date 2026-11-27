@@ -1,4 +1,4 @@
-import { defineTransform } from '../transform.ts'
+import { cleaner, defineTextTool } from './ui.ts'
 
 export const run = (text: string, mode: string): string => {
   if (mode === 'straight')
@@ -10,7 +10,7 @@ export const run = (text: string, mode: string): string => {
     .replaceAll("'", '\u2019')
 }
 
-export const smartQuotes = defineTransform({
+export const smartQuotes = defineTextTool({
   meta: {
     id: 'smart-quotes',
     name: 'Smart quotes',
@@ -18,13 +18,15 @@ export const smartQuotes = defineTransform({
     description: 'Curl straight quotes, or straighten curly ones.',
     keywords: ['quotes', 'curly', 'straight', 'typography', 'apostrophe'],
   },
-  modes: [
-    { id: 'curly', label: 'Curl quotes' },
-    { id: 'straight', label: 'Straighten quotes' },
-  ],
-  placeholder: 'Type or paste text',
-  acceptsFiles: true,
-  example: 'He said "it\'s fine"',
-  present: 'display',
-  run,
+  mode: 'curly',
+  example: 'He said "it\'s fine" and left.',
+  files: true,
+  render: (c) =>
+    cleaner(c, {
+      run,
+      options: [
+        { value: 'curly', label: 'Curl quotes' },
+        { value: 'straight', label: 'Straighten quotes' },
+      ],
+    }),
 })

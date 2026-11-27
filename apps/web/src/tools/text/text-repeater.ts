@@ -1,10 +1,11 @@
-import { defineTransform } from '../transform.ts'
+import { columns, hint, panel, range, stack, stats } from '../kit.ts'
+import { codeBlock, defineTextTool, sourcePanel, useAsInput } from './ui.ts'
 
 export const run = (text: string, mode: string): string => {
   return Array.from({ length: Number(mode) }, () => text).join('\n')
 }
 
-export const textRepeater = defineTransform({
+export const textRepeater = defineTextTool({
   meta: {
     id: 'text-repeater',
     name: 'Text repeater',
@@ -12,14 +13,36 @@ export const textRepeater = defineTransform({
     description: 'Repeat a line of text 2, 5, 10, or 50 times.',
     keywords: ['repeat', 'duplicate', 'multiply'],
   },
-  modes: [
-    { id: '2', label: '2×' },
-    { id: '5', label: '5×' },
-    { id: '10', label: '10×' },
-    { id: '50', label: '50×' },
-  ],
-  placeholder: 'Type or paste text',
   example: 'hi',
-  present: 'code',
-  run,
+  opts: { times: '5' },
+  render: (c) => {
+    const { h } = c
+    const times = Number(c.opt('times', '5'))
+    const value = c.input === '' ? '' : run(c.input, String(times))
+    return h.div(
+      [h.Class(stack)],
+      [
+        columns(h, [
+          sourcePanel(c, { label: 'Text', rows: 4 }),
+          panel(h, `Repeat ${times} times`, [
+            range(h, {
+              id: 'text-repeater-times',
+              min: 1,
+              max: 100,
+              value: times,
+              onInput: (next) => c.setOpt('times')(String(next)),
+            }),
+            value === '' ? hint(h, 'Enter text to repeat.') : codeBlock(h, 'Result', value),
+            value === ''
+              ? null
+              : stats(h, [
+                  ['Lines', String(times * c.input.split('\n').length)],
+                  ['Characters', String([...value].length)],
+                ]),
+            useAsInput(c, value),
+          ]),
+        ]),
+      ],
+    )
+  },
 })

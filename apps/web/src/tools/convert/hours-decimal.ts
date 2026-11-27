@@ -1,4 +1,4 @@
-import { defineTransform } from '../transform.ts'
+import { card, cells, defineForm, errorText, linked, page } from './ui.ts'
 
 export const run = (text: string, mode: string): string => {
   if (mode === 'to-time') {
@@ -14,7 +14,7 @@ export const run = (text: string, mode: string): string => {
   return String(Number((Number(match[1]) + Number(match[2]) / 60).toFixed(4)))
 }
 
-export const hoursDecimal = defineTransform({
+export const hoursDecimal = defineForm({
   meta: {
     id: 'hours-decimal',
     name: 'Hours and decimals',
@@ -22,12 +22,29 @@ export const hoursDecimal = defineTransform({
     description: 'Turn 1:30 into 1.5 hours and back.',
     keywords: ['decimal hours', 'hh:mm', 'timesheet', 'payroll', 'minutes'],
   },
-  modes: [
-    { id: 'to-decimal', label: 'h:mm to decimal' },
-    { id: 'to-time', label: 'Decimal to h:mm' },
-  ],
-  placeholder: '1:45',
-  example: '1:45',
-  fields: [{ label: 'Time or hours', kind: 'text' }],
-  run,
+  init: { src: 'time', text: '1:45' },
+  view: (form, h) => {
+    const pair = linked(
+      h,
+      form,
+      [
+        { key: 'time', label: 'Hours and minutes', suffix: 'h:mm' },
+        { key: 'decimal', label: 'Decimal hours', suffix: 'h' },
+      ],
+      (src, text) =>
+        src === 'time' ? { decimal: run(text, 'to-decimal') } : { time: run(text, 'to-time') },
+    )
+    return page(h, [
+      card(h, null, [pair.fields, errorText(h, pair.error)]),
+      card(h, 'Minutes', [
+        cells(
+          h,
+          [5, 10, 15, 20, 30, 40, 45, 50].map((minutes) => [
+            `${minutes} min`,
+            String(Number((minutes / 60).toFixed(4))),
+          ]),
+        ),
+      ]),
+    ])
+  },
 })

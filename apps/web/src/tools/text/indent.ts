@@ -1,4 +1,4 @@
-import { defineTransform } from '../transform.ts'
+import { cleaner, defineTextTool } from './ui.ts'
 
 export const run = (text: string, mode: string): string => {
   const lines = text.split('\n')
@@ -12,7 +12,7 @@ export const run = (text: string, mode: string): string => {
   return lines.map((line) => (line === '' ? line : pad + line)).join('\n')
 }
 
-export const indent = defineTransform({
+export const indent = defineTextTool({
   meta: {
     id: 'indent',
     name: 'Indent and dedent',
@@ -20,15 +20,17 @@ export const indent = defineTransform({
     description: 'Indent every line, or remove the shared indent.',
     keywords: ['indent', 'dedent', 'tab', 'spaces', 'outdent'],
   },
-  modes: [
-    { id: 'indent2', label: 'Indent 2' },
-    { id: 'indent4', label: 'Indent 4' },
-    { id: 'tab', label: 'Indent tab' },
-    { id: 'dedent', label: 'Dedent' },
-  ],
-  placeholder: 'Type or paste text',
-  acceptsFiles: true,
-  example: 'a\n\nb',
-  present: 'code',
-  run,
+  mode: 'indent2',
+  example: 'function add(a, b) {\n  return a + b\n}',
+  files: true,
+  render: (c) =>
+    cleaner(c, {
+      run,
+      options: [
+        { value: 'indent2', label: 'Indent 2' },
+        { value: 'indent4', label: 'Indent 4' },
+        { value: 'tab', label: 'Indent tab' },
+        { value: 'dedent', label: 'Dedent' },
+      ],
+    }),
 })

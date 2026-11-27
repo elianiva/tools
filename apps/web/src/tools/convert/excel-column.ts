@@ -1,4 +1,4 @@
-import { defineTransform } from '../transform.ts'
+import { card, cells, defineForm, errorText, linked, page } from './ui.ts'
 
 export const run = (text: string, mode: string): string => {
   return text
@@ -29,7 +29,7 @@ export const run = (text: string, mode: string): string => {
     .join('\n')
 }
 
-export const excelColumn = defineTransform({
+export const excelColumn = defineForm({
   meta: {
     id: 'excel-column',
     name: 'Spreadsheet columns',
@@ -37,13 +37,30 @@ export const excelColumn = defineTransform({
     description: 'Turn column letters into numbers and back.',
     keywords: ['excel', 'google sheets', 'column', 'letters', 'A1', 'spreadsheet'],
   },
-  modes: [
-    { id: 'to-number', label: 'Letters to number' },
-    { id: 'to-letters', label: 'Number to letters' },
-  ],
-  placeholder: 'Type or paste text',
-  acceptsFiles: true,
-  example: 'A',
-  fields: [{ label: 'Letters or number', kind: 'text' }],
-  run,
+  init: { src: 'letters', text: 'AZ' },
+  view: (form, h) => {
+    const pair = linked(
+      h,
+      form,
+      [
+        { key: 'letters', label: 'Letters' },
+        { key: 'number', label: 'Number' },
+      ],
+      (src, text) =>
+        src === 'letters'
+          ? { number: run(text, 'to-number') }
+          : { letters: run(text, 'to-letters') },
+    )
+    const n = Number(pair.values['number'] ?? form.get('text'))
+    const near =
+      pair.error === '' && Number.isInteger(n)
+        ? [n - 2, n - 1, n, n + 1, n + 2]
+            .filter((value) => value >= 1 && value <= 16_384)
+            .map((value) => [String(value), run(String(value), 'to-letters')] as const)
+        : []
+    return page(h, [
+      card(h, null, [pair.fields, errorText(h, pair.error)]),
+      near.length === 0 ? null : card(h, 'Nearby', [cells(h, near)]),
+    ])
+  },
 })

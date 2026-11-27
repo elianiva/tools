@@ -1,4 +1,5 @@
-import { defineTransform } from '../transform.ts'
+import { segmented } from '../kit.ts'
+import { card, defineForm, errorText, field, hero, page } from './ui.ts'
 
 export const run = (text: string, mode: string): string => {
   const clean = text.trim().replaceAll(/[.,_\s]/gu, '')
@@ -47,7 +48,7 @@ export const run = (text: string, mode: string): string => {
   return mode === 'rupiah' ? `${words} rupiah` : words
 }
 
-export const terbilang = defineTransform({
+export const terbilang = defineForm({
   meta: {
     id: 'terbilang',
     name: 'Terbilang',
@@ -55,12 +56,41 @@ export const terbilang = defineTransform({
     description: 'Write a number out in Indonesian words.',
     keywords: ['terbilang', 'indonesian', 'rupiah', 'number words', 'kuitansi', 'bahasa'],
   },
-  modes: [
-    { id: 'plain', label: 'Words only' },
-    { id: 'rupiah', label: 'With rupiah' },
-  ],
-  placeholder: '1.234.567',
-  example: '1.234.567',
-  fields: [{ label: 'Number', kind: 'text' }],
-  run,
+  init: { n: '1.234.567', mode: 'rupiah' },
+  view: (form, h) => {
+    const text = form.get('n')
+    const mode = form.get('mode')
+    let words = ''
+    let error = ''
+    if (text.trim() !== '') {
+      try {
+        words = run(text, mode)
+      } catch (caught) {
+        error = caught instanceof Error ? caught.message : ''
+      }
+    }
+    return page(h, [
+      card(h, null, [
+        field(h, {
+          id: 'n',
+          label: 'Angka',
+          value: text,
+          inputMode: 'numeric',
+          invalid: error !== '',
+          onInput: form.set('n'),
+        }),
+        segmented(h, {
+          label: 'Format',
+          value: mode,
+          options: [
+            { value: 'plain', label: 'Words only' },
+            { value: 'rupiah', label: 'With rupiah' },
+          ],
+          onSelect: (value) => form.patch({ mode: value }),
+        }),
+        errorText(h, error),
+      ]),
+      hero(h, 'Terbilang', words),
+    ])
+  },
 })

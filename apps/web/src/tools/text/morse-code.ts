@@ -1,4 +1,5 @@
-import { defineTransform } from '../transform.ts'
+import { attempt, defineLab, directionBar, ioPanels, layout, tile, wordGroups } from './ui-b.ts'
+import { panel } from '../kit.ts'
 
 export const run = (text: string, mode: string): string => {
   const letters: Readonly<Record<string, string>> = {
@@ -71,8 +72,15 @@ export const run = (text: string, mode: string): string => {
     )
     .join(' / ')
 }
+const safe = (compute: () => string): string => {
+  try {
+    return compute()
+  } catch {
+    return '?'
+  }
+}
 
-export const morseCode = defineTransform({
+export const morseCode = defineLab({
   meta: {
     id: 'morse-code',
     name: 'Morse code',
@@ -80,12 +88,55 @@ export const morseCode = defineTransform({
     description: 'Translate text to Morse code and back.',
     keywords: ['morse', 'sos', 'dots', 'dashes', 'telegraph'],
   },
-  modes: [
-    { id: 'encode', label: 'Text to Morse' },
-    { id: 'decode', label: 'Morse to text' },
-  ],
-  placeholder: 'Type or paste text',
+  mode: 'encode',
   example: 'SOS',
-  present: 'tokens',
-  run,
+  view: (ctx) => {
+    const { h, model } = ctx
+    const encoding = model.mode === 'encode'
+    const result =
+      model.input.trim() === ''
+        ? { value: '', error: '' }
+        : attempt(() => run(model.input, model.mode))
+    const words = encoding
+      ? model.input.trim().toUpperCase().split(/\s+/u)
+      : model.input.trim().split(/\s*\/\s*|\s{3,}/u)
+    const groups = words
+      .filter((word) => word !== '')
+      .map((word) =>
+        (encoding ? Array.from(word) : word.split(/\s+/u).filter((code) => code !== '')).map(
+          (part) => {
+            const other = safe(() => run(part, model.mode))
+            return tile(h, {
+              top: part,
+              bottom: other,
+              state: other === '?' ? 'diff' : 'plain',
+            })
+          },
+        ),
+      )
+    return layout(
+      h,
+      [
+        directionBar(ctx, {
+          options: [
+            { value: 'encode', label: 'Text to Morse' },
+            { value: 'decode', label: 'Morse to text' },
+          ],
+          swapTo:
+            result.value === ''
+              ? null
+              : { input: result.value, mode: encoding ? 'decode' : 'encode' },
+        }),
+      ],
+      [
+        ioPanels(ctx, {
+          inputLabel: encoding ? 'Text' : 'Morse',
+          outputLabel: encoding ? 'Morse' : 'Text',
+          placeholder: encoding ? 'Type or paste text' : '... --- ...',
+          result,
+        }),
+        groups.length === 0 ? null : panel(h, 'Letters', [wordGroups(h, groups)]),
+      ],
+    )
+  },
 })
